@@ -158,7 +158,7 @@ See [vaadin-embedded-jetty](https://github.com/mvysny/vaadin-embedded-jetty) for
 Vaadin will say "Java live reload unavailable" with the standard OpenJDK java.
 Please follow the [Live Reload](https://vaadin.com/docs/latest/configuration/live-reload/hotswap-agent)
 and either use JRebel, or install a JVM which supports DCEVM+HotswapAgent (e.g. [trava-jdk](https://github.com/TravaOpenJDK/trava-jdk-11-dcevm));
-you will then need to run the app with `-dcevm -XX:HotswapAgent=fatjar` (UNTESTED).
+you will then need to run the app with the following VM options: `-dcevm -XX:HotswapAgent=fatjar` (UNTESTED).
 
 ## Production
 
