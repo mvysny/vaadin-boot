@@ -4,6 +4,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,11 +22,15 @@ public class VaadinBoot {
     /**
      * The port where Jetty will listen for http:// traffic.
      */
-    private int port = DEFAULT_PORT;
+    @VisibleForTesting
+    int port = DEFAULT_PORT;
+
     /**
      * The VaadinServlet.
      */
-    private Class<? extends Servlet> servlet;
+    @VisibleForTesting
+    @NotNull
+    Class<? extends Servlet> servlet;
 
     public VaadinBoot() {
         try {
@@ -52,6 +57,12 @@ public class VaadinBoot {
     // mark volatile: might be accessed by the shutdown hook from a different thread.
     private volatile Server server;
 
+    /**
+     * Runs your app. Blocks until the user presses Enter or CTRL+C.
+     * <p></p>
+     * WARNING: JVM may be killed on CTRL+C; don't place any Java code after this function has been called from your main().
+     * @throws Exception
+     */
     public void run() throws Exception {
         start();
 
@@ -76,7 +87,12 @@ public class VaadinBoot {
         }
     }
 
-    private void start() throws Exception {
+    /**
+     * Starts the Jetty server and your app. Blocks until the app is fully started, then
+     * resumes execution. Mostly used for testing.
+     * @throws Exception
+     */
+    public void start() throws Exception {
         // change this to e.g. /foo to host your app on a different context root
         final String contextRoot = "/";
 
@@ -108,6 +124,10 @@ public class VaadinBoot {
                 "=================================================\n");
     }
 
+    /**
+     * Stops your app. Blocks until the webapp is fully stopped. Mostly used for tests.
+     * @param reason
+     */
     public void stop(@NotNull String reason) {
         try {
             if (server != null) {
@@ -147,5 +167,6 @@ public class VaadinBoot {
         return Resource.newResource(webRoot);
     }
 
+    @NotNull
     private static final Logger log = LoggerFactory.getLogger(VaadinBoot.class);
 }
