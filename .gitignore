@@ -3,3 +3,4 @@
 build
 testapp/vite.generated.ts
 testapp/frontend/generated
+testapp/node_modules
