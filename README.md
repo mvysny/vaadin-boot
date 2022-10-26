@@ -121,7 +121,7 @@ public class Bootstrap implements ServletContextListener {
 
 ## Build scripts
 
-Hints for buildscripts (`pom.xml`/`build.gradle`) of your app. When in doubt, take a look
+This part documents hints for buildscripts (`pom.xml`/`build.gradle`) of your app. When in doubt, take a look
 at the example apps mentioned above.
 
 ### Gradle
@@ -228,7 +228,10 @@ Please follow the [Live Reload](https://vaadin.com/docs/latest/configuration/liv
 and either use JRebel, or install a JVM which supports DCEVM+HotswapAgent (e.g. [trava-jdk](https://github.com/TravaOpenJDK/trava-jdk-11-dcevm));
 you may then need to run the app with the following VM options: `-dcevm -XX:HotswapAgent=fatjar` (UNTESTED).
 
-## Production
+## Packaging for production
+
+Make sure to follow the "Build Script" chapter above, to properly configure your project's build scripts.
+Here is some additional information which might be helpful.
 
 Make sure to have `flow-server-production-mode.jar` on classpath when running in production mode;
 also make sure to build and package Vaadin production bundle into the jar file of your app:
@@ -240,6 +243,45 @@ also make sure to build and package Vaadin production bundle into the jar file o
 Vaadin Gradle plugin does all of the above automatically when `-Pvaadin.productionMode` gradle build parameter is passed in;
 Maven projects usually define the `production` profile which handles everything correctly when activated
 via `mvn -C clean package -Pproduction`.
+
+### Docker
+
+Packaging your apps as docker images is incredibly easy. We use [Docker Multi-stage builds](https://docs.docker.com/build/building/multi-stage/):
+
+* We initialize the build environment and build the app in one docker image;
+* We copy the result app to a new image and throw away the build environment completely, to not to
+   clutter our production image.
+
+Example `Dockerfile` for a Gradle-based app:
+```dockerfile
+# The "Build" stage. Copies the entire project into the container, into the /app/ folder, and builds it.
+FROM openjdk:11 AS BUILD
+COPY . /app/
+WORKDIR /app/
+RUN ./gradlew clean test --no-daemon --info --stacktrace
+RUN ./gradlew build -Pvaadin.productionMode --no-daemon --info --stacktrace
+WORKDIR /app/build/distributions/
+RUN ls -la
+RUN unzip app.zip
+# At this point, we have the app (executable bash scrip plus a bunch of jars) in the
+# /app/build/distributions/app/ folder.
+
+# The "Run" stage. Start with a clean image, and copy over just the app itself, omitting gradle, npm and any intermediate build files.
+FROM openjdk:11
+COPY --from=BUILD /app/build/distributions/app /app/
+WORKDIR /app/bin
+EXPOSE 8080
+ENTRYPOINT ./app
+```
+
+You then run the following commands from terminal: first one will build the docker image, the second one will run your app in Docker:
+
+```bash
+$ docker build --no-cache -t test/yourapp:latest .
+$ docker run --rm -ti -p8080:8080 test/yourapp
+```
+
+Please find the `Dockerfile` in each of the example apps above.
 
 ## Testing
 
