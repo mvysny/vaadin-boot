@@ -41,9 +41,18 @@ public class VaadinBoot {
     }
 
     @NotNull
+    public VaadinBoot setPort(int port) {
+        if (port < 1 || port > 65535) {
+            throw new IllegalArgumentException("Parameter port: invalid value " + port + ": must be 1..65535");
+        }
+        this.port = port;
+        return this;
+    }
+
+    @NotNull
     public VaadinBoot withArgs(@NotNull String[] args) {
         if (args.length >= 1) {
-            port = Integer.parseInt(args[0]);
+            setPort(Integer.parseInt(args[0]));
         }
         return this;
     }

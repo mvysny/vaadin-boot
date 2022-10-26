@@ -11,6 +11,7 @@ dependencies {
     }
 
     testImplementation("org.slf4j:slf4j-simple:2.0.0")
+    testImplementation("com.github.mvysny.kaributesting:karibu-testing-v23:1.3.21")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.1")
 }
 

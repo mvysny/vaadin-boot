@@ -101,12 +101,44 @@ TODO - see the example apps please.
 
 ## Testing
 
-TODO
+Test using [Karibu-Testing](https://github.com/mvysny/karibu-testing/) - you don't have to start
+Jetty to test your app:
 
-# TODO
+```java
+public class MainViewTest {
+    @NotNull
+    private static final Routes routes = new Routes().autoDiscoverViews("com.example");
 
-1. More tests for testapp: start the app and assert it's listening on http 8080; simple wget will do.
-2. Assert that all weblisteners were run properly
+    @BeforeAll
+    public static void setupApp() {
+        assertFalse(Bootstrap.initialized);
+        new Bootstrap().contextInitialized(null);
+    }
+
+    @AfterAll
+    public static void tearDownApp() {
+        new Bootstrap().contextDestroyed(null);
+        assertFalse(Bootstrap.initialized);
+    }
+
+    @BeforeEach
+    public void setupVaadin() {
+        MockVaadin.setup(routes);
+    }
+
+    @AfterEach
+    public void tearDownVaadin() {
+        MockVaadin.tearDown();
+    }
+
+    @Test
+    public void smoke() {
+        UI.getCurrent().navigate(MainView.class);
+        _assertOne(MainView.class);
+        assertTrue(Bootstrap.initialized);
+    }
+}
+```
 
 # Developing
 

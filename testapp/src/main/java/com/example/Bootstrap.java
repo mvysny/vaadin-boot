@@ -10,7 +10,7 @@ import javax.servlet.annotation.WebListener;
 @WebListener
 public class Bootstrap implements ServletContextListener {
     private static final Logger log = LoggerFactory.getLogger(Bootstrap.class);
-    public volatile boolean initialized = false;
+    public static volatile boolean initialized = false;
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
