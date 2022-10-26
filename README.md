@@ -7,8 +7,6 @@ Tired of constant debugging issues? Then this project is for you.
 
 ## Using In Your Apps
 
-TODO NOT YET PUBLISHED
-
 Vaadin Boot is published in Maven Central; simply add a dependency on it:
 
 ```groovy
@@ -32,6 +30,11 @@ Or Maven:
     </dependencies>
 </project>
 ```
+
+Versions: Use:
+
+* Version 10.0 for Jetty 10+, requires Java JDK 11+
+* Version 9.x for Jetty 9.x, requires Java JDK 8+ (TODO not yet released)
 
 Then, add the following `Main` class to your project:
 ```java
