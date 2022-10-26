@@ -295,23 +295,25 @@ public class MainViewTest {
 
     @BeforeAll
     public static void setupApp() {
-        assertFalse(Bootstrap.initialized);
+        // initializes your services
         new Bootstrap().contextInitialized(null);
     }
 
     @AfterAll
     public static void tearDownApp() {
+        // stops your services
         new Bootstrap().contextDestroyed(null);
-        assertFalse(Bootstrap.initialized);
     }
 
     @BeforeEach
     public void setupVaadin() {
+        // Fakes Vaadin so that you can navigate in your app straight from your test code
         MockVaadin.setup(routes);
     }
 
     @AfterEach
     public void tearDownVaadin() {
+        // Removes all Vaadin fake objects
         MockVaadin.tearDown();
     }
 
