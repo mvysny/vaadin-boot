@@ -156,4 +156,4 @@ public class MainViewTest {
 
 # Developing
 
-See [CONTRIBUTING.md]
+See [CONTRIBUTING](CONTRIBUTING.md)
