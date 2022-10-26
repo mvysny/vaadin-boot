@@ -83,6 +83,19 @@ Example apps using Vaadin Boot:
 * Vaadin 14, Gradle: [vaadin14-embedded-jetty-gradle](https://github.com/mvysny/vaadin14-embedded-jetty-gradle)
 * Vaadin 14, Maven: [vaadin14-embedded-jetty](https://github.com/mvysny/vaadin14-embedded-jetty)
 
+## Running Your Apps
+
+To run your app
+
+* from IDE: simply run the `main()` method of your Main class. This is the best way to develop your app in an IDE.
+* from command line in development mode; this is the fastest way to run the app without any IDE:
+  * from Gradle: run `./gradlew run` (you'll need to use the Gradle Application plugin)
+  * from Maven: run `./mvnw -C exec:java` (you'll need to use the `exec-maven-plugin`)
+* from command-line in production mode: this is how you should deploy your apps to production.
+    The build of your app should produce a zip file; unzip the file and launch the run script.
+  * Gradle Application plugin will package the app for you, there's nothing you need to do
+  * With Maven you'll need to configure the Assembly plugin to build the applicatin zip or executable jar.
+
 ## Initializing Your Apps
 
 Simply add the following WebListener to your project:
@@ -151,7 +164,57 @@ Use Maven Assembly plugin to build a zip file with all dependencies and a run sc
 </assembly>
 ```
 
+Then create a script named `run` and place it into `src/main/scripts/`:
+```bash
+#!/bin/bash
+set -e -o pipefail
+CP=`ls libs/*.jar|tr '\n' ':'`
+java -cp $CP com.vaadin.starter.skeleton.Main "$@"
+```
+
+Then configure the assembly plugin:
+```xml
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.vaadin.starter.skeleton.Main</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptors>
+                        <descriptor>src/main/assembly/uberjar.xml</descriptor>
+                        <descriptor>src/main/assembly/zip.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+```
+
+Alternatively, you can package your app as a huge jar file which can then be launched via `java -jar yourapp.jar`.
 See [vaadin-embedded-jetty](https://github.com/mvysny/vaadin-embedded-jetty) for a full example.
+
+You can also use the `exec-maven-plugin` to run your app easily from Maven:
+```xml
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <configuration>
+                    <mainClass>com.vaadin.starter.skeleton.Main</mainClass>
+                </configuration>
+            </plugin>
+```
+Afterwards you can run your app via `mvn -C exec:java`.
 
 ## Hot-Redeployment
 
