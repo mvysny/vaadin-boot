@@ -51,6 +51,20 @@ Vaadin Boot will then serve static files from this folder.
 By default, VaadinBoot listens on all interfaces; call `localhostOnly()` to
 only listen on localhost.
 
+### Logging
+
+We're using slf4j. If you're using simplelogger, you can configure it like follows:
+```properties
+org.slf4j.simpleLogger.defaultLogLevel = info
+org.slf4j.simpleLogger.showDateTime = true
+org.slf4j.simpleLogger.dateTimeFormat = yyyy-MM-dd HH:mm:ss.SSS
+org.slf4j.simpleLogger.log.org.atmosphere = warn
+org.slf4j.simpleLogger.log.org.eclipse.jetty = warn
+org.slf4j.simpleLogger.log.org.eclipse.jetty.annotations.AnnotationParser = error
+```
+
+This will suppress cluttering of stdout/logs with verbose messages from Atmosphere and Jetty.
+
 ## Command-line Args
 
 Really dumb at the moment; if there's a port passed as the first parameter then it will be used, otherwise
