@@ -34,7 +34,7 @@ java {
 tasks.withType<Test> {
     useJUnitPlatform()
     testLogging {
-        // to see the exceptions of failed tests in CI
+        // to see the exception stacktraces of failed tests in CI
         exceptionFormat = TestExceptionFormat.FULL
     }
 }
