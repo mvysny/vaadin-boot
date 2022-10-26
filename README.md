@@ -231,9 +231,13 @@ you may then need to run the app with the following VM options: `-dcevm -XX:Hots
 ## Production
 
 Make sure to have `flow-server-production-mode.jar` on classpath when running in production mode;
-also make sure to build and package Vaadin production bundle into the jar file of your app.
+also make sure to build and package Vaadin production bundle into the jar file of your app:
 
-Vaadin Gradle plugin does this automatically when `-Pvaadin.productionMode` gradle build parameter is passed in;
+* Make sure your zip file contains the `flow-server-production-mode.jar`.
+* Make sure the jar of your app contains the folder `META-INF/VAADIN/webapp/VAADIN/build/*.js` (this is for Vaadin 23; Vaadin 14 file structure will differ) and the `META-INF/VAADIN/config/flow-build-info.json` says `"productionMode": true`.
+  * Read more at [Vaadin: The missing guide](https://mvysny.github.io/Vaadin-the-missing-guide/), the "production" mode.
+
+Vaadin Gradle plugin does all of the above automatically when `-Pvaadin.productionMode` gradle build parameter is passed in;
 Maven projects usually define the `production` profile which handles everything correctly when activated
 via `mvn -C clean package -Pproduction`.
 
