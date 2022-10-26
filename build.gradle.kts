@@ -9,10 +9,6 @@ plugins {
 
 defaultTasks("clean", "build")
 
-// don't use Jetty 11+ - uses jakarta.Servlet instead of javax.Servlet which makes it incompatible with Vaadin
-// Jetty 10+ requires Java 11+
-val jettyVersion = "10.0.11"
-
 allprojects {
     group = "com.github.mvysny.vaadin-boot"
     version = "10.1-SNAPSHOT"
