@@ -283,6 +283,17 @@ $ docker run --rm -ti -p8080:8080 test/yourapp
 
 Please find the `Dockerfile` in each of the example apps above.
 
+### https/ssl
+
+Vaadin Boot doesn't support https at the moment. The usual setup is to have Nginx unwrap ssl and pass it through to
+a Boot app listening for http on localhost. The reason is that you can safely restart Nginx when there's a need to apply
+new certificate. There are manuals on the interwebs on:
+
+* how to have Nginx automatically poll in newest Let's Encrypt certificates and apply them automatically;
+* how to unwrap https and pass it over to a http port
+
+TODO links/setup/Nginx+Let's Encrypt.
+
 ## Testing
 
 Test using [Karibu-Testing](https://github.com/mvysny/karibu-testing/) - you don't have to start
