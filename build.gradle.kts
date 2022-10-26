@@ -2,6 +2,9 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
     id("java")
+    id("com.vaadin") version "23.2.6" apply(false)
+    `maven-publish`
+    signing
 }
 
 defaultTasks("clean", "build")
@@ -10,34 +13,93 @@ defaultTasks("clean", "build")
 // Jetty 10+ requires Java 11+
 val jettyVersion = "10.0.11"
 
-repositories {
-    mavenCentral()
-}
+allprojects {
+    group = "com.github.mvysny.vaadin-boot"
+    version = "10.0-SNAPSHOT"
 
-dependencies {
-    implementation("org.slf4j:slf4j-api:2.0.0")
-    implementation("org.jetbrains:annotations:22.0.0")
-
-    // Embedded Jetty dependencies
-    implementation("org.eclipse.jetty:jetty-webapp:${jettyVersion}")
-    implementation("org.eclipse.jetty.websocket:websocket-javax-server:${jettyVersion}")
-
-    testImplementation("org.slf4j:slf4j-simple:2.0.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.1")
-    testImplementation("com.vaadin:vaadin-core:23.2.6") {
-        exclude(module = "javax.annotation-api")
+    repositories {
+        mavenCentral()
     }
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
-}
+subprojects {
 
-tasks.withType<Test> {
-    useJUnitPlatform()
-    testLogging {
-        // to see the exception stacktraces of failed tests in CI
-        exceptionFormat = TestExceptionFormat.FULL
+    apply {
+        plugin("maven-publish")
+        plugin("java")
+        plugin("org.gradle.signing")
+    }
+
+    tasks.withType<Test> {
+        useJUnitPlatform()
+        testLogging {
+            // to see the exceptions of failed tests in CI console.
+            exceptionFormat = TestExceptionFormat.FULL
+        }
+    }
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    // creates a reusable function which configures proper deployment to Maven Central
+    ext["configureMavenCentral"] = { artifactId: String ->
+
+        java {
+            withJavadocJar()
+            withSourcesJar()
+        }
+
+        tasks.withType<Javadoc> {
+            isFailOnError = false
+        }
+
+        publishing {
+            repositories {
+                maven {
+                    setUrl("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+                    credentials {
+                        username = project.properties["ossrhUsername"] as String? ?: "Unknown user"
+                        password = project.properties["ossrhPassword"] as String? ?: "Unknown user"
+                    }
+                }
+            }
+            publications {
+                create("mavenJava", MavenPublication::class.java).apply {
+                    groupId = project.group.toString()
+                    this.artifactId = artifactId
+                    version = project.version.toString()
+                    pom {
+                        description.set("Vaadin Boot: Simple way to run your Vaadin app in embedded Jetty")
+                        name.set(artifactId)
+                        url.set("https://github.com/mvysny/vaadin-boot")
+                        licenses {
+                            license {
+                                name.set("The MIT License (MIT)")
+                                url.set("https://opensource.org/licenses/MIT")
+                                distribution.set("repo")
+                            }
+                        }
+                        developers {
+                            developer {
+                                id.set("mavi")
+                                name.set("Martin Vysny")
+                                email.set("martin@vysny.me")
+                            }
+                        }
+                        scm {
+                            url.set("https://github.com/mvysny/vaadin-boot")
+                        }
+                    }
+
+                    from(components["java"])
+                }
+            }
+        }
+
+        signing {
+            sign(publishing.publications["mavenJava"])
+        }
     }
 }

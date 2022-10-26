@@ -1,3 +1,5 @@
 .idea
 .gradle
 build
+testapp/vite.generated.ts
+testapp/frontend/generated
