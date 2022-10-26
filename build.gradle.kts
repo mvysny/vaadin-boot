@@ -15,7 +15,7 @@ val jettyVersion = "10.0.11"
 
 allprojects {
     group = "com.github.mvysny.vaadin-boot"
-    version = "10.0-SNAPSHOT"
+    version = "10.0"
 
     repositories {
         mavenCentral()
