@@ -153,6 +153,11 @@ Use Maven Assembly plugin to build a zip file with all dependencies and a run sc
 
 See [vaadin-embedded-jetty](https://github.com/mvysny/vaadin-embedded-jetty) for a full example.
 
+## Hot-Redeploment
+
+Vaadin will say "Java live reload unavailable" no matter what I do. I followed the [Live Reload](https://vaadin.com/docs/latest/configuration/live-reload/hotswap-agent)
+vaadin docs and installed DCEVM, but Vaadin doesn't seem to detect that. Please open a ticket & let me know how this can be fixed.
+
 ## Production
 
 Make sure to have `flow-server-production-mode.jar` on classpath when running in production mode;
