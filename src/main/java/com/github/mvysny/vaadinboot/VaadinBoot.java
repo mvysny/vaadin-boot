@@ -52,7 +52,6 @@ public class VaadinBoot {
     // mark volatile: might be accessed by the shutdown hook from a different thread.
     private volatile Server server;
 
-    @NotNull
     public void run() throws Exception {
         start();
 
