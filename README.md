@@ -96,7 +96,7 @@ To run your app
   * Gradle Application plugin will package the app for you, there's nothing you need to do
   * With Maven you'll need to configure the Assembly plugin to build the applicatin zip or executable jar.
 
-## Initializing Your Apps
+## Initializing services in your app
 
 Simply add the following WebListener to your project:
 
@@ -107,17 +107,22 @@ public class Bootstrap implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
+        // will be called exactly once, before any request is served. Initialize your JVM singletons here.
         log.info("Testapp Initialized");
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
+        // will be called exactly once, after your server stops serving http requests, but before the JVM terminates.
         log.info("Testapp shut down");
     }
 }
 ```
 
-## Packaging Your Apps
+## Build scripts
+
+Hints for buildscripts (`pom.xml`/`build.gradle`) of your app. When in doubt, take a look
+at the example apps mentioned above.
 
 ### Gradle
 
