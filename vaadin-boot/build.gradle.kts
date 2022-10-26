@@ -11,7 +11,7 @@ dependencies {
     api("org.eclipse.jetty.websocket:websocket-javax-server:${properties["jetty_version"]}")
 
     testImplementation("org.slf4j:slf4j-simple:${properties["slf4j_version"]}")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:${properties["junit_version"]}")
     testImplementation("com.vaadin:vaadin-core:${properties["vaadin_version"]}") {
         exclude(module = "javax.annotation-api")
     }
