@@ -48,7 +48,15 @@ public class VaadinBoot {
      * Listen on interface handling given host name. Defaults to null which causes Jetty
      * to listen on all interfaces.
      */
+    @Nullable
     private String hostName = null;
+
+    /**
+     * The context root to run under. Defaults to `/`.
+     * Change this to e.g. /foo to host your app on a different context root
+     */
+    @NotNull
+    private String contextRoot = "/";
 
     public VaadinBoot() {
         try {
@@ -102,6 +110,17 @@ public class VaadinBoot {
         return this;
     }
 
+    /**
+     * Change this to e.g. /foo to host your app on a different context root
+     * @param contextRoot the new context root, e.g. `/foo`.
+     * @return this
+     */
+    @NotNull
+    public VaadinBoot withContextRoot(@NotNull String contextRoot) {
+        this.contextRoot = Objects.requireNonNull(contextRoot);
+        return this;
+    }
+
     // mark volatile: might be accessed by the shutdown hook from a different thread.
     private volatile Server server;
 
@@ -141,9 +160,6 @@ public class VaadinBoot {
      * @throws Exception
      */
     public void start() throws Exception {
-        // change this to e.g. /foo to host your app on a different context root
-        final String contextRoot = "/";
-
         // detect&enable production mode
         if (isProductionMode()) {
             // fixes https://github.com/mvysny/vaadin14-embedded-jetty/issues/1
