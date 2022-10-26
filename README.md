@@ -45,6 +45,17 @@ public class Main {
 Then add an empty file named `src/main/resources/webapp/ROOT` to your project -
 Vaadin Boot will then serve static files from this folder.
 
+By default, VaadinBoot listens on all interfaces; call `localhostOnly()` to
+only listen on localhost.
+
+## Command-line Args
+
+Really dumb at the moment; if there's a port passed as the first parameter then it will be used, otherwise
+the default port of 8080 will be used.
+
+You'll have to implement more complex cmdline arg parsing yourself; good start
+is to use [Apache commons-cli](https://commons.apache.org/proper/commons-cli/).
+
 ## Example Apps
 
 Example apps using Vaadin Boot:

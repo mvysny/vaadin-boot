@@ -4,15 +4,27 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.Servlet;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Objects;
 
+/**
+ * Bootstraps your Vaadin application from your main() function. Simply call
+ * <code><pre>
+ * new VaadinBoot().withArgs(args).run();
+ * </pre></code>
+ * from your main() method.
+ * <p></p>
+ * By default, listens on all interfaces; call {@link #localhostOnly()} to only
+ * listen on localhost.
+ */
 public class VaadinBoot {
     /**
      * The default port where Jetty will listen for http:// traffic.
@@ -32,6 +44,12 @@ public class VaadinBoot {
     @NotNull
     Class<? extends Servlet> servlet;
 
+    /**
+     * Listen on interface handling given host name. Defaults to null which causes Jetty
+     * to listen on all interfaces.
+     */
+    private String hostName = null;
+
     public VaadinBoot() {
         try {
             servlet = Class.forName("com.vaadin.flow.server.VaadinServlet").asSubclass(Servlet.class);
@@ -47,6 +65,27 @@ public class VaadinBoot {
         }
         this.port = port;
         return this;
+    }
+
+    /**
+     * Listen on interfaces handling given host name. Pass in null to listen on all interfaces;
+     * pass in `127.0.0.1` or `localhost` to listen on localhost only.
+     * @param hostName the interface to listen on.
+     * @return this
+     */
+    @NotNull
+    public VaadinBoot listenOn(@Nullable String hostName) {
+        this.hostName = hostName;
+        return this;
+    }
+
+    /**
+     * Listen on localhost only.
+     * @return this
+     */
+    @NotNull
+    public VaadinBoot localhostOnly() {
+        return listenOn("localhost");
     }
 
     @NotNull
@@ -123,7 +162,11 @@ public class VaadinBoot {
         context.setConfigurationDiscovered(true);
         context.getServletContext().setExtendedListenerTypes(true);
 
-        server = new Server(port);
+        if (hostName != null) {
+            server = new Server(new InetSocketAddress(hostName, port));
+        } else {
+            server = new Server(port);
+        }
         server.setHandler(context);
         server.start();
 

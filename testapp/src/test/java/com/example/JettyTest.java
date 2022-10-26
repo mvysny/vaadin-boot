@@ -19,7 +19,7 @@ public class JettyTest {
     @BeforeEach
     public void startJetty() throws Exception {
         assertFalse(Bootstrap.initialized);
-        vaadinBoot = new VaadinBoot().setPort(44312);
+        vaadinBoot = new VaadinBoot().setPort(44312).localhostOnly();
         vaadinBoot.start();
     }
 
