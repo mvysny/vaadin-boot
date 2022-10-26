@@ -153,6 +153,15 @@ Use Maven Assembly plugin to build a zip file with all dependencies and a run sc
 
 See [vaadin-embedded-jetty](https://github.com/mvysny/vaadin-embedded-jetty) for a full example.
 
+## Production
+
+Make sure to have `flow-server-production-mode.jar` on classpath when running in production mode;
+also make sure to build and package Vaadin production bundle into the jar file of your app.
+
+Vaadin Gradle plugin does this automatically when `-Pvaadin.productionMode` gradle build parameter is passed in;
+Maven projects usually define the `production` profile which handles everything correctly when activated
+via `mvn -C clean package -Pproduction`.
+
 ## Testing
 
 Test using [Karibu-Testing](https://github.com/mvysny/karibu-testing/) - you don't have to start
