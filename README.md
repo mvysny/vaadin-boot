@@ -52,21 +52,7 @@ Vaadin Boot will then serve static files from this folder.
 By default, VaadinBoot listens on all interfaces; call `localhostOnly()` to
 only listen on localhost.
 
-### Logging
-
-We're using slf4j. If you're using simplelogger, you can configure it like follows:
-```properties
-org.slf4j.simpleLogger.defaultLogLevel = info
-org.slf4j.simpleLogger.showDateTime = true
-org.slf4j.simpleLogger.dateTimeFormat = yyyy-MM-dd HH:mm:ss.SSS
-org.slf4j.simpleLogger.log.org.atmosphere = warn
-org.slf4j.simpleLogger.log.org.eclipse.jetty = warn
-org.slf4j.simpleLogger.log.org.eclipse.jetty.annotations.AnnotationParser = error
-```
-
-This will suppress cluttering of stdout/logs with verbose messages from Atmosphere and Jetty.
-
-## Command-line Args
+### Command-line Args
 
 Really dumb at the moment; if there's a port passed as the first parameter then it will be used, otherwise
 the default port of 8080 will be used.
@@ -74,7 +60,7 @@ the default port of 8080 will be used.
 You'll have to implement more complex cmdline arg parsing yourself; good start
 is to use [Apache commons-cli](https://commons.apache.org/proper/commons-cli/).
 
-## Example Apps
+### Example Apps
 
 Example apps using Vaadin Boot:
 
@@ -83,20 +69,55 @@ Example apps using Vaadin Boot:
 * Vaadin 14, Gradle: [vaadin14-embedded-jetty-gradle](https://github.com/mvysny/vaadin14-embedded-jetty-gradle)
 * Vaadin 14, Maven: [vaadin14-embedded-jetty](https://github.com/mvysny/vaadin14-embedded-jetty)
 
-## Running Your Apps
+## Running your apps
 
-To run your app
+Grab the sources of your app from the git repository.
+To run your app quickly from command-line, without having to run your IDE:
 
-* from IDE: simply run the `main()` method of your Main class. This is the best way to develop your app in an IDE.
-* from command line in development mode; this is the fastest way to run the app without any IDE:
-  * from Gradle: run `./gradlew run` (you'll need to use the Gradle Application plugin)
-  * from Maven: run `./mvnw -C exec:java` (you'll need to use the `exec-maven-plugin`)
-* from command-line in production mode: this is how you should deploy your apps to production.
-    The build of your app should produce a zip file; unzip the file and launch the run script.
-  * Gradle Application plugin will package the app for you, there's nothing you need to do
-  * With Maven you'll need to configure the Assembly plugin to build the applicatin zip or executable jar.
+1. Run `./gradlew run` (or `./mvnw -C exec:java` for Maven)
+    * Note you'll need to use the Gradle Application plugin, or the `exec-maven-plugin`
+2. Your app will be running on [http://localhost:8080](http://localhost:8080).
 
-## Initializing services in your app
+To run the app from your IDE:
+
+1. Import the project into your IDE
+2. Run `./gradle vaadinPrepareFrontend` in the project once (or `./mvnw -C vaadin:prepare-frontend` for Maven), to configure Vaadin paths.
+3. Run/Debug the `Main` class as an application (run the `main()` method).
+   The app will use npm to download all javascript libraries (may take a long time)
+   and will start in development mode.
+4. Your app will be running on [http://localhost:8080](http://localhost:8080).
+
+When deploying your app to production: see the "Production" chapter below. In short:
+
+1. Build your app in production mode, via `./gradlew clean build -Pvaadin.productionMode` or `./mvnw -C clean package -Pproduction`.
+2. The build of your app should produce a zip file; unzip the file and launch the run script.
+
+## Developing your apps
+
+Open the app in your IDE, and debug the `Main` class as an application (run the `main()` method in debugging mode).
+This will activate two things:
+
+* Contrary to what Vaadin says ("Java live reload unavailable"), Vaadin will automatically
+  detect changes in your CSS/JavaScript files, will rebuild the JavaScript bundle and will
+  reload the page to apply the new values.
+* When you do changes in your java files and recompile (Ctrl+F9 in Intellij),
+  [Java HotSwap](https://docs.oracle.com/javase/8/docs/technotes/guides/jpda/enhancements1.4.html#hotswap)
+  will update classes in your running app. Just press F5 in your browser to reload the page and
+  to see your changes.
+
+### Advanced HotSwapping
+
+The default Java HotSwap is limited to Java method in-body code changes only. If you need
+better HotSwapping capabilities, please try following the links below:
+
+* Please follow the [Live Reload](https://vaadin.com/docs/latest/configuration/live-reload/hotswap-agent)
+* (Ubuntu): install `openjdk-11-jre-dcevm` and run your app with the `-dcevm` VM parameter.
+* [Use HotSwapAgent](http://hotswapagent.org/mydoc_setup_intellij_idea.html)
+* Install a JVM which supports DCEVM+HotswapAgent (e.g. [trava-jdk](https://github.com/TravaOpenJDK/trava-jdk-11-dcevm));
+  you may then need to run the app with the following VM options: `-dcevm -XX:HotswapAgent=fatjar`.
+* Use JRebel
+
+### Initializing Your Apps
 
 Simply add the following WebListener to your project:
 
@@ -119,7 +140,25 @@ public class Bootstrap implements ServletContextListener {
 }
 ```
 
-## Build scripts
+### Logging
+
+Vaadin-Boot is using the [slf4j](https://www.slf4j.org/) logging framework by default, and your
+apps should use it too. We initially recommend you to use the SLF4J [SimpleLogger](https://www.slf4j.org/api/org/slf4j/simple/SimpleLogger.html)
+logger (use it by adding this dependency to your project: `implementation("org.slf4j:slf4j-simple:2.0.0")`.
+
+You can configure SimpleLogger with the following file (placed into `src/main/resources/simplelogger.properties`):
+```properties
+org.slf4j.simpleLogger.defaultLogLevel = info
+org.slf4j.simpleLogger.showDateTime = true
+org.slf4j.simpleLogger.dateTimeFormat = yyyy-MM-dd HH:mm:ss.SSS
+org.slf4j.simpleLogger.log.org.atmosphere = warn
+org.slf4j.simpleLogger.log.org.eclipse.jetty = warn
+org.slf4j.simpleLogger.log.org.eclipse.jetty.annotations.AnnotationParser = error
+```
+
+This will suppress cluttering of stdout/logs with verbose messages from Atmosphere and Jetty.
+
+## Packaging Your Apps
 
 This part documents hints for buildscripts (`pom.xml`/`build.gradle`) of your app. When in doubt, take a look
 at the example apps mentioned above.
@@ -221,28 +260,28 @@ You can also use the `exec-maven-plugin` to run your app easily from Maven:
 ```
 Afterwards you can run your app via `mvn -C exec:java`.
 
-## Hot-Redeployment
+## Production
 
-Vaadin will say "Java live reload unavailable" with the standard OpenJDK java.
-Please follow the [Live Reload](https://vaadin.com/docs/latest/configuration/live-reload/hotswap-agent)
-and either use JRebel, or install a JVM which supports DCEVM+HotswapAgent (e.g. [trava-jdk](https://github.com/TravaOpenJDK/trava-jdk-11-dcevm));
-you may then need to run the app with the following VM options: `-dcevm -XX:HotswapAgent=fatjar` (UNTESTED).
+By default, Vaadin is running in development mode. Vaadin will start a DevServer which detects
+changes done in your CSS and JavaScript files and rebuilds the JavaScript bundle automatically.
+This is great for development but not fit for production. Please read [Deploying to Production](https://vaadin.com/docs/latest/production)
+for more details.
 
-## Packaging for production
+All Vaadin apps follow the following convention when building for production:
 
-Make sure to follow the "Build Script" chapter above, to properly configure your project's build scripts.
-Here is some additional information which might be helpful.
+* Gradle: build your app with `./gradlew clean build -Pvaadin.productionMode`. Vaadin Gradle Plugin
+  will automatically build your app in production mode and will include `flow-server-production-mode.jar`.
+* Maven: build your app with `mvn -C clean package -Pproduction`. You need to add the `production`
+   profile which handles everything correctly when activated. Please see example apps for details.
 
-Make sure to have `flow-server-production-mode.jar` on classpath when running in production mode;
-also make sure to build and package Vaadin production bundle into the jar file of your app:
+In both cases, the JavaScript bundle is built at build time as opposed at runtime with devmode.
+You can easily verify that your app has been built in production mode:
 
-* Make sure your zip file contains the `flow-server-production-mode.jar`.
-* Make sure the jar of your app contains the folder `META-INF/VAADIN/webapp/VAADIN/build/*.js` (this is for Vaadin 23; Vaadin 14 file structure will differ) and the `META-INF/VAADIN/config/flow-build-info.json` says `"productionMode": true`.
-  * Read more at [Vaadin: The missing guide](https://mvysny.github.io/Vaadin-the-missing-guide/), the "production" mode.
-
-Vaadin Gradle plugin does all of the above automatically when `-Pvaadin.productionMode` gradle build parameter is passed in;
-Maven projects usually define the `production` profile which handles everything correctly when activated
-via `mvn -C clean package -Pproduction`.
+* When you run the app, Vaadin will log to stdout that it's running in production mode
+* The `flow-server-production-mode.jar` jar file is packaged in the zip file of your app.
+* The `yourapp.jar/META-INF/VAADIN/config/flow-build.info.json` will say `"productionMode":true`
+* There are JavaScript files in `yourapp.jar/META-INF/VAADIN/webapp/VAADIN/build/` (this applies to Vaadin 23; for Vaadin 14 the file structure is a bit different)
+    * Read more at [Vaadin: The missing guide](https://mvysny.github.io/Vaadin-the-missing-guide/), the "production" mode.
 
 ### Docker
 
@@ -337,6 +376,6 @@ public class MainViewTest {
 }
 ```
 
-# Developing
+# Developing Vaadin-Boot
 
 See [CONTRIBUTING](CONTRIBUTING.md)
