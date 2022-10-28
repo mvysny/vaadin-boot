@@ -93,7 +93,7 @@ To run your app quickly from command-line, without having to run your IDE:
     * Note you'll need to use the Gradle Application plugin, or the `exec-maven-plugin`
 2. Your app will be running on [http://localhost:8080](http://localhost:8080).
 
-To run the app from your IDE:
+To run the app from your IDE (we recommend using [Intellij IDEA](https://www.jetbrains.com/idea/download), the Community edition):
 
 1. Import the project into your IDE
 2. Run `./gradle vaadinPrepareFrontend` in the project once (or `./mvnw -C vaadin:prepare-frontend` for Maven), to configure Vaadin paths.
