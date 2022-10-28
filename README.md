@@ -180,6 +180,10 @@ at the example apps mentioned above.
 
 ### Gradle
 
+Vaadin-Boot runs embedded Jetty itself. Therefore, Vaadin-Boot-based apps do not use the Gretty Gradle plugin
+and do not package themselves as WAR files - instead the apps are packaged as a Java application:
+a zip file with all jar dependencies and a run script.
+
 Simply use the [Gradle Application Plugin](https://docs.gradle.org/current/userguide/application_plugin.html)
 to build your app:
 ```groovy
