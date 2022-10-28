@@ -10,10 +10,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.Servlet;
+import java.io.File;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Bootstraps your Vaadin application from your main() function. Simply call
@@ -167,6 +170,8 @@ public class VaadinBoot {
             System.setProperty("vaadin.productionMode", "true");
         }
 
+        fixClasspath();
+
         final WebAppContext context = createWebAppContext();
 
         if (hostName != null) {
@@ -201,6 +206,18 @@ public class VaadinBoot {
         context.setConfigurationDiscovered(true);
         context.getServletContext().setExtendedListenerTypes(true);
         return context;
+    }
+
+    protected void fixClasspath() {
+        // see https://github.com/mvysny/vaadin-boot/issues/1
+        final String classpath = System.getProperty("java.class.path");
+        if (classpath != null) {
+            final String[] entries = classpath.split("[" + File.pathSeparator + "]");
+            final String filteredClasspath = Arrays.stream(entries)
+                    .filter(it -> !it.isBlank() && new File(it).exists())
+                    .collect(Collectors.joining(File.pathSeparator));
+            System.setProperty("java.class.path", filteredClasspath);
+        }
     }
 
     /**
