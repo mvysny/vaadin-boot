@@ -52,6 +52,13 @@ Vaadin Boot will then serve static files from this folder.
 By default, VaadinBoot listens on all interfaces; call `localhostOnly()` to
 only listen on localhost.
 
+### Missing `/src/main/webapp`?
+
+Since we're not packaging to WAR, the `src/main/webapp` folder is ignored. We need to package the `webapp` folder
+in a way so that it's served from the jar itself. Indeed, the directory is located at `src/main/resources/webapp`.
+Make sure to add an empty file named `src/main/resources/webapp/ROOT` - that will allow Vaadin Boot
+to quickly figure out the precise location of your webapp directory in the class loader.
+
 ### Command-line Args
 
 Really dumb at the moment; if there's a port passed as the first parameter then it will be used, otherwise
@@ -68,6 +75,14 @@ Example apps using Vaadin Boot:
 * Vaadin 23, Maven: [vaadin-embedded-jetty](https://github.com/mvysny/vaadin-embedded-jetty)
 * Vaadin 14, Gradle: [vaadin14-embedded-jetty-gradle](https://github.com/mvysny/vaadin14-embedded-jetty-gradle)
 * Vaadin 14, Maven: [vaadin14-embedded-jetty](https://github.com/mvysny/vaadin14-embedded-jetty)
+
+## Preparing environment
+
+Please install Java JDK 11 or higher.
+
+The Vaadin build requires node.js and npm to build the 'frontend bundle'.
+However, that will happen automatically so there's nothing you need to do: Vaadin plugin will automatically download
+node.js and npm for you (node.js will be downloaded and run from `$HOME/.vaadin`).
 
 ## Running your apps
 
@@ -180,6 +195,16 @@ application {
 
 This will cause Gradle to build your app as a zip file with all dependencies and a run script.
 Please see the example apps for more details.
+
+The [Vaadin Gradle Plugin](https://vaadin.com/docs/latest/flow/guide/start/gradle)
+is used to package all JavaScript stuff into a JavaScript bundle. See the Plugin
+home page for more details.
+
+> **Info:** **Eclipse**+BuildShip may need a workaround in order for this project to work,
+> please see [this vaadin thread](https://vaadin.com/forum/thread/18241436) for more info.
+> This applies to **Visual Studio Code** as well since it also uses Eclipse bits and BuildShip
+> underneath - see [Bug #4](https://github.com/mvysny/vaadin14-embedded-jetty-gradle/issues/4)
+> for more details.
 
 ### Maven
 
