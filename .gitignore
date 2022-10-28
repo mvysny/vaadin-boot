@@ -4,3 +4,6 @@ build
 testapp/vite.generated.ts
 testapp/frontend/generated
 testapp/node_modules
+testapp-kotlin/vite.generated.ts
+testapp-kotlin/frontend/generated
+testapp-kotlin/node_modules

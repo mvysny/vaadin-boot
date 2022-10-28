@@ -14,6 +14,7 @@ Make sure to test the Boot with all example apps, especially the Enter/CTRL+C ha
 1. Run `./gradlew` to clean up any Vaadin production build leftovers
 2. Run the `Main` class as a traditional `main()` from Intellij and test that Enter shuts down the app correctly
 3. Run `./gradlew clean build testapp:run -Pvaadin.productionMode` and test that CTRL+C kills the app
+3. Run `./gradlew clean build testapp-kotlin:run -Pvaadin.productionMode` and test that CTRL+C kills the app
 4. Unzip `testapp/build/distributions/testapp-*.zip`, then run it and test that both CTRL+C and Enter correctly shuts down the app.
 
 # Releasing
