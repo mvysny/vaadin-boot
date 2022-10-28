@@ -312,6 +312,9 @@ You can easily verify that your app has been built in production mode:
 * There are JavaScript files in `yourapp.jar/META-INF/VAADIN/webapp/VAADIN/build/` (this applies to Vaadin 23; for Vaadin 14 the file structure is a bit different)
     * Read more at [Vaadin: The missing guide](https://mvysny.github.io/Vaadin-the-missing-guide/), the "production" mode.
 
+[Jetty is perfectly capable](https://www.eclipse.org/jetty/) of running in production as documented
+on the Jetty web page.
+
 ### Docker
 
 Packaging your apps as docker images is incredibly easy. We use [Docker Multi-stage builds](https://docs.docker.com/build/building/multi-stage/):
