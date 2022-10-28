@@ -167,16 +167,7 @@ public class VaadinBoot {
             System.setProperty("vaadin.productionMode", "true");
         }
 
-        final WebAppContext context = new WebAppContext();
-        context.setBaseResource(findWebRoot());
-        context.setContextPath(contextRoot);
-        context.addServlet(servlet, "/*");
-        // this will properly scan the classpath for all @WebListeners, including the most important
-        // com.vaadin.flow.server.startup.ServletContextListeners.
-        // See also https://mvysny.github.io/vaadin-lookup-vs-instantiator/
-        context.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern", ".*\\.jar|.*/classes/.*");
-        context.setConfigurationDiscovered(true);
-        context.getServletContext().setExtendedListenerTypes(true);
+        final WebAppContext context = createWebAppContext();
 
         if (hostName != null) {
             server = new Server(new InetSocketAddress(hostName, port));
@@ -190,6 +181,26 @@ public class VaadinBoot {
                 "Please open http://localhost:" + port + contextRoot + " in your browser\n" +
                 "If you see the 'Unable to determine mode of operation' exception, just kill me and run `./gradlew vaadinPrepareFrontend`\n" +
                 "=================================================\n");
+    }
+
+    /**
+     * Creates the Jetty {@link WebAppContext}.
+     * @return the {@link WebAppContext}
+     * @throws MalformedURLException
+     */
+    @NotNull
+    protected WebAppContext createWebAppContext() throws MalformedURLException {
+        final WebAppContext context = new WebAppContext();
+        context.setBaseResource(findWebRoot());
+        context.setContextPath(contextRoot);
+        context.addServlet(servlet, "/*");
+        // this will properly scan the classpath for all @WebListeners, including the most important
+        // com.vaadin.flow.server.startup.ServletContextListeners.
+        // See also https://mvysny.github.io/vaadin-lookup-vs-instantiator/
+        context.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern", ".*\\.jar|.*/classes/.*");
+        context.setConfigurationDiscovered(true);
+        context.getServletContext().setExtendedListenerTypes(true);
+        return context;
     }
 
     /**
