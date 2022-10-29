@@ -207,7 +207,7 @@ Vaadin-Boot will automatically discover the servlet and initialize it properly. 
 $ curl -v localhost:8080/rest
 ```
 
-Testing: follow this example:
+Testing: follow this example, to only initialize the REST servlet (no need to initialize the Vaadin servlet as well):
 ```kotlin
 class MyJavalinServletTest {
     private var server: Server? = null
