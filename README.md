@@ -173,6 +173,42 @@ org.slf4j.simpleLogger.log.org.eclipse.jetty.annotations.AnnotationParser = erro
 
 This will suppress cluttering of stdout/logs with verbose messages from Atmosphere and Jetty.
 
+### REST via Javalin
+
+We'll use [Javalin](https://javalin.io) 4.x since Javalin 5.x uses Servlet API 5 which is not compatible with Vaadin 23.
+
+Add Javalin to your build script:
+```groovy
+    implementation("io.javalin:javalin:4.6.7") {
+        exclude(group = "org.eclipse.jetty")
+        exclude(group = "org.eclipse.jetty.websocket")
+        exclude(group = "com.fasterxml.jackson.core")
+    }
+```
+
+Then add the following class to your project:
+```java
+@WebServlet(name = "MyJavalinServlet", urlPatterns = {"/rest/*"})
+public class MyJavalinServlet extends HttpServlet {
+    private final JavalinServlet javalin = Javalin.createStandalone()
+            .get("/rest", ctx -> ctx.result("Hello!"))
+            .javalinServlet();
+
+    @Override
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        javalin.service(req, resp);
+    }
+}
+```
+
+Vaadin-Boot will automatically discover the servlet and initialize it properly. To test, you can run
+
+```bash
+$ curl -v localhost:8080/rest
+```
+
+Testing: TODO
+
 ## Packaging Your Apps
 
 This part documents hints for buildscripts (`pom.xml`/`build.gradle`) of your app. When in doubt, take a look
