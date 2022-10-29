@@ -207,7 +207,32 @@ Vaadin-Boot will automatically discover the servlet and initialize it properly. 
 $ curl -v localhost:8080/rest
 ```
 
-Testing: TODO
+Testing: follow this example:
+```kotlin
+class MyJavalinServletTest {
+    private var server: Server? = null
+
+    @BeforeEach
+    fun startJetty() {
+        val ctx = WebAppContext()
+        ctx.baseResource = EmptyResource.INSTANCE
+        ctx.addServlet(MyJavalinServlet::class.java, "/rest/*")
+        server = Server(30123)
+        server!!.handler = ctx
+        server!!.start()
+    }
+
+    @AfterEach
+    fun stopJetty() {
+        server?.stop()
+    }
+
+    @Test
+    fun testRest() {
+        assertEquals("Hello!", URL("http://localhost:30123/rest").readText())
+    }
+}
+```
 
 ## Packaging Your Apps
 
