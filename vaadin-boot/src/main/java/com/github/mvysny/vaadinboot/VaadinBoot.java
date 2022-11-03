@@ -79,8 +79,8 @@ public class VaadinBoot {
     }
 
     /**
-     * Listen on interfaces handling given host name. Pass in null to listen on all interfaces;
-     * pass in `127.0.0.1` or `localhost` to listen on localhost only.
+     * Listen on network interface handling given host name. Pass in null to listen on all interfaces;
+     * pass in `127.0.0.1` or `localhost` to listen on localhost only (or call {@link #localhostOnly()}).
      * @param hostName the interface to listen on.
      * @return this
      */
@@ -91,7 +91,7 @@ public class VaadinBoot {
     }
 
     /**
-     * Listen on localhost only.
+     * Listen on the <code>localhost</code> network interface only.
      * @return this
      */
     @NotNull
