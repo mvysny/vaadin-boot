@@ -99,6 +99,12 @@ public class VaadinBoot {
         return listenOn("localhost");
     }
 
+    /**
+     * Parses given command-line parameters. At the moment only the port number is
+     * parsed out if the array is non-empty.
+     * @param args the command-line parameters, not null.
+     * @return this
+     */
     @NotNull
     public VaadinBoot withArgs(@NotNull String[] args) {
         if (args.length >= 1) {
@@ -107,6 +113,11 @@ public class VaadinBoot {
         return this;
     }
 
+    /**
+     * Bootstraps custom servlet instead of the default <code>com.vaadin.flow.server.VaadinServlet</code>.
+     * @param vaadinServlet the custom servlet, not null.
+     * @return this
+     */
     @NotNull
     public VaadinBoot withServlet(@NotNull Class<? extends Servlet> vaadinServlet) {
         this.servlet = Objects.requireNonNull(vaadinServlet);
@@ -130,8 +141,7 @@ public class VaadinBoot {
     /**
      * Runs your app. Blocks until the user presses Enter or CTRL+C.
      * <p></p>
-     * WARNING: JVM may be killed on CTRL+C; don't place any Java code after this function has been called from your main().
-     * @throws Exception
+     * WARNING: this function may never terminate since the entire JVM may be killed on CTRL+C.
      */
     public void run() throws Exception {
         start();
@@ -160,7 +170,6 @@ public class VaadinBoot {
     /**
      * Starts the Jetty server and your app. Blocks until the app is fully started, then
      * resumes execution. Mostly used for testing.
-     * @throws Exception
      */
     public void start() throws Exception {
         // detect&enable production mode
