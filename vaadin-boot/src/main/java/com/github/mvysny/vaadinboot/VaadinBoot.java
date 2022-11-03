@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  * <code><pre>
  * new VaadinBoot().withArgs(args).run();
  * </pre></code>
- * from your main() method.
+ * from your <code>main()</code> method.
  * <p></p>
  * By default, listens on all interfaces; call {@link #localhostOnly()} to only
  * listen on localhost.
@@ -61,6 +61,9 @@ public class VaadinBoot {
     @NotNull
     private String contextRoot = "/";
 
+    /**
+     * Creates the new instance of the Boot launcher.
+     */
     public VaadinBoot() {
         try {
             servlet = Class.forName("com.vaadin.flow.server.VaadinServlet").asSubclass(Servlet.class);
@@ -69,6 +72,11 @@ public class VaadinBoot {
         }
     }
 
+    /**
+     * Sets the port to listen on. Listens on {@value #DEFAULT_PORT} by default.
+     * @param port the new port, 1..65535
+     * @return this
+     */
     @NotNull
     public VaadinBoot setPort(int port) {
         if (port < 1 || port > 65535) {
@@ -200,7 +208,6 @@ public class VaadinBoot {
     /**
      * Creates the Jetty {@link WebAppContext}.
      * @return the {@link WebAppContext}
-     * @throws MalformedURLException
      */
     @NotNull
     protected WebAppContext createWebAppContext() throws MalformedURLException {
@@ -231,7 +238,7 @@ public class VaadinBoot {
 
     /**
      * Stops your app. Blocks until the webapp is fully stopped. Mostly used for tests.
-     * @param reason
+     * @param reason why we're shutting down. Logged as info.
      */
     public void stop(@NotNull String reason) {
         try {
