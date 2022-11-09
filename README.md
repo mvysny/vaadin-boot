@@ -469,6 +469,13 @@ public class MainViewTest {
 }
 ```
 
+## Walkthrough Guides
+
+The "Creating Vaadin App from scratch" video series:
+
+* [Part 1](https://www.youtube.com/watch?v=vl8Dnh6FIYA)
+* [Part 2](https://www.youtube.com/watch?v=0g_kfqECDvk)
+
 # Developing Vaadin-Boot
 
 See [CONTRIBUTING](CONTRIBUTING.md)
