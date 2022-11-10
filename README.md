@@ -424,7 +424,29 @@ new certificate. There are manuals on the interwebs on:
 * how to have Nginx automatically poll in newest Let's Encrypt certificates and apply them automatically;
 * how to unwrap https and pass it over to a http port
 
-TODO links/setup/Nginx+Let's Encrypt.
+In short, here are brief steps to setup Nginx+[Let's Encrypt](https://letsencrypt.org/) on Ubuntu machine:
+
+* First, make sure your Vaadin Boot project is listening on localhost only. This will ensure that all requests will go through Nginx.
+* Then, remove the default site: `sudo rm /etc/nginx/sites-enabled/default`
+* Then write your own `/etc/nginx/sites-enabled/yourapp`, something like this:
+
+```nginx
+server {
+  location / {
+    proxy_pass http://localhost:8080/;
+    # proxy_cookie_path / /foo; # use this if you mount your app to `location /foo/`
+    proxy_cookie_domain localhost $host;
+  }
+}
+```
+
+Reload nginx configuration (`sudo systemctl reload nginx.service`) and verify that you can access your app
+via `http://yourserver`.
+
+Then follow [Let's Encrypt's getting started](https://letsencrypt.org/getting-started/); the [command-line certbot
+instructions for Ubuntu](https://certbot.eff.org/instructions?ws=nginx&os=ubuntufocal) worked the best for me.
+`sudo certbot --nginx` will download the certificates and will modify your nginx config file to use the certificates
+and to automatically redirect from http to https. It will also install itself to cron, to auto-refresh the certificate.
 
 ## Testing
 
