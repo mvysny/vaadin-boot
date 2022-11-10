@@ -381,8 +381,7 @@ on the Jetty web page.
 Packaging your apps as docker images is incredibly easy. We use [Docker Multi-stage builds](https://docs.docker.com/build/building/multi-stage/):
 
 * We initialize the build environment and build the app in one docker image;
-* We copy the result app to a new image and throw away the build environment completely, to not to
-   clutter our production image.
+* We copy the result app to a new image and throw away the build environment completely, to not clutter our production image.
 
 Example `Dockerfile` for a Gradle-based app:
 ```dockerfile
