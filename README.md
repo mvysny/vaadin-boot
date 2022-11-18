@@ -335,7 +335,7 @@ Then configure the assembly plugin:
 ```
 
 Alternatively, you can package your app as a huge jar file which can then be launched via `java -jar yourapp.jar`.
-See [vaadin-embedded-jetty](https://github.com/mvysny/vaadin-embedded-jetty) for a full example.
+See [vaadin-boot-example-maven](https://github.com/mvysny/vaadin-boot-example-maven) for a full example.
 
 You can also use the `exec-maven-plugin` to run your app easily from Maven:
 ```xml
