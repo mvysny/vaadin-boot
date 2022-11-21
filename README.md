@@ -497,6 +497,103 @@ The "Creating Vaadin App from scratch" video series:
 * [Part 1](https://www.youtube.com/watch?v=vl8Dnh6FIYA)
 * [Part 2](https://www.youtube.com/watch?v=0g_kfqECDvk)
 
+## Architectural Tips
+
+### Accessing SQL database
+
+The easiest way to access a SQL database is to use [jdbi-orm](https://gitlab.com/mvysny/jdbi-orm)
+which provides a full-blown CRUD (Create/Update/Delete) bean editing and to-database mapping.
+For a working example please take a look at [jdbi-orm-vaadin-crud-demo](https://github.com/mvysny/jdbi-orm-vaadin-crud-demo).
+
+To initialize the library and use an in-memory database for quick prototyping, create a `Bootstrap` class
+as described above, then initialize JDBI there:
+```java
+@WebListener
+public class Bootstrap implements ServletContextListener {
+    @Override
+    public void contextInitialized(ServletContextEvent servletContextEvent) {
+        final HikariConfig hikariConfig = new HikariConfig();
+        hikariConfig.setJdbcUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
+        hikariConfig.setMinimumIdle(0);
+        JdbiOrm.setDataSource(new HikariDataSource(hikariConfig));
+
+        jdbi().useHandle(handle -> handle.createUpdate("create table if not exists Person (\n" +
+                "                id bigint primary key auto_increment,\n" +
+                "                name varchar not null,\n" +
+                "                age integer not null,\n" +
+                "                dateOfBirth date,\n" +
+                "                created timestamp,\n" +
+                "                modified timestamp,\n" +
+                "                alive boolean,\n" +
+                "                maritalStatus varchar" +
+                ")").execute());
+
+        System.out.println(Person.dao.findAll());
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent servletContextEvent) {
+        JdbiOrm.destroy();
+    }
+}
+```
+
+To create more tables and entities, please see [jdbi-orm](https://gitlab.com/mvysny/jdbi-orm) documentation.
+
+When the database grows bigger, it's much better to use [flyway](https://flywaydb.org/) database
+migration tool to update your database schema automatically on every app startup. Please
+see [jdbi-orm-vaadin-crud-demo](https://github.com/mvysny/jdbi-orm-vaadin-crud-demo) for an example.
+
+Note that the tests will also bootstrap the database. This way you don't have to waste
+your time mocking/faking data loading code; instead you can test the application as-is.
+
+### Services
+
+The Entity DAO should only contain code which makes database queries easier - it should not
+contain any business code. For that it's best to create a service layer in the SOA (Service Oriented Architecture) fashion,
+thus creating a three-tiered application:
+
+* First tier, the web browser
+* Second tier, the server-side business logic
+* Third tier, the database, entities, DAOs
+
+The simplest way is to create a `Services` class with a bunch of static getters, each returning
+the service instance. The advantages are that the IDE autocompletion works perfectly, the lookup is simple and fast,
+and are in full control how the services are instantiated - e.g. you can add a special flag for testing and
+then create a different set of services for testing if need be. It's really simple to also create stateful services:
+
+```java
+public class MyService {
+    public String sayHello() {
+        return "Hello, " + Person.dao.findFirst();
+    }
+}
+
+public class MyStatefulService implements Serializable {
+    private Person loggedInUser;
+    public void login(String username, String password) {
+        final Person person = Person.dao.findByName(username);
+        person.verifyPassword(password);
+        loggedInUser = person;
+    }
+}
+
+public class Services {
+    public static MyService getMyService() {
+        return new MyService();
+    }
+
+    public static MyStatefulService getMyStatefulService() {
+        MyStatefulService service = VaadinSession.getCurrent().getAttribute(MyStatefulService.class);
+        if (service == null) {
+            service = new MyStatefulService();
+            VaadinSession.getCurrent().setAttribute(MyStatefulService.class, service);
+        }
+        return service;
+    }
+}
+```
+
 # Developing Vaadin-Boot
 
 See [CONTRIBUTING](CONTRIBUTING.md)
