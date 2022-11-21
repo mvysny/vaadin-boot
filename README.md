@@ -594,6 +594,11 @@ public class Services {
 }
 ```
 
+### Vaadin-on-Kotlin
+
+If you like [Kotlin](https://kotlinlang.org/) and you like the simplicity of the ideas above,
+please use the [Vaadin-on-Kotlin](https://www.vaadinonkotlin.eu/) framework which is based on the ideas above.
+
 # Developing Vaadin-Boot
 
 See [CONTRIBUTING](CONTRIBUTING.md)
