@@ -107,9 +107,13 @@ When deploying your app to production: see the "Production" chapter below. In sh
 1. Build your app in production mode, via `./gradlew clean build -Pvaadin.productionMode` or `./mvnw -C clean package -Pproduction`.
 2. The build of your app should produce a zip file; unzip the file and launch the run script.
 
-## Developing your apps
+## Develop with pleasure
+
+You can download and install the [Intellij IDEA Community Edition](https://www.jetbrains.com/idea/download), then import this project into it.
 
 Open the app in your IDE, and debug the `Main` class as an application (run the `main()` method in debugging mode).
+Then, open your browser and hit [http://localhost:8080](http://localhost:8080).
+
 This will activate two things:
 
 * Contrary to what Vaadin says ("Java live reload unavailable"), Vaadin will automatically
@@ -120,9 +124,20 @@ This will activate two things:
   will update classes in your running app. Just press F5 in your browser to reload the page and
   to see your changes.
 
+There are lots of pre-existing Vaadin components; you can check out the
+[Beverage Buddy](https://github.com/mvysny/beverage-buddy-vok/) example app for more
+examples of component usage. You should also read the [full Vaadin documentation](https://vaadin.com/docs/flow/Overview.html).
+
+The browser is a very powerful IDE which can help you debug CSS- and layout-related issue. Take your time and read slowly through the following tutorials, to get acquinted with the browser
+developer tools:
+
+* [Chrome Developer Tools tutorial](https://developers.google.com/web/tools/chrome-devtools/)
+* [Firefox Developer Tools tutorial](https://developer.mozilla.org/en-US/docs/Tools)
+
 ### Advanced HotSwapping
 
-The default Java HotSwap is limited to Java method in-body code changes only. If you need
+The default Java HotSwap is limited to Java method in-body code changes only. However,
+that is more than enough for even a professional development. Optionally, if you need
 better HotSwapping capabilities, please try following the links below:
 
 * Please follow the [Live Reload](https://vaadin.com/docs/latest/configuration/live-reload/hotswap-agent)
