@@ -464,8 +464,9 @@ and to automatically redirect from http to https. It will also install itself to
 
 ## Testing
 
-Test using [Karibu-Testing](https://github.com/mvysny/karibu-testing/) - you don't have to start
-Jetty to test your app:
+It is very easy to test Vaadin-based apps. We will test using [Karibu-Testing](https://github.com/mvysny/karibu-testing/).
+The browserless testing technique has numerous advantages over testing in a browser: you don't have to start the browser,
+and you don't have to start Jetty to test your app:
 
 ```java
 public class MainViewTest {
@@ -501,9 +502,13 @@ public class MainViewTest {
         UI.getCurrent().navigate(MainView.class);
         _assertOne(MainView.class);
         assertTrue(Bootstrap.initialized);
+        _click(_get(Button.class, spec -> spec.withCaption("Click Me")));
     }
 }
 ```
+
+Please see [Karibu-Testing](https://github.com/mvysny/karibu-testing/) documentation for
+further details.
 
 ## Walkthrough Guides
 
