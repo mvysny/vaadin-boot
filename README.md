@@ -558,9 +558,12 @@ To create more tables and entities, please see [jdbi-orm](https://gitlab.com/mvy
 When the database grows bigger, it's much better to use [flyway](https://flywaydb.org/) database
 migration tool to update your database schema automatically on every app startup. Please
 see [jdbi-orm-vaadin-crud-demo](https://github.com/mvysny/jdbi-orm-vaadin-crud-demo) for an example.
+Generally you should run Flyway on app startup from your `Bootstrap` class, to automatically upgrade the database.
+Then, place the migration scripts to the `src/main/resources/db/migration` folder.
 
 Note that the tests will also bootstrap the database. This way you don't have to waste
-your time mocking/faking data loading code; instead you can test the application as-is.
+your time mocking/faking data loading code - instead you can test the application as-is since
+you'll have everything up-and-running, including services and the database.
 
 ### Services
 
