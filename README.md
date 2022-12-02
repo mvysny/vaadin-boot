@@ -32,10 +32,12 @@ Or Maven:
 </project>
 ```
 
-Versions: Use:
+Compatibility chart:
 
-* Version 10.x for Jetty 10+, requires Java JDK 11+
-* Version 9.x for Jetty 9.x, requires Java JDK 8+ (TODO not yet released)
+| Vaadin-Boot version                                                               | Min Java | Supported Vaadin versions |
+|-----------------------------------------------------------------------------------|----------|---------------------------|
+| 10.x                                                                              | Java 11+ | Vaadin 14-23              |
+| 11.x (not yet released, see [#4](https://github.com/mvysny/vaadin-boot/issues/4)) | Java 17+ | Vaadin 24+                |
 
 Then, add the following `Main` class to your project:
 ```java
