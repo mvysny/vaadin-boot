@@ -431,6 +431,14 @@ $ docker run --rm -ti -p8080:8080 test/yourapp
 
 Please find the `Dockerfile` in each of the example apps above.
 
+#### Docker + Vaadin Pro
+
+To use paid Vaadin Pro components you'll need an [offline server key (Vaadin License key)](https://vaadin.com/docs/latest/configuration/licenses).
+One way is to pass the key to the `docker build` via the means of Docker build-args:
+
+1. Add the following to your `Dockerfile`: `ARG offlinekey`; `ENV VAADIN_OFFLINE_KEY=$offlinekey`
+2. Build the app with `$ docker build --no-cache -t test/yourapp:latest --build-arg offlinekey='eyJra.....the_very_long_1600_character_offline_key_text_blob' .`
+
 ### https/ssl
 
 Vaadin Boot doesn't support https at the moment. The usual setup is to have Nginx unwrap ssl and pass it through to
