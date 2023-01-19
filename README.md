@@ -627,6 +627,10 @@ public class Services {
 }
 ```
 
+### Security
+
+See [Vaadin Simple Security](https://github.com/mvysny/vaadin-simple-security).
+
 ### Vaadin-on-Kotlin
 
 If you like [Kotlin](https://kotlinlang.org/) and you like the simplicity of the ideas above,
