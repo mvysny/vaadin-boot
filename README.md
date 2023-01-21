@@ -627,9 +627,25 @@ public class Services {
 }
 ```
 
-### Security
+### Security/Authentication/Authorization
 
-See [Vaadin Simple Security](https://github.com/mvysny/vaadin-simple-security).
+See [Vaadin Simple Security](https://github.com/mvysny/vaadin-simple-security) for guides
+and example projects on how to add security simply to your Vaadin-Boot-based app.
+
+## Kotlin
+
+The [Kotlin Programming Language](https://kotlinlang.org/) is quickly gaining popularity,
+and fixes many of Java's shortcomings. You can definitely use Kotlin with your Vaadin-Boot-based
+apps! Please feel free to add the following libraries to your app:
+
+* [vok-orm](https://github.com/mvysny/vok-orm) builds on `jdbi-orm` and adds first-class support for Kotlin
+* [karibu-dsl](https://github.com/mvysny/karibu-dsl) offers structured way of building your Vaadin components and routes.
+
+Many more example projects:
+
+* Simple one-page-one-button example app: [karibu10-helloworld-application](https://github.com/mvysny/karibu10-helloworld-application)
+* A simple database-backed one-page task list app: [vaadin-kotlin-pwa](https://github.com/mvysny/vaadin-kotlin-pwa)
+* Two-page app demoing grids and database: [Beverage Buddy VoK](https://github.com/mvysny/beverage-buddy-vok)
 
 ### Vaadin-on-Kotlin
 
