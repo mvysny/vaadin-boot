@@ -10,7 +10,7 @@ Who is Vaadin Boot for? Vaadin Boot is for developers that [prefer to create the
 exactly to fit their needs. You don't like to start by including a pre-fabricated application framework,
 complex and abstract enough to handle hundreds of use-cases.
 You don't have hundreds of use-cases: you only have one. You only use what you need.
-There lies maximum [simplicity](https://mvysny.github.io/on-simplicity/) which you own, understand and can rely on.
+There lies maximum simplicity which you own, understand and can rely on.
 
 ## Using In Your Apps
 
