@@ -632,6 +632,11 @@ public class Services {
 See [Vaadin Simple Security](https://github.com/mvysny/vaadin-simple-security) for guides
 and example projects on how to add security simply to your Vaadin-Boot-based app.
 
+### Localization/Internationalization (l10n/i18n)
+
+Simply use a Java ResourceBundle-based localization and the static `tr()` function
+to localize your apps. Please find more at [Vaadin Localization](https://mvysny.github.io/vaadin-localization/).
+
 ## Kotlin
 
 The [Kotlin Programming Language](https://kotlinlang.org/) is quickly gaining popularity,
