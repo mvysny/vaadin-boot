@@ -6,6 +6,12 @@ Tired of complexity of running your app as WAR from your IDE? Tired of using Spr
 Tired of constant debugging issues? Then this project is for you. From now on, you
 can use the free [Intellij Community](https://www.jetbrains.com/idea/download) to develop your projects.
 
+Who is Vaadin Boot for? Vaadin Boot is for developers that [prefer to create their own solution, DIY](https://mvysny.github.io/frameworkless-diy/)
+exactly to fit their needs. You don't like to start by including a pre-fabricated application framework,
+complex and abstract enough to handle hundreds of use-cases.
+You don't have hundreds of use-cases: you only have one. You only use what you need.
+There lies maximum [simplicity](https://mvysny.github.io/on-simplicity/) which you own, understand and can rely on.
+
 ## Using In Your Apps
 
 Vaadin Boot is published in Maven Central; simply add a dependency on it:
@@ -528,6 +534,9 @@ The "Creating Vaadin App from scratch" video series:
 * [Part 2](https://www.youtube.com/watch?v=0g_kfqECDvk)
 
 ## Architectural Tips
+
+The ideas here are taken from [My Favorite Vaadin Architecture](https://mvysny.github.io/my-favorite-vaadin-architecture/)
+article.
 
 ### Accessing SQL database
 
