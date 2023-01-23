@@ -672,6 +672,7 @@ apps! Please feel free to add the following libraries to your app:
 
 * [vok-orm](https://github.com/mvysny/vok-orm) builds on `jdbi-orm` and adds first-class support for Kotlin
 * [karibu-dsl](https://github.com/mvysny/karibu-dsl) offers structured way of building your Vaadin components and routes.
+* [kotlinx.serialization](https://kotlinlang.org/docs/serialization.html) to load the configuration JSON file
 
 Many more example projects:
 
