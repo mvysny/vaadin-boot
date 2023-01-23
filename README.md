@@ -646,6 +646,24 @@ and example projects on how to add security simply to your Vaadin-Boot-based app
 Simply use a Java ResourceBundle-based localization and the static `tr()` function
 to localize your apps. Please find more at [Vaadin Localization](https://mvysny.github.io/vaadin-localization/).
 
+### Configuration
+
+To configure your app, simply read a JSON file from `/etc/your-app/config.json` via
+[Gson](https://github.com/google/gson) (or a YAML file via [SnakeYAML](https://github.com/snakeyaml/snakeyaml))
+directly to a Java bean. If the file doesn't exist, you can notify the user and use a default
+config file, or you may throw an exception if the configuration file is required.
+
+You can also use a standard Java validation (or your own `validate()` methods) to validate the values in
+the beans. You probably already have Hibernate Validator on your classpath since you're probably using
+`BeanValidationBinder` (or validation in jdbi-orm): you can reuse Hibernate Validator to validate your config classes as well:
+
+```java
+Validation.buildDefaultValidatorFactory().getValidator().validate(yourConfigBean);
+```
+
+You can load the configuration either in your Bootstrap `@WebListener`, or in your `main()`
+function, before vaadin-boot runs your app.
+
 ## Kotlin
 
 The [Kotlin Programming Language](https://kotlinlang.org/) is quickly gaining popularity,
