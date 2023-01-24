@@ -662,7 +662,9 @@ Validation.buildDefaultValidatorFactory().getValidator().validate(yourConfigBean
 ```
 
 You can load the configuration either in your Bootstrap `@WebListener`, or in your `main()`
-function, before vaadin-boot runs your app.
+function, before vaadin-boot runs your app. If you use the latter way, you can configure Vaadin Boot
+itself - the port it's running, the context root, etc. Vaadin Boot will never introduce
+config loading itself - every app has different needs, and one unifying solution would lead to terrible complexity.
 
 ## Kotlin
 
