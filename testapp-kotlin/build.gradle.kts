@@ -19,6 +19,10 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-engine:${properties["junit_version"]}")
 }
 
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions.jvmTarget = "11"
+}
+
 application {
     mainClass.set("com.example.Main")
 }
