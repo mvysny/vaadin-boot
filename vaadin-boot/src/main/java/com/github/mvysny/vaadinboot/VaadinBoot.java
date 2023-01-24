@@ -15,6 +15,7 @@ import java.io.File;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -211,6 +212,8 @@ public class VaadinBoot {
      * resumes execution. Mostly used for testing.
      */
     public void start() throws Exception {
+        final long startupMeasurementSince = System.currentTimeMillis();
+
         // detect&enable production mode
         if (isProductionMode()) {
             // fixes https://github.com/mvysny/vaadin14-embedded-jetty/issues/1
@@ -230,8 +233,9 @@ public class VaadinBoot {
         server.setHandler(context);
         server.start();
 
+        final Duration startupDuration = Duration.ofMillis(System.currentTimeMillis() - startupMeasurementSince);
         System.out.println("\n\n=================================================\n" +
-                "Please open " + getServerURL() + " in your browser\n" +
+                "Started in " + startupDuration + ". Please open " + getServerURL() + " in your browser.\n" +
                 "If you see the 'Unable to determine mode of operation' exception, just kill me and run `./gradlew vaadinPrepareFrontend`\n" +
                 "=================================================\n");
     }
