@@ -1,5 +1,6 @@
 package com.github.mvysny.vaadinboot;
 
+import com.vaadin.open.Open;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -60,6 +61,11 @@ public class VaadinBoot {
      */
     @NotNull
     private String contextRoot = "/";
+
+    /**
+     * When the app launches, open the browser automatically when in dev mode.
+     */
+    private boolean openBrowserInDevMode = true;
 
     /**
      * Creates the new instance of the Boot launcher.
@@ -143,6 +149,26 @@ public class VaadinBoot {
         return this;
     }
 
+    /**
+     * When the app launches, open the browser automatically when in dev mode.
+     * @param openBrowserInDevMode defaults to true.
+     * @return this
+     */
+    @NotNull
+    public VaadinBoot openBrowserInDevMode(boolean openBrowserInDevMode) {
+        this.openBrowserInDevMode = openBrowserInDevMode;
+        return this;
+    }
+
+    /**
+     * Returns the URL where the app is running, for example <code>http://localhost:8080/app</code>.
+     * @return the server URL, not null.
+     */
+    @NotNull
+    public String getServerURL() {
+        return "http://localhost:" + port + contextRoot;
+    }
+
     // mark volatile: might be accessed by the shutdown hook from a different thread.
     private volatile Server server;
 
@@ -165,6 +191,11 @@ public class VaadinBoot {
         // this gets called both when CTRL+C is pressed, and when main() terminates.
         Runtime.getRuntime().addShutdownHook(new Thread(() -> stop("Shutdown hook called, shutting down")));
         System.out.println("Press ENTER or CTRL+C to shutdown");
+
+        if (openBrowserInDevMode && !isProductionMode()) {
+            Open.open(getServerURL());
+        }
+
         // Await for Enter.  ./gradlew run offers no stdin and read() will return immediately with -1
         if (System.in.read() == -1) {
             // running from Gradle
@@ -200,7 +231,7 @@ public class VaadinBoot {
         server.start();
 
         System.out.println("\n\n=================================================\n" +
-                "Please open http://localhost:" + port + contextRoot + " in your browser\n" +
+                "Please open " + getServerURL() + " in your browser\n" +
                 "If you see the 'Unable to determine mode of operation' exception, just kill me and run `./gradlew vaadinPrepareFrontend`\n" +
                 "=================================================\n");
     }
