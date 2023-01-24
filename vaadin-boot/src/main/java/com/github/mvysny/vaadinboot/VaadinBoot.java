@@ -1,6 +1,7 @@
 package com.github.mvysny.vaadinboot;
 
 import com.vaadin.open.Open;
+import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -12,9 +13,11 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.Servlet;
 import java.io.File;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Objects;
@@ -289,9 +292,26 @@ public class VaadinBoot {
     }
 
     private static boolean isProductionMode() {
+        // try checking for flow-server-production-mode.jar on classpath
         final String probe = "META-INF/maven/com.vaadin/flow-server-production-mode/pom.xml";
         final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        return classLoader.getResource(probe) != null;
+        if (classLoader.getResource(probe) != null) {
+            return true;
+        }
+
+        // Gradle plugin doesn't add flow-server-production-mode.jar to production build. Try loading flow-build-info.json instead.
+        final URL flowBuildInfoJson = classLoader.getResource("META-INF/VAADIN/config/flow-build-info.json");
+        if (flowBuildInfoJson != null) {
+            try {
+                final String json = IOUtils.toString(flowBuildInfoJson, StandardCharsets.UTF_8);
+                if (json.contains("\"productionMode\": true")) {
+                    return true;
+                }
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+        return false;
     }
 
     @NotNull
