@@ -110,6 +110,10 @@ To run the app from your IDE (we recommend using [Intellij IDEA](https://www.jet
    and will start in development mode.
 4. Your app will be running on [http://localhost:8080](http://localhost:8080).
 
+> Gradle tip: Intellij will by default use Gradle to start up your app, which is slower and takes more memory. To
+> optimize startup time, head to Intellij *Settings / Build, Execution, Deployment / Build Tools / Gradle* and change
+> the "Build and run using" from *Gradle* to *Intellij IDEA*.
+
 When deploying your app to production: see the "Production" chapter below. In short:
 
 1. Build your app in production mode, via `./gradlew clean build -Pvaadin.productionMode` or `./mvnw -C clean package -Pproduction`.
