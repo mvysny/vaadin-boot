@@ -1,6 +1,7 @@
 package com.github.mvysny.vaadinboot;
 
 import com.vaadin.open.Open;
+import jakarta.servlet.Servlet;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.resource.Resource;
@@ -11,7 +12,6 @@ import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.Servlet;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
