@@ -3,10 +3,10 @@ package com.example
 import com.github.mvysny.vaadinboot.VaadinBoot
 import com.vaadin.flow.component.page.AppShellConfigurator
 import com.vaadin.flow.server.PWA
+import jakarta.servlet.ServletContextEvent
+import jakarta.servlet.ServletContextListener
+import jakarta.servlet.annotation.WebListener
 import org.slf4j.LoggerFactory
-import javax.servlet.ServletContextEvent
-import javax.servlet.ServletContextListener
-import javax.servlet.annotation.WebListener
 
 @WebListener
 class Bootstrap : ServletContextListener {
