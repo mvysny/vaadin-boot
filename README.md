@@ -12,6 +12,8 @@ complex and abstract enough to handle hundreds of use-cases.
 You don't have hundreds of use-cases: you only have one. You only use what you need.
 There lies maximum simplicity which you own, understand and can rely on.
 
+First Principles: you only need a servlet container to run Vaadin apps.
+
 ## Using In Your Apps
 
 Vaadin Boot is published in Maven Central; simply add a dependency on it:
