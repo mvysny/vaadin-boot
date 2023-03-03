@@ -9,7 +9,7 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:${properties["slf4j_version"]}")
     implementation("com.vaadin:vaadin-core:${properties["vaadin_version"]}")
 
-    implementation("io.javalin:javalin:4.6.7") {
+    implementation("io.javalin:javalin:5.3.2") {
         exclude(group = "org.eclipse.jetty")
         exclude(group = "org.eclipse.jetty.websocket")
         exclude(group = "com.fasterxml.jackson.core")
@@ -20,7 +20,7 @@ dependencies {
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions.jvmTarget = "11"
+    kotlinOptions.jvmTarget = "17"
 }
 
 application {
