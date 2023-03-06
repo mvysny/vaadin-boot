@@ -15,9 +15,7 @@ dependencies {
 
     testImplementation("org.slf4j:slf4j-simple:${properties["slf4j_version"]}")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:${properties["junit_version"]}")
-    testImplementation("com.vaadin:vaadin-core:${properties["vaadin_version"]}") {
-        exclude(module = "javax.annotation-api")
-    }
+    testImplementation("com.vaadin:vaadin-core:${properties["vaadin_version"]}")
 }
 
 val configureMavenCentral = ext["configureMavenCentral"] as (artifactId: String) -> Unit
