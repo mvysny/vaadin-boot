@@ -42,10 +42,10 @@ Or Maven:
 
 Compatibility chart: Vaadin Boot follows Jetty versioning.
 
-| Vaadin-Boot version                                                               | Min Java | Servlet Spec     | Supported Vaadin | Jetty |
-|-----------------------------------------------------------------------------------|----------|------------------|------------------|-------|
-| 10.x                                                                              | Java 11+ | javax.servlet    | Vaadin 14-23     | 10.x  |
-| 11.x (not yet released, see [#4](https://github.com/mvysny/vaadin-boot/issues/4)) | Java 17+ | jakarta.servlet  | Vaadin 24+       | 11.x  |
+| Vaadin-Boot version | Min Java | Servlet Spec     | Supported Vaadin | Jetty |
+|---------------------|----------|------------------|------------------|-------|
+| 10.x                | Java 11+ | javax.servlet    | Vaadin 14-23     | 10.x  |
+| 11.x                | Java 17+ | jakarta.servlet  | Vaadin 24+       | 11.x  |
 
 Then, add the following `Main` class to your project:
 ```java
