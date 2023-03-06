@@ -11,7 +11,7 @@ defaultTasks("clean", "build")
 
 allprojects {
     group = "com.github.mvysny.vaadin-boot"
-    version = "11.0-SNAPSHOT"
+    version = "11.0-rc2"
 
     repositories {
         maven { setUrl("https://maven.vaadin.com/vaadin-prereleases") }  // remove when Vaadin 24 is released
