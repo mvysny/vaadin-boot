@@ -2,7 +2,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
     java
-    id("com.vaadin") version "24.0.0.rc2" apply(false)
+    id("com.vaadin") version "24.0.0" apply(false)
     `maven-publish`
     signing
 }
@@ -14,7 +14,6 @@ allprojects {
     version = "11.0-SNAPSHOT"
 
     repositories {
-        maven { setUrl("https://maven.vaadin.com/vaadin-prereleases") }  // remove when Vaadin 24 is released
         mavenCentral()
     }
 }
