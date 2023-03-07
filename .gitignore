@@ -8,3 +8,5 @@ testapp-kotlin/vite.generated.ts
 testapp-kotlin/frontend/generated
 testapp-kotlin/node_modules
 out
+
+!**/src/main/dev-bundle/webapp/VAADIN/build
