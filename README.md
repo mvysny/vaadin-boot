@@ -88,7 +88,7 @@ Very basic example apps using Vaadin Boot:
 
 More advanced examples, demoing both security and SQL access:
 
-* Vaadin 23, Gradle: [vaadin-simple-security-example](https://github.com/mvysny/vaadin-simple-security-example)
+* Vaadin 24, Gradle: [vaadin-simple-security-example](https://github.com/mvysny/vaadin-simple-security-example)
 
 ## Preparing environment
 
@@ -192,7 +192,7 @@ public class Bootstrap implements ServletContextListener {
 
 Vaadin-Boot is using the [slf4j](https://www.slf4j.org/) logging framework by default, and your
 apps should use it too. We initially recommend you to use the SLF4J [SimpleLogger](https://www.slf4j.org/api/org/slf4j/simple/SimpleLogger.html)
-logger (use it by adding this dependency to your project: `implementation("org.slf4j:slf4j-simple:2.0.0")`.
+logger (use it by adding this dependency to your project: `implementation("org.slf4j:slf4j-simple:2.0.6")`.
 
 You can configure SimpleLogger with the following file (placed into `src/main/resources/simplelogger.properties`):
 ```properties
@@ -208,11 +208,14 @@ This will suppress cluttering of stdout/logs with verbose messages from Atmosphe
 
 ### REST via Javalin
 
-We'll use [Javalin](https://javalin.io) 4.x since Javalin 5.x uses Servlet API 5 which is not compatible with Vaadin 23.
+We recommend using [Javalin](https://javalin.io) for simplicity reasons.
+
+* For Vaadin 24+ and jakarta.servlet: use Javalin 5.x
+* For Vaadin 23- and javax.servlet: use Javalin 4.x
 
 Add Javalin to your build script:
 ```groovy
-    implementation("io.javalin:javalin:4.6.7") {
+    implementation("io.javalin:javalin:4.6.7") { // or 5.4.2 if you're on Vaadin 24
         exclude(group = "org.eclipse.jetty")
         exclude(group = "org.eclipse.jetty.websocket")
         exclude(group = "com.fasterxml.jackson.core")
@@ -284,7 +287,7 @@ to build your app:
 plugins {
     id 'java'
     id 'application'
-    id 'com.vaadin' version '23.2.6'
+    id 'com.vaadin' version '23.3.6' // or 24.0.0
 }
 application {
     mainClassName = "com.yourapp.Main"
@@ -403,7 +406,7 @@ You can easily verify that your app has been built in production mode:
 * When you run the app, Vaadin will log to stdout that it's running in production mode
 * The `flow-server-production-mode.jar` jar file is packaged in the zip file of your app.
 * The `yourapp.jar/META-INF/VAADIN/config/flow-build.info.json` will say `"productionMode":true`
-* There are JavaScript files in `yourapp.jar/META-INF/VAADIN/webapp/VAADIN/build/` (this applies to Vaadin 23; for Vaadin 14 the file structure is a bit different)
+* There are JavaScript files in `yourapp.jar/META-INF/VAADIN/webapp/VAADIN/build/` (this applies to Vaadin 23+; for Vaadin 14 the file structure is a bit different)
     * Read more at [Vaadin: The missing guide](https://mvysny.github.io/Vaadin-the-missing-guide/), the "production" mode.
 
 [Jetty is perfectly capable](https://www.eclipse.org/jetty/) of running in production as documented
@@ -423,7 +426,7 @@ FROM openjdk:11 AS BUILD
 COPY . /app/
 WORKDIR /app/
 RUN ./gradlew clean test --no-daemon --info --stacktrace
-RUN ./gradlew build -Pvaadin.productionMode --no-daemon --info --stacktrace
+RUN ./gradlew clean build -Pvaadin.productionMode --no-daemon --info --stacktrace
 WORKDIR /app/build/distributions/
 RUN ls -la
 RUN unzip app.zip
