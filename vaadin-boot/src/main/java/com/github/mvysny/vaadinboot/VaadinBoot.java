@@ -165,7 +165,7 @@ public class VaadinBoot {
      */
     @NotNull
     public String getServerURL() {
-        return "http://localhost:" + port + contextRoot;
+        return "http://" + (hostName != null ? hostName : "localhost") + ":" + port + contextRoot;
     }
 
     // mark volatile: might be accessed by the shutdown hook from a different thread.
@@ -232,7 +232,8 @@ public class VaadinBoot {
 
         final Duration startupDuration = Duration.ofMillis(System.currentTimeMillis() - startupMeasurementSince);
         System.out.println("\n\n=================================================\n" +
-                "Started in " + startupDuration + ". Please open " + getServerURL() + " in your browser.");
+                "Started in " + startupDuration + ". Running on " + Env.dumpHost() + "\n" +
+                "Please open " + getServerURL() + " in your browser.");
         if (!Env.isVaadinProductionMode) {
             System.out.println("If you see the 'Unable to determine mode of operation' exception, just kill me and run `./gradlew vaadinPrepareFrontend` or `./mvnw vaadin:prepare-frontend`");
         }
