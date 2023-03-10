@@ -6,11 +6,17 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
+/**
+ * Environment-related utility functions.
+ */
 final class Env {
     private static final Logger log = LoggerFactory.getLogger(Env.class);
     private Env() {}
@@ -81,5 +87,21 @@ final class Env {
     @NotNull
     static String dumpHost() {
         return "Java " + System.getProperty("java.vendor") + " " + System.getProperty("java.version") + ", OS " + System.getProperty("os.arch") + " " + System.getProperty("os.name") + " " + System.getProperty("os.version");
+    }
+
+    /**
+     * Removes invalid entries from classpath (stored in system property <code>java.class.path</code>).
+     * Fixes Jetty throwing exceptions for non-existing classpath entries.
+     * See <a href="https://github.com/mvysny/vaadin-boot/issues/1">Issue #1</a> for more details.
+     */
+    static void fixClasspath() {
+        final String classpath = System.getProperty("java.class.path");
+        if (classpath != null) {
+            final String[] entries = classpath.split("[" + File.pathSeparator + "]");
+            final String filteredClasspath = Arrays.stream(entries)
+                    .filter(it -> !it.isBlank() && new File(it).exists())
+                    .collect(Collectors.joining(File.pathSeparator));
+            System.setProperty("java.class.path", filteredClasspath);
+        }
     }
 }
