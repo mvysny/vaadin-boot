@@ -81,8 +81,8 @@ is to use [Apache commons-cli](https://commons.apache.org/proper/commons-cli/).
 
 Very basic example apps using Vaadin Boot:
 
-* Vaadin 23, Gradle: [vaadin-boot-example-gradle](https://github.com/mvysny/vaadin-boot-example-gradle)
-* Vaadin 23, Maven: [vaadin-boot-example-maven](https://github.com/mvysny/vaadin-boot-example-maven)
+* Vaadin 24, Gradle: [vaadin-boot-example-gradle](https://github.com/mvysny/vaadin-boot-example-gradle)
+* Vaadin 24, Maven: [vaadin-boot-example-maven](https://github.com/mvysny/vaadin-boot-example-maven)
 * Vaadin 14, Gradle: [vaadin14-boot-example-gradle](https://github.com/mvysny/vaadin14-boot-example-gradle)
 * Vaadin 14, Maven: [vaadin14-boot-example-maven](https://github.com/mvysny/vaadin14-boot-example-maven)
 
