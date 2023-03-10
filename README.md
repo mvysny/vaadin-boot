@@ -92,9 +92,9 @@ More advanced examples, demoing both security and SQL access:
 
 ## Preparing environment
 
-Please install Java JDK 11 or higher.
+Please install Java JDK 11 or higher (JDK 17+ if you're using Vaadin 24+).
 
-The Vaadin build requires node.js and npm to build the 'frontend bundle'.
+Vaadin build requires node.js and npm to build the 'frontend bundle'.
 However, that will happen automatically so there's nothing you need to do: Vaadin plugin will automatically download
 node.js and npm for you (node.js will be downloaded and run from `$HOME/.vaadin`).
 
