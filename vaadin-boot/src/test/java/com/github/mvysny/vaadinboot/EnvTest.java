@@ -14,23 +14,23 @@ class EnvTest {
         try {
             // test crazy classpaths
             System.setProperty("java.class.path", File.pathSeparator);
-            new VaadinBoot().fixClasspath();
+            Env.fixClasspath();
             assertEquals("", System.getProperty("java.class.path"));
             System.setProperty("java.class.path", "a" + File.pathSeparator + "b" + File.pathSeparator + "c");
-            new VaadinBoot().fixClasspath();
+            Env.fixClasspath();
             assertEquals("", System.getProperty("java.class.path"));
             System.setProperty("java.class.path", File.pathSeparator + "a" + File.pathSeparator + "b" + File.pathSeparator + "c" + File.pathSeparator);
-            new VaadinBoot().fixClasspath();
+            Env.fixClasspath();
             assertEquals("", System.getProperty("java.class.path"));
 
             // classpath with existing entry
             System.setProperty("java.class.path", File.pathSeparator + "src/main/java" + File.pathSeparator);
-            new VaadinBoot().fixClasspath();
+            Env.fixClasspath();
             assertEquals("src/main/java", System.getProperty("java.class.path"));
 
             // filters out non-existing entries
             System.setProperty("java.class.path", File.pathSeparator + "src/main/java" + File.pathSeparator + "nonexisting");
-            new VaadinBoot().fixClasspath();
+            Env.fixClasspath();
             assertEquals("src/main/java", System.getProperty("java.class.path"));
         } finally {
             System.setProperty("java.class.path", cp);
