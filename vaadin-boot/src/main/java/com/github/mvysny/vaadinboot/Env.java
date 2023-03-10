@@ -27,24 +27,25 @@ final class Env {
         // try checking for flow-server-production-mode.jar on classpath
         final String probe = "META-INF/maven/com.vaadin/flow-server-production-mode/pom.xml";
         final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        if (classLoader.getResource(probe) != null) {
-            log.info("Vaadin production mode is on: META-INF/maven/com.vaadin/flow-server-production-mode/pom.xml is present");
+        final URL probeURL = classLoader.getResource(probe);
+        if (probeURL != null) {
+            log.info("Vaadin production mode is on: " + probeURL + " is present");
             return true;
         }
 
         // Gradle plugin doesn't add flow-server-production-mode.jar to production build. Try loading flow-build-info.json instead.
-        final URL flowBuildInfoJson = classLoader.getResource("META-INF/VAADIN/config/flow-build-info.json");
-        if (flowBuildInfoJson != null) {
+        final URL flowBuildInfoJsonURL = classLoader.getResource("META-INF/VAADIN/config/flow-build-info.json");
+        if (flowBuildInfoJsonURL != null) {
             try {
-                final String json = IOUtils.toString(flowBuildInfoJson, StandardCharsets.UTF_8);
+                final String json = IOUtils.toString(flowBuildInfoJsonURL, StandardCharsets.UTF_8);
                 if (flowBuildInfoJsonContainsProductionModeTrue(json)) {
-                    log.info("Vaadin production mode is on: META-INF/VAADIN/config/flow-build-info.json contains '\"productionMode\": true'");
+                    log.info("Vaadin production mode is on: " + flowBuildInfoJsonURL + " contains '\"productionMode\": true'");
                     return true;
                 }
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
-            log.info("Vaadin production mode is off: META-INF/VAADIN/config/flow-build-info.json doesn't contain '\"productionMode\": true'");
+            log.info("Vaadin production mode is off: " + flowBuildInfoJsonURL + " doesn't contain '\"productionMode\": true'");
             return false;
         }
         log.info("Vaadin production mode is off: META-INF/VAADIN/config/flow-build-info.json is missing");
