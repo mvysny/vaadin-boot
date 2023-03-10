@@ -14,9 +14,7 @@ import java.io.File;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * Bootstraps your Vaadin application from your main() function. Simply call
@@ -195,10 +193,11 @@ public class VaadinBoot {
             Open.open(getServerURL());
         }
 
-        // Await for Enter.  ./gradlew run offers no stdin and read() will return immediately with -1
+        // Await for Enter.
         if (System.in.read() == -1) {
-            // running from Gradle
-            System.out.println("Running from Gradle, press CTRL+C to shutdown");
+            // "./gradlew" run offers no stdin and read() will return immediately with -1
+            // This happens when we're running from Gradle; but also when running from Docker with no tty
+            System.out.println("No stdin available. press CTRL+C to shutdown");
             server.join(); // blocks endlessly
         } else {
             stop("Main: Shutting down");
@@ -259,16 +258,11 @@ public class VaadinBoot {
         return context;
     }
 
+    /**
+     * See {@link Env#fixClasspath()}.
+     */
     protected void fixClasspath() {
-        // see https://github.com/mvysny/vaadin-boot/issues/1
-        final String classpath = System.getProperty("java.class.path");
-        if (classpath != null) {
-            final String[] entries = classpath.split("[" + File.pathSeparator + "]");
-            final String filteredClasspath = Arrays.stream(entries)
-                    .filter(it -> !it.isBlank() && new File(it).exists())
-                    .collect(Collectors.joining(File.pathSeparator));
-            System.setProperty("java.class.path", filteredClasspath);
-        }
+        Env.fixClasspath();
     }
 
     /**
