@@ -2,9 +2,7 @@ package com.github.mvysny.vaadinboot;
 
 import com.vaadin.open.Open;
 import jakarta.servlet.Servlet;
-import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,11 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Objects;
@@ -196,7 +191,7 @@ public class VaadinBoot {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> stop("Shutdown hook called, shutting down")));
         System.out.println("Press ENTER or CTRL+C to shutdown");
 
-        if (openBrowserInDevMode && !isProductionMode()) {
+        if (openBrowserInDevMode && !Env.isVaadinProductionMode) {
             Open.open(getServerURL());
         }
 
@@ -218,9 +213,8 @@ public class VaadinBoot {
         final long startupMeasurementSince = System.currentTimeMillis();
 
         // detect&enable production mode
-        if (isProductionMode()) {
+        if (Env.isVaadinProductionMode) {
             // fixes https://github.com/mvysny/vaadin14-embedded-jetty/issues/1
-            System.out.println("Production mode detected, enforcing");
             System.setProperty("vaadin.productionMode", "true");
         }
 
@@ -238,9 +232,11 @@ public class VaadinBoot {
 
         final Duration startupDuration = Duration.ofMillis(System.currentTimeMillis() - startupMeasurementSince);
         System.out.println("\n\n=================================================\n" +
-                "Started in " + startupDuration + ". Please open " + getServerURL() + " in your browser.\n" +
-                "If you see the 'Unable to determine mode of operation' exception, just kill me and run `./gradlew vaadinPrepareFrontend`\n" +
-                "=================================================\n");
+                "Started in " + startupDuration + ". Please open " + getServerURL() + " in your browser.");
+        if (!Env.isVaadinProductionMode) {
+            System.out.println("If you see the 'Unable to determine mode of operation' exception, just kill me and run `./gradlew vaadinPrepareFrontend` or `./mvnw vaadin:prepare-frontend`");
+        }
+        System.out.println("=================================================\n");
     }
 
     /**
@@ -250,7 +246,7 @@ public class VaadinBoot {
     @NotNull
     protected WebAppContext createWebAppContext() throws MalformedURLException {
         final WebAppContext context = new WebAppContext();
-        context.setBaseResource(findWebRoot());
+        context.setBaseResource(Env.findWebRoot());
         context.setContextPath(contextRoot);
         context.addServlet(servlet, "/*");
         // this will properly scan the classpath for all @WebListeners, including the most important
@@ -289,49 +285,6 @@ public class VaadinBoot {
         } catch (Throwable t) {
             log.error("stop() failed: " + t, t);
         }
-    }
-
-    private static boolean isProductionMode() {
-        // try checking for flow-server-production-mode.jar on classpath
-        final String probe = "META-INF/maven/com.vaadin/flow-server-production-mode/pom.xml";
-        final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        if (classLoader.getResource(probe) != null) {
-            return true;
-        }
-
-        // Gradle plugin doesn't add flow-server-production-mode.jar to production build. Try loading flow-build-info.json instead.
-        final URL flowBuildInfoJson = classLoader.getResource("META-INF/VAADIN/config/flow-build-info.json");
-        if (flowBuildInfoJson != null) {
-            try {
-                final String json = IOUtils.toString(flowBuildInfoJson, StandardCharsets.UTF_8);
-                if (json.contains("\"productionMode\": true")) {
-                    return true;
-                }
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-        return false;
-    }
-
-    @NotNull
-    private static Resource findWebRoot() throws MalformedURLException {
-        // don't look up directory as a resource, it's unreliable: https://github.com/eclipse/jetty.project/issues/4173#issuecomment-539769734
-        // instead we'll look up the /webapp/ROOT and retrieve the parent folder from that.
-        final URL f = VaadinBoot.class.getResource("/webapp/ROOT");
-        if (f == null) {
-            throw new IllegalStateException("Invalid state: the resource /webapp/ROOT doesn't exist, has webapp been packaged in as a resource?");
-        }
-        final String url = f.toString();
-        if (!url.endsWith("/ROOT")) {
-            throw new RuntimeException("Parameter url: invalid value " + url + ": doesn't end with /ROOT");
-        }
-        log.info("/webapp/ROOT is " + f);
-
-        // Resolve file to directory
-        URL webRoot = new URL(url.substring(0, url.length() - 5));
-        log.info("WebRoot is " + webRoot);
-        return Resource.newResource(webRoot);
     }
 
     @NotNull
