@@ -36,4 +36,22 @@ class EnvTest {
             System.setProperty("java.class.path", cp);
         }
     }
+
+    @Test
+    public void flowBuildInfoJsonParsing() {
+        assertTrue(Env.flowBuildInfoJsonContainsProductionModeTrue("{\"productionMode\": true}"));
+        assertTrue(Env.flowBuildInfoJsonContainsProductionModeTrue("{\"productionMode\":true}"));
+        assertTrue(Env.flowBuildInfoJsonContainsProductionModeTrue("{\"productionMode\":\ntrue}"));
+        assertTrue(Env.flowBuildInfoJsonContainsProductionModeTrue("{\"productionMode\": true,\"foo\":\"bar\"}"));
+        assertTrue(Env.flowBuildInfoJsonContainsProductionModeTrue("{\"productionMode\":true,\"foo\":\"bar\"}"));
+        assertTrue(Env.flowBuildInfoJsonContainsProductionModeTrue("{\"productionMode\":\ntrue,\"foo\":\"bar\"}"));
+        assertFalse(Env.flowBuildInfoJsonContainsProductionModeTrue("{\"productionMode\": false}"));
+        assertFalse(Env.flowBuildInfoJsonContainsProductionModeTrue("{\"productionMode\":false}"));
+        assertFalse(Env.flowBuildInfoJsonContainsProductionModeTrue("{\"productionMode\":\nfalse}"));
+        assertFalse(Env.flowBuildInfoJsonContainsProductionModeTrue("{\"productionMode\": false, \"foo\":true}"));
+        assertFalse(Env.flowBuildInfoJsonContainsProductionModeTrue("{\"productionMode\":false, \"foo\":true}"));
+        assertFalse(Env.flowBuildInfoJsonContainsProductionModeTrue("{\"productionMode\":\nfalse, \"foo\":true}"));
+        assertFalse(Env.flowBuildInfoJsonContainsProductionModeTrue("{}"));
+        assertFalse(Env.flowBuildInfoJsonContainsProductionModeTrue("invalid json"));
+    }
 }

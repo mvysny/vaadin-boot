@@ -3,6 +3,7 @@ package com.github.mvysny.vaadinboot;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.util.resource.Resource;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +13,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -35,7 +37,7 @@ final class Env {
         if (flowBuildInfoJson != null) {
             try {
                 final String json = IOUtils.toString(flowBuildInfoJson, StandardCharsets.UTF_8);
-                if (json.contains("\"productionMode\": true")) {
+                if (flowBuildInfoJsonContainsProductionModeTrue(json)) {
                     log.info("Vaadin production mode is on: META-INF/VAADIN/config/flow-build-info.json contains '\"productionMode\": true'");
                     return true;
                 }
@@ -47,6 +49,16 @@ final class Env {
         }
         log.info("Vaadin production mode is off: META-INF/VAADIN/config/flow-build-info.json is missing");
         return false;
+    }
+
+    /**
+     * Yeah, we should use JSON parsing, but I'm trying to keep the dependency set minimal.
+     */
+    @NotNull
+    private static final Pattern FLOW_BUILD_INF_JSON_PRODUCTION_MODE_REGEX = Pattern.compile("\"productionMode\":\\s*true");
+    @VisibleForTesting
+    static boolean flowBuildInfoJsonContainsProductionModeTrue(@NotNull String flowBuildInfoJson) {
+        return FLOW_BUILD_INF_JSON_PRODUCTION_MODE_REGEX.matcher(flowBuildInfoJson).find();
     }
 
     /**
