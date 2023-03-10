@@ -195,10 +195,11 @@ public class VaadinBoot {
             Open.open(getServerURL());
         }
 
-        // Await for Enter.  ./gradlew run offers no stdin and read() will return immediately with -1
+        // Await for Enter.
         if (System.in.read() == -1) {
-            // running from Gradle
-            System.out.println("Running from Gradle, press CTRL+C to shutdown");
+            // "./gradlew" run offers no stdin and read() will return immediately with -1
+            // This happens when we're running from Gradle; but also when running from Docker with no tty
+            System.out.println("No stdin available. press CTRL+C to shutdown");
             server.join(); // blocks endlessly
         } else {
             stop("Main: Shutting down");
