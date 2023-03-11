@@ -209,6 +209,7 @@ public class VaadinBoot {
      */
     public void start() throws Exception {
         final long startupMeasurementSince = System.currentTimeMillis();
+        log.info("Starting App");
 
         // detect&enable production mode
         if (Env.isVaadinProductionMode) {
@@ -217,8 +218,10 @@ public class VaadinBoot {
         }
 
         fixClasspath();
+        log.debug("Classpath fixed");
 
         final WebAppContext context = createWebAppContext();
+        log.debug("Jetty WebAppContext created");
 
         if (hostName != null) {
             server = new Server(new InetSocketAddress(hostName, port));
@@ -226,7 +229,9 @@ public class VaadinBoot {
             server = new Server(port);
         }
         server.setHandler(context);
+        log.debug("Jetty Server configured");
         server.start();
+        log.debug("Jetty Server started");
 
         final Duration startupDuration = Duration.ofMillis(System.currentTimeMillis() - startupMeasurementSince);
         System.out.println("\n\n=================================================\n" +
