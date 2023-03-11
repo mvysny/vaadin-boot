@@ -84,11 +84,10 @@ final class Env {
         if (!url.endsWith("/ROOT")) {
             throw new RuntimeException("Parameter url: invalid value " + url + ": doesn't end with /ROOT");
         }
-        log.info("/webapp/ROOT is " + f);
 
         // Resolve file to directory
         final URL webRoot = new URL(url.substring(0, url.length() - 5));
-        log.info("WebRoot is " + webRoot);
+        log.info("WebRoot is served from " + webRoot);
         return Resource.newResource(webRoot);
     }
 
