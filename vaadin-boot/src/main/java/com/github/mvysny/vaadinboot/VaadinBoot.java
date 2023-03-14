@@ -257,6 +257,7 @@ public class VaadinBoot {
         // this will properly scan the classpath for all @WebListeners, including the most important
         // com.vaadin.flow.server.startup.ServletContextListeners.
         // See also https://mvysny.github.io/vaadin-lookup-vs-instantiator/
+        // Jetty documentation: https://www.eclipse.org/jetty/documentation/jetty-12/operations-guide/index.html#og-annotations-scanning
         context.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern", ".*\\.jar|.*/classes/.*");
         context.setConfigurationDiscovered(true);
         context.getServletContext().setExtendedListenerTypes(true);
