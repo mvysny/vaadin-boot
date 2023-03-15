@@ -22,13 +22,19 @@ class JettyQuickStart {
         }
     }
 
-    public static void createQuickStartXml(@NotNull WebAppContext context) throws IOException {
+    /**
+     * Generate the Jetty QuickStart config file to current working directory.
+     * @param context Jetty webapp. The classpath scanning is only performed when
+     *                the Jetty server actually starts; therefore you must start Jetty in order for this function to work properly.
+     * @throws IOException on I/O error
+     */
+    public static void generateQuickStartXml(@NotNull WebAppContext context) throws IOException {
         context.setAttribute(ExtraXmlDescriptorProcessor.class.getName(), new ExtraXmlDescriptorProcessor());
         final String xml = new File("quickstart-web.xml").getAbsolutePath();
         try (OutputStream out = new BufferedOutputStream(new FileOutputStream(xml))) {
             new QuickStartGeneratorConfiguration().generateQuickStartWebXml(context, out);
         }
-        log.info("Created Jetty QuickStart configuration at " + xml + ". Place the file into src/main/resources/webapp/WEB-INF/quickstart-web.xml of your webapp and ");
+        log.info("Generated Jetty QuickStart configuration file at " + xml + ". Place the file into src/main/resources/webapp/WEB-INF/quickstart-web.xml of your webapp and ");
     }
 
     private static final Logger log = LoggerFactory.getLogger(JettyQuickStart.class);

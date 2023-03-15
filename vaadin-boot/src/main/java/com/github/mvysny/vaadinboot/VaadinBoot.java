@@ -236,7 +236,7 @@ public class VaadinBoot {
         log.debug("Jetty Server started");
 
         if (createQuickStartXml) {
-            JettyQuickStart.createQuickStartXml(context);
+            JettyQuickStart.generateQuickStartXml(context);
         }
 
         final Duration startupDuration = Duration.ofMillis(System.currentTimeMillis() - startupMeasurementSince);
@@ -334,7 +334,7 @@ public class VaadinBoot {
      * @return this
      */
     @NotNull
-    public VaadinBoot createQuickStartXml() {
+    public VaadinBoot generateQuickStartXml() {
         createQuickStartXml = true;
         return this;
     }
