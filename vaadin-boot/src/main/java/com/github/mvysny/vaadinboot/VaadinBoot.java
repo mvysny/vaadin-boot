@@ -2,7 +2,9 @@ package com.github.mvysny.vaadinboot;
 
 import com.vaadin.open.Open;
 import jakarta.servlet.Servlet;
+import org.eclipse.jetty.quickstart.QuickStartConfiguration;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -10,7 +12,6 @@ import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.time.Duration;
@@ -234,6 +235,10 @@ public class VaadinBoot {
         server.start();
         log.debug("Jetty Server started");
 
+        if (createQuickStartXml) {
+            JettyQuickStart.createQuickStartXml(context);
+        }
+
         final Duration startupDuration = Duration.ofMillis(System.currentTimeMillis() - startupMeasurementSince);
         System.out.println("\n\n=================================================\n" +
                 "Started in " + startupDuration + ". Running on " + Env.dumpHost() + "\n" +
@@ -251,16 +256,21 @@ public class VaadinBoot {
     @NotNull
     protected WebAppContext createWebAppContext() throws MalformedURLException {
         final WebAppContext context = new WebAppContext();
-        context.setBaseResource(Env.findWebRoot());
+        final Resource webRoot = Env.findWebRoot();
+        context.setBaseResource(webRoot);
         context.setContextPath(contextRoot);
         context.addServlet(servlet, "/*");
-        // this will properly scan the classpath for all @WebListeners, including the most important
-        // com.vaadin.flow.server.startup.ServletContextListeners.
-        // See also https://mvysny.github.io/vaadin-lookup-vs-instantiator/
-        // Jetty documentation: https://www.eclipse.org/jetty/documentation/jetty-12/operations-guide/index.html#og-annotations-scanning
-        context.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern", ".*\\.jar|.*/classes/.*");
-        context.setConfigurationDiscovered(true);
-        context.getServletContext().setExtendedListenerTypes(true);
+        if (JettyQuickStart.quickstartXmlExists(webRoot)) {
+            context.setAttribute(QuickStartConfiguration.MODE, QuickStartConfiguration.Mode.QUICKSTART);
+            context.addConfiguration(new QuickStartConfiguration());
+        } else {
+            // this will properly scan the classpath for all @WebListeners, including the most important
+            // com.vaadin.flow.server.startup.ServletContextListeners.
+            // See also https://mvysny.github.io/vaadin-lookup-vs-instantiator/
+            // Jetty documentation: https://www.eclipse.org/jetty/documentation/jetty-12/operations-guide/index.html#og-annotations-scanning
+            context.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern", ".*\\.jar|.*/classes/.*");
+            context.setConfigurationDiscovered(true);
+        }
         return context;
     }
 
@@ -290,4 +300,73 @@ public class VaadinBoot {
 
     @NotNull
     private static final Logger log = LoggerFactory.getLogger(VaadinBoot.class);
+
+    @NotNull
+    private QuickStartMode quickStartMode = QuickStartMode.Off;
+
+    /**
+     * Jetty can optionally start faster if we don't classpath-scan for resources,
+     * and instead pass in a QuickStart XML file with all resources listed.
+     * <p></p>
+     * This is mandatory for native mode.
+     * <p></p>
+     * See
+     * <a href="https://www.eclipse.org/jetty/documentation/jetty-12/operations-guide/index.html#og-quickstart">Jetty QuickStart documentation</a>
+     * for more details; see
+     * <a href="https://www.eclipse.org/jetty/documentation/jetty-12/programming-guide/index.html#jetty-effective-web-xml-goal">Jetty Maven plugin</a>
+     * documentation as well. Also see <a href="https://github.com/mvysny/vaadin-boot/issues/11">Issue #11</a>.
+     * @param quickStartMode the new quick start mode, defaults to {@link QuickStartMode#Off}.
+     * @return this
+     */
+    @NotNull
+    public VaadinBoot withQuickStartMode(@NotNull QuickStartMode quickStartMode) {
+        this.quickStartMode = quickStartMode;
+        return this;
+    }
+
+    private boolean createQuickStartXml = false;
+
+    /**
+     * Defaults to false. If true, a <code>quickstart-web.xml</code> file for your app is created in the
+     * current working directory when Jetty starts.
+     * <p></p>
+     * Workaround until we are able to generate the XML file during the compile time, via a Maven/Gradle plugin.
+     * @return this
+     */
+    @NotNull
+    public VaadinBoot createQuickStartXml() {
+        createQuickStartXml = true;
+        return this;
+    }
+
+    public enum QuickStartMode {
+        /**
+         * Never use Jetty Quick Start - always use classpath scanning.
+         */
+        Off {
+            @Override
+            public boolean isQuickstartEnabled() {
+                return false;
+            }
+        },
+        /**
+         * Use Jetty Quick Start only when running in Vaadin production mode.
+         */
+        Production {
+            @Override
+            public boolean isQuickstartEnabled() {
+                return Env.isVaadinProductionMode;
+            }
+        },
+        /**
+         * Use Jetty Quick Start, both in dev and in production mode.
+         */
+        Always {
+            @Override
+            public boolean isQuickstartEnabled() {
+                return true;
+            }
+        };
+        public abstract boolean isQuickstartEnabled();
+    }
 }
