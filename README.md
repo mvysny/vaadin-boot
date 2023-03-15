@@ -700,7 +700,7 @@ Many more example projects:
 If you like [Kotlin](https://kotlinlang.org/) and you like the simplicity of the ideas above,
 please use the [Vaadin-on-Kotlin](https://www.vaadinonkotlin.eu/) framework which is based on the ideas above.
 
-## Advanced Use-Cases
+## Advanced Stuff
 
 ### Jetty QuickStart
 
@@ -756,7 +756,7 @@ public class Main {
 }
 ```
 
-## Native
+### Native
 
 Building a native app with GraalVM is unsupported at the moment. Please see [Issue #10](https://github.com/mvysny/vaadin-boot/issues/10)
 for more details.
