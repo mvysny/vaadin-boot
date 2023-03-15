@@ -309,7 +309,8 @@ home page for more details.
 
 ### Maven
 
-Use Maven Assembly plugin to build a zip file with all dependencies and a run script file:
+Use Maven Assembly plugin to build a zip file with all dependencies and a run script file. To configure
+the assembly plugin, create the `src/main/assembly/zip.xml` file with the following contents:
 ```xml
 <assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -354,7 +355,6 @@ Then configure the assembly plugin:
                         </manifest>
                     </archive>
                     <descriptors>
-                        <descriptor>src/main/assembly/uberjar.xml</descriptor>
                         <descriptor>src/main/assembly/zip.xml</descriptor>
                     </descriptors>
                 </configuration>
