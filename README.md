@@ -761,6 +761,9 @@ public class Main {
 Building a native app with GraalVM is unsupported at the moment. Please see [Issue #10](https://github.com/mvysny/vaadin-boot/issues/10)
 for more details.
 
+In Native mode, Jetty can not perform classpath scanning and therefore you must configure Jetty QuickStart
+as a prerequisite.
+
 # Developing Vaadin-Boot
 
 See [CONTRIBUTING](CONTRIBUTING.md)
