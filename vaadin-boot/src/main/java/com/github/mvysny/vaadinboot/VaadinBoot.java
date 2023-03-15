@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.Servlet;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.MalformedURLException;
 import java.time.Duration;
 import java.util.Objects;
 
@@ -63,6 +62,14 @@ public class VaadinBoot {
      * When the app launches, open the browser automatically when in dev mode.
      */
     private boolean openBrowserInDevMode = true;
+
+    /**
+     * If true, no classpath scanning is performed - no servlets nor weblisteners are detected.
+     * <p></p>
+     * This will most probably cause Vaadin to not work and throw NullPointerException at <code>VaadinServlet.serveStaticOrWebJarRequest</code>.
+     * However, it's a good thing to disable this when starting your app with a QuickStart configuration.
+     */
+    private boolean disableClasspathScanning = false;
 
     /**
      * Creates the new instance of the Boot launcher.
@@ -166,6 +173,18 @@ public class VaadinBoot {
         return "http://" + (hostName != null ? hostName : "localhost") + ":" + port + contextRoot;
     }
 
+    /**
+     * If true, no classpath scanning is performed - no servlets nor weblisteners are detected.
+     * <p></p>
+     * This will most probably cause Vaadin to not work and throw NullPointerException at <code>VaadinServlet.serveStaticOrWebJarRequest</code>.
+     * However, it's a good thing to disable this when starting your app with a QuickStart configuration.
+     */
+    @NotNull
+    public VaadinBoot disableClasspathScanning() {
+        disableClasspathScanning = true;
+        return this;
+    }
+
     // mark volatile: might be accessed by the shutdown hook from a different thread.
     private volatile Server server;
 
@@ -264,13 +283,14 @@ public class VaadinBoot {
         context.setBaseResource(Env.findWebRoot());
         context.setContextPath(contextRoot);
         context.addServlet(servlet, "/*");
-        // this will properly scan the classpath for all @WebListeners, including the most important
-        // com.vaadin.flow.server.startup.ServletContextListeners.
-        // See also https://mvysny.github.io/vaadin-lookup-vs-instantiator/
-        // Jetty documentation: https://www.eclipse.org/jetty/documentation/jetty-12/operations-guide/index.html#og-annotations-scanning
-        context.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern", ".*\\.jar|.*/classes/.*");
-        context.setConfigurationDiscovered(true);
-        context.getServletContext().setExtendedListenerTypes(true);
+        if (!disableClasspathScanning) {
+            // this will properly scan the classpath for all @WebListeners, including the most important
+            // com.vaadin.flow.server.startup.ServletContextListeners.
+            // See also https://mvysny.github.io/vaadin-lookup-vs-instantiator/
+            // Jetty documentation: https://www.eclipse.org/jetty/documentation/jetty-12/operations-guide/index.html#og-annotations-scanning
+            context.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern", ".*\\.jar|.*/classes/.*");
+            context.setConfigurationDiscovered(true);
+        }
         return context;
     }
 
