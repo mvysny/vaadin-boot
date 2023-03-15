@@ -8,7 +8,6 @@ dependencies {
 
     // Embedded Jetty dependencies
     api("org.eclipse.jetty:jetty-webapp:${properties["jetty_version"]}")
-    api("org.eclipse.jetty:jetty-quickstart:${properties["jetty_version"]}")
     api("org.eclipse.jetty.websocket:websocket-jakarta-server:${properties["jetty_version"]}")
 
     // opens url in a browser; Vaadin dependency

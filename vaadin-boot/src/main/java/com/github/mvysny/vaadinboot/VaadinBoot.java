@@ -2,7 +2,6 @@ package com.github.mvysny.vaadinboot;
 
 import com.vaadin.open.Open;
 import jakarta.servlet.Servlet;
-import org.eclipse.jetty.quickstart.QuickStartConfiguration;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -64,6 +63,14 @@ public class VaadinBoot {
      * When the app launches, open the browser automatically when in dev mode.
      */
     private boolean openBrowserInDevMode = true;
+
+    /**
+     * If true, no classpath scanning is performed - no servlets nor weblisteners are detected.
+     * <p></p>
+     * This will most probably cause Vaadin to not work and throw NullPointerException at <code>VaadinServlet.serveStaticOrWebJarRequest</code>.
+     * However, it's a good thing to disable this when starting your app with a QuickStart configuration.
+     */
+    private boolean disableClasspathScanning = false;
 
     /**
      * Creates the new instance of the Boot launcher.
@@ -167,6 +174,18 @@ public class VaadinBoot {
         return "http://" + (hostName != null ? hostName : "localhost") + ":" + port + contextRoot;
     }
 
+    /**
+     * If true, no classpath scanning is performed - no servlets nor weblisteners are detected.
+     * <p></p>
+     * This will most probably cause Vaadin to not work and throw NullPointerException at <code>VaadinServlet.serveStaticOrWebJarRequest</code>.
+     * However, it's a good thing to disable this when starting your app with a QuickStart configuration.
+     */
+    @NotNull
+    public VaadinBoot disableClasspathScanning() {
+        disableClasspathScanning = true;
+        return this;
+    }
+
     // mark volatile: might be accessed by the shutdown hook from a different thread.
     private volatile Server server;
 
@@ -235,9 +254,7 @@ public class VaadinBoot {
         server.start();
         log.debug("Jetty Server started");
 
-        if (createQuickStartXml) {
-            JettyQuickStart.generateQuickStartXml(context);
-        }
+        onStarted(context);
 
         final Duration startupDuration = Duration.ofMillis(System.currentTimeMillis() - startupMeasurementSince);
         System.out.println("\n\n=================================================\n" +
@@ -247,6 +264,14 @@ public class VaadinBoot {
             System.out.println("If you see the 'Unable to determine mode of operation' exception, just kill me and run `./gradlew vaadinPrepareFrontend` or `./mvnw vaadin:prepare-frontend`");
         }
         System.out.println("=================================================\n");
+    }
+
+    /**
+     * Invoked when the Jetty server has been started. By default, does nothing. You can
+     * for example dump the quickstart configuration here.
+     * @param context the web app context.
+     */
+    protected void onStarted(@NotNull WebAppContext context) {
     }
 
     /**
@@ -260,10 +285,7 @@ public class VaadinBoot {
         context.setBaseResource(webRoot);
         context.setContextPath(contextRoot);
         context.addServlet(servlet, "/*");
-        if (JettyQuickStart.quickstartXmlExists(webRoot)) {
-            context.setAttribute(QuickStartConfiguration.MODE, QuickStartConfiguration.Mode.QUICKSTART);
-            context.addConfiguration(new QuickStartConfiguration());
-        } else {
+        if (!disableClasspathScanning) {
             // this will properly scan the classpath for all @WebListeners, including the most important
             // com.vaadin.flow.server.startup.ServletContextListeners.
             // See also https://mvysny.github.io/vaadin-lookup-vs-instantiator/
@@ -300,73 +322,4 @@ public class VaadinBoot {
 
     @NotNull
     private static final Logger log = LoggerFactory.getLogger(VaadinBoot.class);
-
-    @NotNull
-    private QuickStartMode quickStartMode = QuickStartMode.Off;
-
-    /**
-     * Jetty can optionally start faster if we don't classpath-scan for resources,
-     * and instead pass in a QuickStart XML file with all resources listed.
-     * <p></p>
-     * This is mandatory for native mode.
-     * <p></p>
-     * See
-     * <a href="https://www.eclipse.org/jetty/documentation/jetty-12/operations-guide/index.html#og-quickstart">Jetty QuickStart documentation</a>
-     * for more details; see
-     * <a href="https://www.eclipse.org/jetty/documentation/jetty-12/programming-guide/index.html#jetty-effective-web-xml-goal">Jetty Maven plugin</a>
-     * documentation as well. Also see <a href="https://github.com/mvysny/vaadin-boot/issues/11">Issue #11</a>.
-     * @param quickStartMode the new quick start mode, defaults to {@link QuickStartMode#Off}.
-     * @return this
-     */
-    @NotNull
-    public VaadinBoot withQuickStartMode(@NotNull QuickStartMode quickStartMode) {
-        this.quickStartMode = quickStartMode;
-        return this;
-    }
-
-    private boolean createQuickStartXml = false;
-
-    /**
-     * Defaults to false. If true, a <code>quickstart-web.xml</code> file for your app is created in the
-     * current working directory when Jetty starts.
-     * <p></p>
-     * Workaround until we are able to generate the XML file during the compile time, via a Maven/Gradle plugin.
-     * @return this
-     */
-    @NotNull
-    public VaadinBoot generateQuickStartXml() {
-        createQuickStartXml = true;
-        return this;
-    }
-
-    public enum QuickStartMode {
-        /**
-         * Never use Jetty Quick Start - always use classpath scanning.
-         */
-        Off {
-            @Override
-            public boolean isQuickstartEnabled() {
-                return false;
-            }
-        },
-        /**
-         * Use Jetty Quick Start only when running in Vaadin production mode.
-         */
-        Production {
-            @Override
-            public boolean isQuickstartEnabled() {
-                return Env.isVaadinProductionMode;
-            }
-        },
-        /**
-         * Use Jetty Quick Start, both in dev and in production mode.
-         */
-        Always {
-            @Override
-            public boolean isQuickstartEnabled() {
-                return true;
-            }
-        };
-        public abstract boolean isQuickstartEnabled();
-    }
 }

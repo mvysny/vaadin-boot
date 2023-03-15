@@ -700,6 +700,62 @@ Many more example projects:
 If you like [Kotlin](https://kotlinlang.org/) and you like the simplicity of the ideas above,
 please use the [Vaadin-on-Kotlin](https://www.vaadinonkotlin.eu/) framework which is based on the ideas above.
 
+## Advanced Use-Cases
+
+### Jetty QuickStart
+
+Jetty can optionally start faster if we don't classpath-scan for resources, and instead pass in a QuickStart XML file with all resources listed.
+This is mandatory for native mode, since classpath scanning doesn't work in native mode.
+
+See [Jetty QuickStart Documentation](https://www.eclipse.org/jetty/documentation/jetty-12/operations-guide/index.html#og-quickstart)
+for more details; see [Jetty Maven plugin](https://www.eclipse.org/jetty/documentation/jetty-12/programming-guide/index.html#jetty-effective-web-xml-goal)
+documentation as well on how to generate the QuickStart configuration file.
+Also see [Issue #11](https://github.com/mvysny/vaadin-boot/issues/11).
+
+To enable QuickStart mode, add a dependency on Jetty QuickStart: `org.eclipse.jetty:jetty-quickstart:11.0.14`.
+
+The quickstart configuration lists e.g. a list of Vaadin Routes, and therefore
+it's good to generate it during compile time. Unfortunately, at the moment, Maven Jetty plugin can't
+do that, see&vote for [Jetty #9497](https://github.com/eclipse/jetty.project/issues/9497). 
+
+Workaround is to generate the config file manually. You need to start your app in order for Jetty to
+perform the classpath scanning. Don't forget to run the app in production mode, otherwise
+the quickstart config file will contain Vaadin dev mode stuff like `DevModeStartupListener`.
+
+```java
+public class Main {
+    public static void main(String[] args) throws Exception {
+        new VaadinBoot() {
+            protected void onStarted(@NotNull WebAppContext context) {
+                context.setAttribute(ExtraXmlDescriptorProcessor.class.getName(), new ExtraXmlDescriptorProcessor());
+                final String xml = new File("quickstart-web.xml").getAbsolutePath();
+                try (OutputStream out = new BufferedOutputStream(new FileOutputStream(xml))) {
+                    new QuickStartGeneratorConfiguration().generateQuickStartWebXml(context, out);
+                }
+            }
+        }.withArgs(args).run();
+    }
+}
+```
+
+Place the file here: `src/main/resources/webapp/WEB-INF/quickstart-web.xml`. From now on,
+Jetty should read the QuickStart config and skip the classpath scanning automatically; however
+you can still enforce the QuickStart mode:
+
+```java
+public class Main {
+    public static void main(String[] args) throws Exception {
+        new VaadinBoot() {
+            protected WebAppContext createWebAppContext() throws MalformedURLException {
+                WebAppContext ctx = super.createWebAppContext();
+                context.setAttribute(QuickStartConfiguration.MODE, QuickStartConfiguration.Mode.QUICKSTART);
+                return ctx;
+            }
+        }.withArgs(args).disableClasspathScanning().run();
+    }
+}
+```
+
 ## Native
 
 Building a native app with GraalVM is unsupported at the moment. Please see [Issue #10](https://github.com/mvysny/vaadin-boot/issues/10)
