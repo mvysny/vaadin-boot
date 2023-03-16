@@ -725,13 +725,19 @@ the quickstart config file will contain Vaadin dev mode stuff like `DevModeStart
 ```java
 public class Main {
     public static void main(String[] args) throws Exception {
+        final boolean dumpQuickstartWeb = true;
         new VaadinBoot() {
-            protected void onStarted(@NotNull WebAppContext context) throws IOException {
-                context.setAttribute(ExtraXmlDescriptorProcessor.class.getName(), new ExtraXmlDescriptorProcessor());
-                final String xml = new File("quickstart-web.xml").getAbsolutePath();
-                try (OutputStream out = new BufferedOutputStream(new FileOutputStream(xml))) {
-                    new QuickStartGeneratorConfiguration().generateQuickStartWebXml(context, out);
+            protected WebAppContext createWebAppContext() throws MalformedURLException {
+                WebAppContext ctx = super.createWebAppContext();
+                if (dumpQuickstartWeb) {
+                    ctx.setAttribute(QuickStartConfiguration.MODE, QuickStartConfiguration.Mode.GENERATE);
+                    final File quickstartWeb = new File("quickstart-web.xml").getAbsoluteFile();
+                    System.out.println("Quickstart will be generated to " + quickstartWeb);
+                    ctx.setAttribute(QuickStartConfiguration.QUICKSTART_WEB_XML, new PathResource(quickstartWeb));
+                } else {
+                    ctx.setAttribute(QuickStartConfiguration.MODE, QuickStartConfiguration.Mode.QUICKSTART);
                 }
+                return ctx;
             }
         }.withArgs(args).run();
     }
@@ -739,22 +745,11 @@ public class Main {
 ```
 
 Place the file here: `src/main/resources/webapp/WEB-INF/quickstart-web.xml`. From now on,
-Jetty should read the QuickStart config and skip the classpath scanning automatically; however
-you can still enforce the QuickStart mode:
+Jetty should read the QuickStart config and skip the classpath scanning automatically,
+you just need to set the `dumpQuickstartWeb` flag to false.
 
-```java
-public class Main {
-    public static void main(String[] args) throws Exception {
-        new VaadinBoot() {
-            protected WebAppContext createWebAppContext() throws MalformedURLException {
-                WebAppContext ctx = super.createWebAppContext();
-                context.setAttribute(QuickStartConfiguration.MODE, QuickStartConfiguration.Mode.QUICKSTART);
-                return ctx;
-            }
-        }.withArgs(args).disableClasspathScanning().run();
-    }
-}
-```
+> Note: the `org.eclipse.jetty.resources` context parameter contains full paths to jars, which makes
+> the app not portable. You will have to delete that part of the `quickstart-web.xml` file manually.
 
 ### Native
 
