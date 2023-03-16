@@ -11,6 +11,7 @@ import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.time.Duration;
@@ -271,7 +272,7 @@ public class VaadinBoot {
      * for example dump the quickstart configuration here.
      * @param context the web app context.
      */
-    protected void onStarted(@NotNull WebAppContext context) {
+    protected void onStarted(@NotNull WebAppContext context) throws IOException {
     }
 
     /**
