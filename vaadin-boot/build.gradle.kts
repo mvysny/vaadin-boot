@@ -4,7 +4,7 @@ plugins {
 
 dependencies {
     implementation("org.slf4j:slf4j-api:${properties["slf4j_version"]}")
-    implementation("org.jetbrains:annotations:23.1.0")
+    api("org.jetbrains:annotations:23.1.0")
 
     // Embedded Jetty dependencies
     api("org.eclipse.jetty:jetty-webapp:${properties["jetty_version"]}")
