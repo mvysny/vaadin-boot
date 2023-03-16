@@ -245,6 +245,14 @@ public class VaadinBoot {
     }
 
     /**
+     * Invoked when the Jetty server has been started. By default, does nothing. You can
+     * for example dump the quickstart configuration here.
+     * @param context the web app context.
+     */
+    protected void onStarted(@NotNull WebAppContext context) throws IOException {
+    }
+
+    /**
      * Creates the Jetty {@link WebAppContext}.
      * @return the {@link WebAppContext}
      */
