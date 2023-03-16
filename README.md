@@ -726,7 +726,7 @@ the quickstart config file will contain Vaadin dev mode stuff like `DevModeStart
 public class Main {
     public static void main(String[] args) throws Exception {
         new VaadinBoot() {
-            protected void onStarted(@NotNull WebAppContext context) {
+            protected void onStarted(@NotNull WebAppContext context) throws IOException {
                 context.setAttribute(ExtraXmlDescriptorProcessor.class.getName(), new ExtraXmlDescriptorProcessor());
                 final String xml = new File("quickstart-web.xml").getAbsolutePath();
                 try (OutputStream out = new BufferedOutputStream(new FileOutputStream(xml))) {
