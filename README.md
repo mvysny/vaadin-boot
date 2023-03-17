@@ -716,7 +716,21 @@ To enable QuickStart mode, add a dependency on Jetty QuickStart: `org.eclipse.je
 
 The quickstart configuration lists e.g. a list of Vaadin Routes, and therefore
 it's good to generate it during compile time. Unfortunately, at the moment, Maven Jetty plugin can't
-do that, see&vote for [Jetty #9497](https://github.com/eclipse/jetty.project/issues/9497). 
+do that, see&vote for [Jetty #9497](https://github.com/eclipse/jetty.project/issues/9497).
+
+Once 9497 is fixed, you will be able to add the Jetty plugin to your `pom.xml`:
+```xml
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>11.0.15</version>
+                <configuration>
+                    <supportedPackagings><packaging>jar</packaging></supportedPackagings>
+                </configuration>
+            </plugin>
+```
+
+Then run `mvn jetty:effective-web-xml` and find the generated file at `target/effective-web.xml`.
 
 Workaround is to generate the config file manually. You need to start your app in order for Jetty to
 perform the classpath scanning. Don't forget to run the app in production mode, otherwise
@@ -725,24 +739,25 @@ the quickstart config file will contain Vaadin dev mode stuff like `DevModeStart
 ```java
 public class Main {
     public static void main(String[] args) throws Exception {
-        final boolean dumpQuickstartWeb = true;
+        final boolean generateQuickstartWeb = true;
         final VaadinBoot boot = new VaadinBoot() {
             protected WebAppContext createWebAppContext() throws IOException {
                 WebAppContext ctx = super.createWebAppContext();
-                if (dumpQuickstartWeb) {
+                if (generateQuickstartWeb) {
                     ctx.setAttribute(QuickStartConfiguration.MODE, QuickStartConfiguration.Mode.GENERATE);
                     final File quickstartWeb = new File("quickstart-web.xml").getAbsoluteFile();
                     System.out.println("Quickstart will be generated to " + quickstartWeb);
                     ctx.setAttribute(QuickStartConfiguration.QUICKSTART_WEB_XML, new PathResource(quickstartWeb));
                 } else {
                     ctx.setAttribute(QuickStartConfiguration.MODE, QuickStartConfiguration.Mode.QUICKSTART);
+                    // this way works also in native mode
                     final Resource quickstartXml = Objects.requireNonNull(Resource.newClassPathResource("/webapp/WEB-INF/quickstart-web.xml"));
                     ctx.setAttribute(QuickStartConfiguration.QUICKSTART_WEB_XML, quickstartXml);
                 }
                 return ctx;
             }
         }.withArgs(args);
-        if (!dumpQuickstartWeb) {
+        if (!generateQuickstartWeb) {
             boot.disableClasspathScanning();
         }
         boot.run();
@@ -752,10 +767,11 @@ public class Main {
 
 Place the file here: `src/main/resources/webapp/WEB-INF/quickstart-web.xml`, and commit it to git. From now on,
 Jetty should read the QuickStart config and skip the classpath scanning automatically,
-you just need to set the `dumpQuickstartWeb` flag to false.
+you just need to set the `generateQuickstartWeb` flag to false.
 
-> Note: the `org.eclipse.jetty.resources` context parameter contains full paths to jars, which makes
-> the app not portable. You will have to delete that part of the `quickstart-web.xml` file manually.
+> Note: in `quickstart-web.xml`, the `org.eclipse.jetty.resources` context parameter contains full paths to jars, which makes
+> the app not portable. You will have to delete that part of the `quickstart-web.xml` file manually,
+> otherwise Jetty will fail to start and will throw an exception.
 
 ### Native
 
