@@ -280,7 +280,7 @@ public class VaadinBoot {
      * @return the {@link WebAppContext}
      */
     @NotNull
-    protected WebAppContext createWebAppContext() throws MalformedURLException {
+    protected WebAppContext createWebAppContext() throws IOException {
         final WebAppContext context = new WebAppContext();
         final Resource webRoot = Env.findWebRoot();
         context.setBaseResource(webRoot);

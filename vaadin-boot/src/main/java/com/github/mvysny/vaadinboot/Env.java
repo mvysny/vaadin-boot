@@ -88,7 +88,14 @@ final class Env {
         // Resolve file to directory
         final URL webRoot = new URL(url.substring(0, url.length() - 5));
         log.info("WebRoot is served from " + webRoot);
-        return Resource.newResource(webRoot);
+        final Resource resource = Resource.newResource(webRoot);
+        if (!resource.exists()) {
+            log.warn(resource + " (" + resource.getClass().getName() + ") claims it doesn't exist");
+        }
+        if (!resource.isDirectory()) {
+            log.warn(resource + " (" + resource.getClass().getName() + ") is not a directory, Jetty QuickStart will most probably fail");
+        }
+        return resource;
     }
 
     /**
