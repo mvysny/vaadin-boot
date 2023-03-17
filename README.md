@@ -736,6 +736,8 @@ public class Main {
                     ctx.setAttribute(QuickStartConfiguration.QUICKSTART_WEB_XML, new PathResource(quickstartWeb));
                 } else {
                     ctx.setAttribute(QuickStartConfiguration.MODE, QuickStartConfiguration.Mode.QUICKSTART);
+                    final Resource quickstartXml = Objects.requireNotNull(Resource.newClassPathResource("/webapp/WEB-INF/quickstart-web.xml"));
+                    ctx.setAttribute(QuickStartConfiguration.QUICKSTART_WEB_XML, quickstartXml);
                 }
                 return ctx;
             }
@@ -744,7 +746,7 @@ public class Main {
 }
 ```
 
-Place the file here: `src/main/resources/webapp/WEB-INF/quickstart-web.xml`. From now on,
+Place the file here: `src/main/resources/webapp/WEB-INF/quickstart-web.xml`, and commit it to git. From now on,
 Jetty should read the QuickStart config and skip the classpath scanning automatically,
 you just need to set the `dumpQuickstartWeb` flag to false.
 
@@ -753,11 +755,43 @@ you just need to set the `dumpQuickstartWeb` flag to false.
 
 ### Native
 
-Building a native app with GraalVM is unsupported at the moment. Please see [Issue #10](https://github.com/mvysny/vaadin-boot/issues/10)
-for more details.
+> Warning: alpha quality. Please see [Issue #10](https://github.com/mvysny/vaadin-boot/issues/10) for more details.
 
-In Native mode, Jetty can not perform classpath scanning and therefore you must configure Jetty QuickStart
+It is possible to package a Vaadin-Boot app as a native binary, using [GraalVM](https://www.graalvm.org/).
+In Native mode, Jetty can not perform classpath scanning, and therefore you must configure Jetty QuickStart
 as a prerequisite.
+
+First, follow the [Getting Started with GraalVM](https://graalvm.github.io/native-build-tools/latest/gradle-plugin-quickstart.html)
+and install the GraalVM on your machine. Then, add the Gradle `org.graalvm.buildtools.native` plugin
+to your app.
+
+GraalVM needs a bunch of configuration files, in order to know which reflective/native calls to preserve.
+Run the following command as described at the [Agent Documentation](https://graalvm.github.io/native-build-tools/latest/gradle-plugin-quickstart.html#build-a-native-executable-detecting-resources-with-the-agent):
+
+```bash
+./gradlew clean build run -Pvaadin.productionMode -Pagent
+```
+
+The GraalVM agent will collect the resources necessary for your app to start, into
+the `build/native/agent-output/run/session-*/` folder. Copy all files into the `src/main/resources/META-INF/native-image/`
+folder of your app, and commit them to git.
+
+> Note: make sure the `resource-config.json` file contains `"pattern":"\\Qwebapp/WEB-INF/quickstart-web.xml\\E"`
+
+Now you're ready to run
+
+```bash
+./gradlew clean testapp:build testapp:nativeCompile -Pvaadin.productionMode
+```
+
+Find the native binary in the `/build/native/nativeCompile/` folder.
+
+At the moment the binary will fail to start, with the `IllegalStateException("Bad Quickstart location")` exception -
+please see [Jetty #9514](https://github.com/eclipse/jetty.project/issues/9514) for more details.
+Current workaround is to build Jetty from sources and patch the `QuickStartConfiguration` class and remove the
+check at line 99.
+
+TODO example project.
 
 # Developing Vaadin-Boot
 
