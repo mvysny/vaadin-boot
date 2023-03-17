@@ -811,8 +811,8 @@ please see [Jetty #9514](https://github.com/eclipse/jetty.project/issues/9514) f
 Current workaround is to build Jetty from sources and patch the `QuickStartConfiguration` class and remove the
 check at line 99.
 
-The [vaadin-boot-example-gradle](https://github.com/mvysny/vaadin-boot-example-gradle) contains preliminary
-support for native; see the readme for more details.
+The [vaadin-boot-example-gradle](https://github.com/mvysny/vaadin-boot-example-gradle)
+example project contains preliminary support for native; see the readme file for more details.
 
 # Developing Vaadin-Boot
 
