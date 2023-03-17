@@ -234,6 +234,8 @@ public class VaadinBoot {
         server.start();
         log.debug("Jetty Server started");
 
+        onStarted(context);
+
         final Duration startupDuration = Duration.ofMillis(System.currentTimeMillis() - startupMeasurementSince);
         System.out.println("\n\n=================================================\n" +
                 "Started in " + startupDuration + ". Running on " + Env.dumpHost() + "\n" +
