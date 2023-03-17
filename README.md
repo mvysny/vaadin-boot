@@ -785,7 +785,7 @@ folder of your app, and commit them to git.
 Now you're ready to run
 
 ```bash
-./gradlew clean testapp:build testapp:nativeCompile -Pvaadin.productionMode
+./gradlew clean build nativeCompile -Pvaadin.productionMode
 ```
 
 Find the native binary in the `/build/native/nativeCompile/` folder.
