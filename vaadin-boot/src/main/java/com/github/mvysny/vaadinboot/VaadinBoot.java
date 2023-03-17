@@ -182,7 +182,18 @@ public class VaadinBoot {
      */
     @NotNull
     public VaadinBoot disableClasspathScanning() {
-        disableClasspathScanning = true;
+        return disableClasspathScanning(true);
+    }
+
+    /**
+     * If true, no classpath scanning is performed - no servlets nor weblisteners are detected.
+     * <p></p>
+     * This will most probably cause Vaadin to not work and throw NullPointerException at <code>VaadinServlet.serveStaticOrWebJarRequest</code>.
+     * However, it's a good thing to disable this when starting your app with a QuickStart configuration.
+     */
+    @NotNull
+    public VaadinBoot disableClasspathScanning(boolean disableClasspathScanning) {
+        this.disableClasspathScanning = disableClasspathScanning;
         return this;
     }
 
