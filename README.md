@@ -736,7 +736,7 @@ public class Main {
                     ctx.setAttribute(QuickStartConfiguration.QUICKSTART_WEB_XML, new PathResource(quickstartWeb));
                 } else {
                     ctx.setAttribute(QuickStartConfiguration.MODE, QuickStartConfiguration.Mode.QUICKSTART);
-                    final Resource quickstartXml = Objects.requireNotNull(Resource.newClassPathResource("/webapp/WEB-INF/quickstart-web.xml"));
+                    final Resource quickstartXml = Objects.requireNonNull(Resource.newClassPathResource("/webapp/WEB-INF/quickstart-web.xml"));
                     ctx.setAttribute(QuickStartConfiguration.QUICKSTART_WEB_XML, quickstartXml);
                 }
                 return ctx;
