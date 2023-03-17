@@ -726,8 +726,8 @@ the quickstart config file will contain Vaadin dev mode stuff like `DevModeStart
 public class Main {
     public static void main(String[] args) throws Exception {
         final boolean dumpQuickstartWeb = true;
-        new VaadinBoot() {
-            protected WebAppContext createWebAppContext() throws MalformedURLException {
+        final VaadinBoot boot = new VaadinBoot() {
+            protected WebAppContext createWebAppContext() throws IOException {
                 WebAppContext ctx = super.createWebAppContext();
                 if (dumpQuickstartWeb) {
                     ctx.setAttribute(QuickStartConfiguration.MODE, QuickStartConfiguration.Mode.GENERATE);
@@ -741,7 +741,11 @@ public class Main {
                 }
                 return ctx;
             }
-        }.withArgs(args).run();
+        }.withArgs(args);
+        if (!dumpQuickstartWeb) {
+            boot.disableClasspathScanning();
+        }
+        boot.run();
     }
 }
 ```
