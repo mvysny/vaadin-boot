@@ -57,7 +57,7 @@
     "@vaadin/time-picker": "24.0.0",
     "@vaadin/tooltip": "24.0.0",
     "@vaadin/upload": "24.0.0",
-    "@vaadin/vaadin-development-mode-detector": "2.0.5",
+    "@vaadin/vaadin-development-mode-detector": "2.0.6",
     "@vaadin/vaadin-lumo-styles": "24.0.0",
     "@vaadin/vaadin-material-styles": "24.0.0",
     "@vaadin/vaadin-themable-mixin": "24.0.0",
@@ -141,7 +141,7 @@
       "@vaadin/time-picker": "24.0.0",
       "@vaadin/tooltip": "24.0.0",
       "@vaadin/upload": "24.0.0",
-      "@vaadin/vaadin-development-mode-detector": "2.0.5",
+      "@vaadin/vaadin-development-mode-detector": "2.0.6",
       "@vaadin/vaadin-lumo-styles": "24.0.0",
       "@vaadin/vaadin-material-styles": "24.0.0",
       "@vaadin/vaadin-themable-mixin": "24.0.0",
@@ -168,7 +168,7 @@
       "workbox-core": "6.5.4",
       "workbox-precaching": "6.5.4"
     },
-    "hash": "05df718a20608dc95fdb8ac27a344758f9323f16abffa11ee542242e8a1337c3"
+    "hash": "63750db95ee12a5185e99f0316e98491cc562802671cdcf4f74767a9bde2f4aa"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
