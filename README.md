@@ -407,6 +407,21 @@ You can easily verify that your app has been built in production mode:
 [Jetty is perfectly capable](https://www.eclipse.org/jetty/) of running in production as documented
 on the Jetty web page.
 
+### Always-on production mode
+
+If the dev mode isn't working in your dev env, you can enable the 'always-on' production mode:
+
+```java
+public class Main {
+    public static void main(String[] args) throws Exception {
+        System.setProperty("vaadin.productionMode", "true");
+        new VaadinBoot().withArgs(args).run();
+    }
+}
+```
+
+Make sure to build your app in production mode first, before starting it.
+
 ### Docker
 
 Packaging your apps as docker images is incredibly easy. We use [Docker Multi-stage builds](https://docs.docker.com/build/building/multi-stage/):
