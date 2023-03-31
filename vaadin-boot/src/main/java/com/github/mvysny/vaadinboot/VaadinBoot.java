@@ -243,8 +243,8 @@ public class VaadinBoot {
         final long startupMeasurementSince = System.currentTimeMillis();
         log.info("Starting App");
 
-        // detect&enable production mode
-        if (Env.isVaadinProductionMode) {
+        // detect&enable production mode, but only if it hasn't been specified by the user already
+        if (System.getProperty("vaadin.productionMode") == null && Env.isVaadinProductionMode) {
             // fixes https://github.com/mvysny/vaadin14-embedded-jetty/issues/1
             System.setProperty("vaadin.productionMode", "true");
         }
