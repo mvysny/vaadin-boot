@@ -252,19 +252,24 @@ public class VaadinBoot {
         }
         server.setHandler(context);
         log.debug("Jetty Server configured");
-        server.start();
-        log.debug("Jetty Server started");
+        try {
+            server.start();
+            log.debug("Jetty Server started");
 
-        onStarted(context);
+            onStarted(context);
 
-        final Duration startupDuration = Duration.ofMillis(System.currentTimeMillis() - startupMeasurementSince);
-        System.out.println("\n\n=================================================\n" +
-                "Started in " + startupDuration + ". Running on " + Env.dumpHost() + "\n" +
-                "Please open " + getServerURL() + " in your browser.");
-        if (!Env.isVaadinProductionMode) {
-            System.out.println("If you see the 'Unable to determine mode of operation' exception, just kill me and run `./gradlew vaadinPrepareFrontend` or `./mvnw vaadin:prepare-frontend`");
+            final Duration startupDuration = Duration.ofMillis(System.currentTimeMillis() - startupMeasurementSince);
+            System.out.println("\n\n=================================================\n" +
+                    "Started in " + startupDuration + ". Running on " + Env.dumpHost() + "\n" +
+                    "Please open " + getServerURL() + " in your browser.");
+            if (!Env.isVaadinProductionMode) {
+                System.out.println("If you see the 'Unable to determine mode of operation' exception, just kill me and run `./gradlew vaadinPrepareFrontend` or `./mvnw vaadin:prepare-frontend`");
+            }
+            System.out.println("=================================================\n");
+        } catch (Exception e) {
+            stop("Failed to start");
+            throw e;
         }
-        System.out.println("=================================================\n");
     }
 
     /**
@@ -307,6 +312,7 @@ public class VaadinBoot {
 
     /**
      * Stops your app. Blocks until the webapp is fully stopped. Mostly used for tests.
+     * Never throws an exception.
      * @param reason why we're shutting down. Logged as info.
      */
     public void stop(@NotNull String reason) {
