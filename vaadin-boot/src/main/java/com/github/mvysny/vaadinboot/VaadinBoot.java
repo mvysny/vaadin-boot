@@ -191,7 +191,8 @@ public class VaadinBoot {
     /**
      * Runs your app. Blocks until the user presses Enter or CTRL+C.
      * <p></p>
-     * WARNING: this function may never terminate since the entire JVM may be killed on CTRL+C.
+     * WARNING: this function may never terminate when the entire JVM may be killed on CTRL+C.
+     * @throws Exception when the webapp fails to start.
      */
     public void run() throws Exception {
         start();
@@ -226,6 +227,7 @@ public class VaadinBoot {
     /**
      * Starts the Jetty server and your app. Blocks until the app is fully started, then
      * resumes execution. Mostly used for testing.
+     * @throws Exception when the webapp fails to start.
      */
     public void start() throws Exception {
         final long startupMeasurementSince = System.currentTimeMillis();
@@ -283,6 +285,8 @@ public class VaadinBoot {
         context.setBaseResource(Env.findWebRoot());
         context.setContextPath(contextRoot);
         context.addServlet(servlet, "/*");
+        // when the webapp fails to initialize, make sure that start() throws.
+        context.setThrowUnavailableOnStartupException(true);
         if (!disableClasspathScanning) {
             // this will properly scan the classpath for all @WebListeners, including the most important
             // com.vaadin.flow.server.startup.ServletContextListeners.
