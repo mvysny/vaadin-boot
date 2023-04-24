@@ -203,7 +203,8 @@ public class VaadinBoot {
     /**
      * Runs your app. Blocks until the user presses Enter or CTRL+C.
      * <p></p>
-     * WARNING: this function may never terminate since the entire JVM may be killed on CTRL+C.
+     * WARNING: this function may never terminate when the entire JVM may be killed on CTRL+C.
+     * @throws Exception when the webapp fails to start.
      */
     public void run() throws Exception {
         start();
@@ -238,6 +239,7 @@ public class VaadinBoot {
     /**
      * Starts the Jetty server and your app. Blocks until the app is fully started, then
      * resumes execution. Mostly used for testing.
+     * @throws Exception when the webapp fails to start.
      */
     public void start() throws Exception {
         final long startupMeasurementSince = System.currentTimeMillis();
@@ -262,19 +264,24 @@ public class VaadinBoot {
         }
         server.setHandler(context);
         log.debug("Jetty Server configured");
-        server.start();
-        log.debug("Jetty Server started");
+        try {
+            server.start();
+            log.debug("Jetty Server started");
 
-        onStarted(context);
+            onStarted(context);
 
-        final Duration startupDuration = Duration.ofMillis(System.currentTimeMillis() - startupMeasurementSince);
-        System.out.println("\n\n=================================================\n" +
-                "Started in " + startupDuration + ". Running on " + Env.dumpHost() + "\n" +
-                "Please open " + getServerURL() + " in your browser.");
-        if (!Env.isVaadinProductionMode) {
-            System.out.println("If you see the 'Unable to determine mode of operation' exception, just kill me and run `./gradlew vaadinPrepareFrontend` or `./mvnw vaadin:prepare-frontend`");
+            final Duration startupDuration = Duration.ofMillis(System.currentTimeMillis() - startupMeasurementSince);
+            System.out.println("\n\n=================================================\n" +
+                    "Started in " + startupDuration + ". Running on " + Env.dumpHost() + "\n" +
+                    "Please open " + getServerURL() + " in your browser.");
+            if (!Env.isVaadinProductionMode) {
+                System.out.println("If you see the 'Unable to determine mode of operation' exception, just kill me and run `./gradlew vaadinPrepareFrontend` or `./mvnw vaadin:prepare-frontend`");
+            }
+            System.out.println("=================================================\n");
+        } catch (Exception e) {
+            stop("Failed to start");
+            throw e;
         }
-        System.out.println("=================================================\n");
     }
 
     /**
@@ -296,6 +303,8 @@ public class VaadinBoot {
         context.setBaseResource(webRoot);
         context.setContextPath(contextRoot);
         context.addServlet(servlet, "/*");
+        // when the webapp fails to initialize, make sure that start() throws.
+        context.setThrowUnavailableOnStartupException(true);
         if (!disableClasspathScanning) {
             // this will properly scan the classpath for all @WebListeners, including the most important
             // com.vaadin.flow.server.startup.ServletContextListeners.
@@ -316,6 +325,7 @@ public class VaadinBoot {
 
     /**
      * Stops your app. Blocks until the webapp is fully stopped. Mostly used for tests.
+     * Never throws an exception.
      * @param reason why we're shutting down. Logged as info.
      */
     public void stop(@NotNull String reason) {
