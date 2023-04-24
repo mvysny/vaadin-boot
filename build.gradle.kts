@@ -2,7 +2,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
     java
-    id("com.vaadin") version "24.0.0" apply(false)
+    id("com.vaadin") version "24.0.4" apply(false)
     `maven-publish`
     signing
 }
