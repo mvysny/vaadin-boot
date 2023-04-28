@@ -270,6 +270,32 @@ class MyJavalinServletTest {
 }
 ```
 
+### Adding More Servlets
+
+The simplest way is to add the `@WebServlet` annotation to your servlet - it will be auto-discovered
+by Jetty. Please see the Javalin example above for more details.
+
+Another way is to add the servlets manually to the `WebAppContext`. The following example registers the RESTEasy application as a servlet:
+
+```java
+public class Main {
+    public static void main(String[] args) throws Exception {
+        new VaadinBoot() {
+            @Override
+            protected @NotNull WebAppContext createWebAppContext() throws IOException {
+                final WebAppContext context = super.createWebAppContext();
+                ServletHolder holder = new ServletHolder(new HttpServletDispatcher());
+                holder.setInitParameter("javax.ws.rs.Application", AnalyticsRSApplication.class.getName());
+                holder.setInitParameter("resteasy.scan", "true");
+                holder.setInitParameter("resteasy.servlet.mapping.prefix", "/report/download");
+                context.addServlet(holder, "/report/download/*");
+                return context;
+            }
+        }.withArgs(args).run();
+    }
+}
+```
+
 ## Packaging Your Apps
 
 This part documents hints for buildscripts (`pom.xml`/`build.gradle`) of your app. When in doubt, take a look
