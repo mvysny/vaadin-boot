@@ -73,6 +73,17 @@ public class VaadinBoot {
     private boolean disableClasspathScanning = false;
 
     /**
+     * If true, the test classpath will also be scanned for annotations. Defaults to false.
+     * <p></p>
+     * Only set to true if you have Vaadin routes in <code>src/test/java/</code> - it's
+     * a bit of an antipattern but quite common with Vaadin addons. See
+     * <a href="https://github.com/mvysny/vaadin-boot/issues/15">Issue #15</a> for more details.
+     * <p></p>
+     * Ignored if {@link #disableClasspathScanning} is true.
+     */
+    private boolean isScanTestClasspath = false;
+
+    /**
      * Creates the new instance of the Boot launcher.
      */
     public VaadinBoot() {
@@ -197,6 +208,21 @@ public class VaadinBoot {
         return this;
     }
 
+    /**
+     * When called, the test classpath will also be scanned for annotations. Defaults to false.
+     * <p></p>
+     * Use only in case when you have Vaadin routes in <code>src/test/java/</code> - it's
+     * a bit of an antipattern but quite common with Vaadin addons. See
+     * <a href="https://github.com/mvysny/vaadin-boot/issues/15">Issue #15</a> for more details.
+     * <p></p>
+     * Ignored if {@link #disableClasspathScanning} is true.
+     */
+    @NotNull
+    public VaadinBoot scanTestClasspath() {
+        isScanTestClasspath = true;
+        return this;
+    }
+
     // mark volatile: might be accessed by the shutdown hook from a different thread.
     private volatile Server server;
 
@@ -310,7 +336,11 @@ public class VaadinBoot {
             // com.vaadin.flow.server.startup.ServletContextListeners.
             // See also https://mvysny.github.io/vaadin-lookup-vs-instantiator/
             // Jetty documentation: https://www.eclipse.org/jetty/documentation/jetty-12/operations-guide/index.html#og-annotations-scanning
-            context.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern", ".*\\.jar|.*/classes/.*");
+            String pattern = ".*\\.jar|.*/classes/.*";
+            if (isScanTestClasspath) {
+                pattern += "|.*/test-classes/.*";
+            }
+            context.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern", pattern);
             context.setConfigurationDiscovered(true);
         }
         return context;
