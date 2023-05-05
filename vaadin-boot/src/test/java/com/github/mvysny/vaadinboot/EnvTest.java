@@ -54,4 +54,9 @@ class EnvTest {
         assertFalse(Env.flowBuildInfoJsonContainsProductionModeTrue("{}"));
         assertFalse(Env.flowBuildInfoJsonContainsProductionModeTrue("invalid json"));
     }
+
+    @Test
+    public void smokeFindWebRoot() throws Exception {
+        assertNotNull(Env.findWebRoot());
+    }
 }
