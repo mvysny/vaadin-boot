@@ -775,7 +775,7 @@ Done. Run:
 
 * `sudo systemctl start myapp` to start the app
 * `sudo systemctl status myapp` to see the app's status and log
-* `sudo systemctl enable myapp` to start the app after machine restart
+* `sudo systemctl enable myapp` to make the app survive machine restart
 * `sudo journalctl -u myapp` to see the app's log
 * `sudo systemctl stop myapp` to start the app
 
