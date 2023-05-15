@@ -4,6 +4,6 @@ import com.github.mvysny.vaadinboot.VaadinBoot;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        new VaadinBoot().withArgs(args).run();
+        new VaadinBoot().run();
     }
 }

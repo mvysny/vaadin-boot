@@ -130,16 +130,11 @@ public class VaadinBoot {
     }
 
     /**
-     * Parses given command-line parameters. At the moment only the port number is
-     * parsed out if the array is non-empty.
-     * @param args the command-line parameters, not null.
-     * @return this
+     * @deprecated does nothing. See <a href="https://github.com/mvysny/vaadin-boot/issues/12">#12</a> for more details.
      */
+    @Deprecated
     @NotNull
     public VaadinBoot withArgs(@NotNull String[] args) {
-        if (args.length >= 1) {
-            setPort(Integer.parseInt(args[0]));
-        }
         return this;
     }
 

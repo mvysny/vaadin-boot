@@ -51,7 +51,7 @@ Then, add the following `Main` class to your project:
 ```java
 public class Main {
     public static void main(String[] args) throws Exception {
-        new VaadinBoot().withArgs(args).run();
+        new VaadinBoot().run();
     }
 }
 ```
@@ -446,7 +446,7 @@ If the dev mode isn't working in your dev env, you can enable the 'always-on' pr
 public class Main {
     public static void main(String[] args) throws Exception {
         System.setProperty("vaadin.productionMode", "true");
-        new VaadinBoot().withArgs(args).run();
+        new VaadinBoot().run();
     }
 }
 ```
@@ -797,7 +797,7 @@ public class Main {
                 }
                 return ctx;
             }
-        }.withArgs(args);
+        };
         if (!generateQuickstartWeb) {
             boot.disableClasspathScanning();
         }
