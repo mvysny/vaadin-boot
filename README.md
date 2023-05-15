@@ -743,6 +743,42 @@ please use the [Vaadin-on-Kotlin](https://www.vaadinonkotlin.eu/) framework whic
 
 ## Advanced Stuff
 
+### Running as a systemd service in Linux
+
+Running your Vaadin Boot app as a service in Linux under systemd is very easy. Make sure to build the app in production mode first.
+Then, create a new user (for example `myappuser`) which will run the app, and unpack the app into that user home folder.
+Then, create a file named `/etc/systemd/system/myapp.service` (replace `myapp` with your app name) with the following contents:
+
+```
+[Unit]
+Description=MyApp
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=myappuser
+ExecStart=/home/myappuser/app/bin/app
+# Environment=JAVA_HOME=/home/myappuser/jdks/temurin-20
+
+[Install]
+WantedBy=multi-user.target
+```
+
+* `ExecStart` points to the shell script running your app. For example, when building `vaadin-boot-example-gradle`,
+  the shell script is revealed when you unzip `build/distributions/vaadin-boot-example-gradle.zip`.
+* Optionally uncomment the `Environment` line and specify a different JVM for the app.
+
+Done. Run:
+
+* `sudo systemctl start myapp` to start the app
+* `sudo systemctl status myapp` to see the app's status and log
+* `sudo systemctl enable myapp` to start the app after machine restart
+* `sudo journalctl -u myapp` to see the app's log
+* `sudo systemctl stop myapp` to start the app
+
 ### Jetty QuickStart
 
 Jetty can optionally start faster if we don't classpath-scan for resources, and instead pass in a QuickStart XML file with all resources listed.
