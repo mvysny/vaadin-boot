@@ -127,7 +127,10 @@ When deploying your app to production: see the "Production" chapter below. In sh
 
 ## Develop with pleasure
 
-You can download and install the [Intellij IDEA Community Edition](https://www.jetbrains.com/idea/download), then import this project into it.
+We recommend to develop Vaadin Boot apps using an IDE instead of just a plain text editor.
+The IDE has huge advantages of providing auto-completion, documentation, access to library sources,
+debugging and hot-redeployment etc.
+We recommend [Intellij IDEA Community Edition](https://www.jetbrains.com/idea/download): download, install, then import this project into the IDEA.
 
 Open the app in your IDE, and debug the `Main` class as an application (run the `main()` method in debugging mode).
 Then, open your browser and hit [http://localhost:8080](http://localhost:8080).
@@ -138,9 +141,8 @@ This will activate two things:
   detect changes in your CSS/JavaScript files, will rebuild the JavaScript bundle and will
   reload the page to apply the new values.
 * When you do changes in your java files and recompile (Ctrl+F9 in Intellij),
-  [Java HotSwap](https://docs.oracle.com/javase/8/docs/technotes/guides/jpda/enhancements1.4.html#hotswap)
-  will update classes in your running app. Just press F5 in your browser to reload the page and
-  to see your changes.
+  Java will update classes in your running app. Just press F5 in your browser to reload the page and
+  to see your changes. See below on tips to vastly improve the basic hot-redeployment support.
 
 There are lots of pre-existing Vaadin components; you can check out the
 [Beverage Buddy](https://github.com/mvysny/beverage-buddy-vok/) example app for more
@@ -154,9 +156,21 @@ developer tools:
 
 ### Advanced HotSwapping
 
-The default Java HotSwap is limited to Java method in-body code changes only. However,
-that is more than enough for even a professional development. Optionally, if you need
-better HotSwapping capabilities, please try following the links below:
+The default Java hot-redeployment is limited to Java method in-body code changes only.
+The easiest way to improve is to use the [JetBrainsRuntime](https://github.com/JetBrains/JetBrainsRuntime) which
+is a Java version modified for better hot-redeployment (to be precise, contains DCEVM patches).
+The easiest way to obtain and use JBR is:
+
+* Open your Project Settings in IDEA, then locate the SDK "Edit" button and press it
+* Click the upper `+` button, then "Download JDK".
+* Select JDK version 17, then the "JetBrains Runtime". Both the basic version and the JCEF version
+  work; JCEF version is bigger and takes longer to download.
+* When running your app from Intellij, make sure to:
+  * Run via Intellij instead of via Gradle, see the "Build and run using" tip above
+  * Add the following JVM flags: `-XX:+AllowEnhancedClassRedefinition -dcevm`
+
+This will give you pretty awesome hot-redeployment capabilities. Expert: if you need even
+better hot-redeployment capabilities, please try following the links below:
 
 * Please follow the [Live Reload](https://vaadin.com/docs/latest/configuration/live-reload/hotswap-agent)
 * (Ubuntu): install `openjdk-11-jre-dcevm` and run your app with the `-dcevm` VM parameter.
