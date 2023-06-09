@@ -4,6 +4,7 @@ import com.vaadin.open.Open;
 import jakarta.servlet.Servlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.webapp.MetaInfConfiguration;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
