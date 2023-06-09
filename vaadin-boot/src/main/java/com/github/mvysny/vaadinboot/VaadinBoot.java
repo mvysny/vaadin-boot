@@ -2,6 +2,7 @@ package com.github.mvysny.vaadinboot;
 
 import com.vaadin.open.Open;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.webapp.MetaInfConfiguration;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
