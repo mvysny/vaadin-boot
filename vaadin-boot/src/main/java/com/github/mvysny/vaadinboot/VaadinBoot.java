@@ -322,7 +322,7 @@ public class VaadinBoot {
             if (isScanTestClasspath) {
                 pattern += "|.*/test-classes/.*";
             }
-            context.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern", pattern);
+            context.setAttribute(MetaInfConfiguration.CONTAINER_JAR_PATTERN, pattern);
             context.setConfigurationDiscovered(true);
         }
         return context;
