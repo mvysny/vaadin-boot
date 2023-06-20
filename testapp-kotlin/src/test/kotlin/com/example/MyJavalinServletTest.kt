@@ -1,8 +1,7 @@
 package com.example
 
+import org.eclipse.jetty.ee10.webapp.WebAppContext
 import org.eclipse.jetty.server.Server
-import org.eclipse.jetty.util.resource.EmptyResource
-import org.eclipse.jetty.webapp.WebAppContext
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -15,7 +14,8 @@ class MyJavalinServletTest {
     @BeforeEach
     fun startJetty() {
         val ctx = WebAppContext()
-        ctx.baseResource = EmptyResource.INSTANCE
+        // This used to be EmptyResource, but it got removed in Jetty 12. Let's use some dummy resource instead.
+        ctx.baseResource = ctx.resourceFactory.newClassPathResource("com/example/MyJavalinServletTest.class")
         ctx.addServlet(MyJavalinServlet::class.java, "/rest/*")
         server = Server(30123)
         server!!.handler = ctx
