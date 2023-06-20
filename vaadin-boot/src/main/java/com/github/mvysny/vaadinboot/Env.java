@@ -2,6 +2,7 @@ package com.github.mvysny.vaadinboot;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.resource.ResourceFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
@@ -73,7 +74,7 @@ final class Env {
      * @throws MalformedURLException
      */
     @NotNull
-    static Resource findWebRoot() throws MalformedURLException {
+    static Resource findWebRoot(ResourceFactory resourceFactory) throws MalformedURLException {
         // don't look up directory as a resource, it's unreliable: https://github.com/eclipse/jetty.project/issues/4173#issuecomment-539769734
         // instead we'll look up the /webapp/ROOT and retrieve the parent folder from that.
         final URL f = VaadinBoot.class.getResource("/webapp/ROOT");
@@ -88,7 +89,7 @@ final class Env {
         // Resolve file to directory
         final URL webRoot = new URL(url.substring(0, url.length() - 5));
         log.info("WebRoot is served from " + webRoot);
-        final Resource resource = Resource.newResource(webRoot);
+        final Resource resource = resourceFactory.newResource(webRoot);
         if (!resource.exists()) {
             log.warn(resource + " (" + resource.getClass().getName() + ") claims it doesn't exist");
         }
