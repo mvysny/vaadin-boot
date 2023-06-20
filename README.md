@@ -46,6 +46,10 @@ Compatibility chart: Vaadin Boot follows Jetty versioning.
 |---------------------|----------|------------------|------------------|-------|
 | 10.x                | Java 11+ | javax.servlet    | Vaadin 14-23     | 10.x  |
 | 11.x                | Java 17+ | jakarta.servlet  | Vaadin 24+       | 11.x  |
+| 12.x (N/A yet)      | Java 17+ | jakarta.servlet  | Vaadin 24+       | 12.x  |
+
+See the [Vaadin-Boot Git Tags](https://github.com/mvysny/vaadin-boot/tags) for the list of
+released Vaadin-Boot versions.
 
 Then, add the following `Main` class to your project:
 ```java
