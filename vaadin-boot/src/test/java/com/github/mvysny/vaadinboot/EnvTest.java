@@ -1,5 +1,6 @@
 package com.github.mvysny.vaadinboot;
 
+import org.eclipse.jetty.util.resource.URLResourceFactory;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -57,6 +58,6 @@ class EnvTest {
 
     @Test
     public void smokeFindWebRoot() throws Exception {
-        assertNotNull(Env.findWebRoot());
+        assertNotNull(Env.findWebRoot(new URLResourceFactory()));
     }
 }

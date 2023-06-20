@@ -7,8 +7,8 @@ dependencies {
     api("org.jetbrains:annotations:23.1.0")
 
     // Embedded Jetty dependencies
-    api("org.eclipse.jetty:jetty-webapp:${properties["jetty_version"]}")
-    api("org.eclipse.jetty.websocket:websocket-jakarta-server:${properties["jetty_version"]}")
+    api("org.eclipse.jetty.ee10:jetty-ee10-webapp:${properties["jetty_version"]}")
+    api("org.eclipse.jetty.ee10.websocket:jetty-ee10-websocket-jakarta-server:${properties["jetty_version"]}")
 
     // opens url in a browser; Vaadin dependency
     implementation("com.vaadin:open:8.5.0")

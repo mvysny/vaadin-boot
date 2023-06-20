@@ -11,7 +11,7 @@ defaultTasks("clean", "build")
 
 allprojects {
     group = "com.github.mvysny.vaadin-boot"
-    version = "11.4-SNAPSHOT"
+    version = "12.0-SNAPSHOT"
 
     repositories {
         mavenCentral()

@@ -2,10 +2,10 @@ package com.github.mvysny.vaadinboot;
 
 import com.vaadin.open.Open;
 import jakarta.servlet.Servlet;
+import org.eclipse.jetty.ee10.webapp.MetaInfConfiguration;
+import org.eclipse.jetty.ee10.webapp.WebAppContext;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.resource.Resource;
-import org.eclipse.jetty.webapp.MetaInfConfiguration;
-import org.eclipse.jetty.webapp.WebAppContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
@@ -321,7 +321,7 @@ public class VaadinBoot {
     @NotNull
     protected WebAppContext createWebAppContext() throws IOException {
         final WebAppContext context = new WebAppContext();
-        final Resource webRoot = Env.findWebRoot();
+        final Resource webRoot = Env.findWebRoot(context.getResourceFactory());
         context.setBaseResource(webRoot);
         context.setContextPath(contextRoot);
         context.addServlet(servlet, "/*");

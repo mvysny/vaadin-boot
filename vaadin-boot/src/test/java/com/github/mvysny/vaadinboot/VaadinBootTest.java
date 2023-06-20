@@ -1,10 +1,7 @@
 package com.github.mvysny.vaadinboot;
 
-import org.eclipse.jetty.webapp.WebAppContext;
-import org.jetbrains.annotations.NotNull;
+import org.eclipse.jetty.ee10.webapp.WebAppContext;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
