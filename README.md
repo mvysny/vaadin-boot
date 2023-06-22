@@ -24,7 +24,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.mvysny.vaadin-boot:vaadin-boot:10.3")
+    implementation("com.github.mvysny.vaadin-boot:vaadin-boot:11.3")
 }
 ```
 Or Maven:
@@ -34,7 +34,7 @@ Or Maven:
 		<dependency>
 			<groupId>com.github.mvysny.vaadin-boot</groupId>
 			<artifactId>vaadin-boot</artifactId>
-			<version>10.3</version>
+			<version>11.3</version>
 		</dependency>
     </dependencies>
 </project>
@@ -75,11 +75,9 @@ to quickly figure out the precise location of your webapp directory in the class
 
 ### Command-line Args
 
-Really dumb at the moment; if there's a port passed as the first parameter then it will be used, otherwise
-the default port of 8080 will be used.
-
-You'll have to implement more complex cmdline arg parsing yourself; good start
-is to use [Apache commons-cli](https://commons.apache.org/proper/commons-cli/).
+Do it yourself. Good start
+is to use [Apache commons-cli](https://commons.apache.org/proper/commons-cli/),
+or [kotlinx-cli](https://github.com/Kotlin/kotlinx-cli) if you're using Kotlin.
 
 ### Example Apps
 
