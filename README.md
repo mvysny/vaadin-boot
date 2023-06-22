@@ -75,9 +75,12 @@ to quickly figure out the precise location of your webapp directory in the class
 
 ### Command-line Args
 
-Do it yourself. Good start
+At the moment it's "Do it yourself". Good start
 is to use [Apache commons-cli](https://commons.apache.org/proper/commons-cli/),
 or [kotlinx-cli](https://github.com/Kotlin/kotlinx-cli) if you're using Kotlin.
+
+However, there's [#17](https://github.com/mvysny/vaadin-boot/issues/17) to add support
+for configuring Vaadin Boot via env variables + jvm args.
 
 ### Example Apps
 
