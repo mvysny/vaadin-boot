@@ -169,7 +169,7 @@ The easiest way to obtain and use JBR is:
 * Open your Project Settings in IDEA, then locate the SDK "Edit" button and press it
 * Click the upper `+` button, then "Download JDK".
 * Select JDK version 17, then the "JetBrains Runtime". Both the basic version and the JCEF version
-  work; JCEF version is bigger and takes longer to download.
+  work; we recommend the basic version since JCEF version is bigger and therefore takes longer to download, and JCEF is not used by Vaadin apps.
 * When running your app from Intellij, make sure to:
   * Run via Intellij instead of via Gradle, see the "Build and run using" tip above
   * Add the following JVM flags: `-XX:+AllowEnhancedClassRedefinition -dcevm`
@@ -177,7 +177,7 @@ The easiest way to obtain and use JBR is:
 This will give you pretty awesome hot-redeployment capabilities. Expert: if you need even
 better hot-redeployment capabilities, please try following the links below:
 
-* Please follow the [Live Reload](https://vaadin.com/docs/latest/configuration/live-reload/hotswap-agent)
+* Please follow the [Live Reload](https://vaadin.com/docs/latest/configuration/live-reload/hotswap-agent) documentation.
 * (Ubuntu): install `openjdk-11-jre-dcevm` and run your app with the `-dcevm` VM parameter.
 * [Use HotSwapAgent](http://hotswapagent.org/mydoc_setup_intellij_idea.html)
 * Install a JVM which supports DCEVM+HotswapAgent (e.g. [trava-jdk](https://github.com/TravaOpenJDK/trava-jdk-11-dcevm));
