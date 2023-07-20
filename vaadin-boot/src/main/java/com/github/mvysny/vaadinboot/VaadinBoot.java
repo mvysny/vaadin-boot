@@ -23,7 +23,7 @@ import java.util.Objects;
  * new VaadinBoot().withArgs(args).run();
  * </pre>
  * from your <code>main()</code> method.
- * <p></p>
+ * <br/>
  * By default, listens on all interfaces; call {@link #localhostOnly()} to only
  * listen on localhost.
  */
@@ -67,7 +67,7 @@ public class VaadinBoot {
 
     /**
      * If true, no classpath scanning is performed - no servlets nor weblisteners are detected.
-     * <p></p>
+     * <br/>
      * This will most probably cause Vaadin to not work and throw NullPointerException at <code>VaadinServlet.serveStaticOrWebJarRequest</code>.
      * However, it's a good thing to disable this when starting your app with a QuickStart configuration.
      */
@@ -75,11 +75,11 @@ public class VaadinBoot {
 
     /**
      * If true, the test classpath will also be scanned for annotations. Defaults to false.
-     * <p></p>
+     * <br/>
      * Only set to true if you have Vaadin routes in <code>src/test/java/</code> - it's
      * a bit of an antipattern but quite common with Vaadin addons. See
      * <a href="https://github.com/mvysny/vaadin-boot/issues/15">Issue #15</a> for more details.
-     * <p></p>
+     * <br/>
      * Ignored if {@link #disableClasspathScanning} is true.
      */
     private boolean isScanTestClasspath = false;
@@ -174,9 +174,10 @@ public class VaadinBoot {
 
     /**
      * If true, no classpath scanning is performed - no servlets nor weblisteners are detected.
-     * <p></p>
+     * <br/>
      * This will most probably cause Vaadin to not work and throw NullPointerException at <code>VaadinServlet.serveStaticOrWebJarRequest</code>.
      * However, it's a good thing to disable this when starting your app with a QuickStart configuration.
+     * @return this
      */
     @NotNull
     public VaadinBoot disableClasspathScanning() {
@@ -185,9 +186,11 @@ public class VaadinBoot {
 
     /**
      * If true, no classpath scanning is performed - no servlets nor weblisteners are detected.
-     * <p></p>
+     * <br/>
      * This will most probably cause Vaadin to not work and throw NullPointerException at <code>VaadinServlet.serveStaticOrWebJarRequest</code>.
      * However, it's a good thing to disable this when starting your app with a QuickStart configuration.
+     * @param disableClasspathScanning If true, no classpath scanning is performed. Defaults to false.
+     * @return this
      */
     @NotNull
     public VaadinBoot disableClasspathScanning(boolean disableClasspathScanning) {
@@ -197,12 +200,13 @@ public class VaadinBoot {
 
     /**
      * When called, the test classpath will also be scanned for annotations. Defaults to false.
-     * <p></p>
+     * <br/>
      * Use only in case when you have Vaadin routes in <code>src/test/java/</code> - it's
      * a bit of an antipattern but quite common with Vaadin addons. See
      * <a href="https://github.com/mvysny/vaadin-boot/issues/15">Issue #15</a> for more details.
-     * <p></p>
+     * <br/>
      * Ignored if {@link #disableClasspathScanning} is true.
+     * @return this
      */
     @NotNull
     public VaadinBoot scanTestClasspath() {
@@ -215,7 +219,7 @@ public class VaadinBoot {
 
     /**
      * Runs your app. Blocks until the user presses Enter or CTRL+C.
-     * <p></p>
+     * <br/>
      * WARNING: this function may never terminate when the entire JVM may be killed on CTRL+C.
      * @throws Exception when the webapp fails to start.
      */
@@ -301,6 +305,7 @@ public class VaadinBoot {
      * Invoked when the Jetty server has been started. By default, does nothing. You can
      * for example dump the quickstart configuration here.
      * @param context the web app context.
+     * @throws IOException on i/o exception
      */
     protected void onStarted(@NotNull WebAppContext context) throws IOException {
     }
@@ -308,6 +313,7 @@ public class VaadinBoot {
     /**
      * Creates the Jetty {@link WebAppContext}.
      * @return the {@link WebAppContext}
+     * @throws IOException on i/o exception
      */
     @NotNull
     protected WebAppContext createWebAppContext() throws IOException {

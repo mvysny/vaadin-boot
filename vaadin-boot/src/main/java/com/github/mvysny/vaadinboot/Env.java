@@ -71,7 +71,7 @@ final class Env {
     /**
      * Detects the web root folder, used to serve static content.
      * @return resource serving web root.
-     * @throws MalformedURLException
+     * @throws MalformedURLException when the webroot URL auto-detection fails and produces an invalid URL.
      */
     @NotNull
     static Resource findWebRoot(ResourceFactory resourceFactory) throws MalformedURLException {
