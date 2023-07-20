@@ -19,9 +19,9 @@ import java.util.Objects;
 
 /**
  * Bootstraps your Vaadin application from your main() function. Simply call
- * <code><pre>
+ * <pre>
  * new VaadinBoot().withArgs(args).run();
- * </pre></code>
+ * </pre>
  * from your <code>main()</code> method.
  * <p></p>
  * By default, listens on all interfaces; call {@link #localhostOnly()} to only
