@@ -131,15 +131,6 @@ public class VaadinBoot {
     }
 
     /**
-     * @deprecated does nothing. See <a href="https://github.com/mvysny/vaadin-boot/issues/12">#12</a> for more details.
-     */
-    @Deprecated
-    @NotNull
-    public VaadinBoot withArgs(@NotNull String[] args) {
-        return this;
-    }
-
-    /**
      * Bootstraps custom servlet instead of the default <code>com.vaadin.flow.server.VaadinServlet</code>.
      * @param vaadinServlet the custom servlet, not null.
      * @return this
