@@ -35,6 +35,6 @@ class AppShell : AppShellConfigurator
 object Main {
     @JvmStatic
     fun main(args: Array<String>) {
-        VaadinBoot().withArgs(args).run()
+        VaadinBoot().run()
     }
 }
