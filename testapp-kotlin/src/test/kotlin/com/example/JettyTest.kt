@@ -5,7 +5,11 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.net.URL
+import java.io.IOException
+import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
 
 /**
  * Actually starts up Jetty. DON'T USE FOR TESTING OF YOUR APPS: see [MainViewTest] instead.
@@ -27,9 +31,16 @@ class JettyTest {
 
     @Test
     fun testAppIsUp() {
-        // make sure something is running on port 44312
-        URL("http://localhost:44312").openStream().close()
         // make sure Bootstrap was called
         Assertions.assertTrue(Bootstrap.initialized)
+
+        // make sure something is running on port 44312
+        val client = HttpClient.newBuilder().build()
+        val request = HttpRequest.newBuilder(URI.create("http://localhost:44312")).build()
+        val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+        require(response.statusCode() == 200) {
+            "$response failed: ${response.body()}"
+        }
+        println("Vaadin responded with: $response ${response.body()}")
     }
 }

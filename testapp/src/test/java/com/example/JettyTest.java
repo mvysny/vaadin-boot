@@ -5,7 +5,12 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -31,9 +36,16 @@ public class JettyTest {
 
     @Test
     public void testAppIsUp() throws Exception {
-        // make sure something is running on port 44312
-        new URL("http://localhost:44312").openStream().close();
         // make sure Bootstrap was called
         assertTrue(Bootstrap.initialized);
+
+        // make sure something is running on port 44312
+        final HttpClient client = HttpClient.newBuilder().build();
+        final HttpRequest request = HttpRequest.newBuilder(URI.create("http://localhost:44312")).build();
+        final HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 200) {
+            throw new IOException(response + " failed: " + response.body());
+        }
+        System.out.println("Vaadin responded with: " + response + " " + response.body());
     }
 }
