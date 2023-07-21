@@ -472,6 +472,26 @@ public class Main {
 
 Make sure to build your app in production mode first, before starting it.
 
+### Configuration
+
+All configuration options are exposed via a Java API on the `VaadinBoot` class, e.g.
+```java
+new VaadinBoot().localhostOnly().setPort(8081).run();
+```
+
+On top of that, the following Vaadin Boot properties are configurable via environment variables and also Java system properties:
+
+| Vaadin Boot config property | Env variable                 | Java system property        |
+|-----------------------------|------------------------------|-----------------------------|
+| port                        | SERVER_PORT                  | server.port                 |
+| listen interface            | SERVER_ADDRESS               | server.address              |
+| context root                | SERVER_SERVLET_CONTEXT-PATH  | server.servlet.context-path |
+
+You can not pass the Java system properties to your app run scripts directly, since they will be treated as
+program parameters. Instead, pass them via the `JAVA_OPTS` env variable (only works with script created by Gradle):
+
+* Linux: `JAVA_OPTS=-Dserver.port=8082 ./my-app`
+
 ### Docker
 
 Packaging your apps as docker images is incredibly easy. We use [Docker Multi-stage builds](https://docs.docker.com/build/building/multi-stage/):
