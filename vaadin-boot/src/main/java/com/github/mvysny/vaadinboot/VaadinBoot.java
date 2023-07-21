@@ -34,10 +34,12 @@ public class VaadinBoot {
     private static final int DEFAULT_PORT = 8080;
 
     /**
-     * The port where Jetty will listen for http:// traffic.
+     * The port where Jetty will listen for http:// traffic. Defaults to {@value #DEFAULT_PORT}.
+     * <br/>
+     * Can be configured via the <code>SERVER_PORT</code> environment variable, or <code>-Dserver.port=</code> Java system property.
      */
     @VisibleForTesting
-    int port = DEFAULT_PORT;
+    int port = Integer.parseInt(Env.getProperty("SERVER_PORT", "server.port", "" + DEFAULT_PORT));
 
     /**
      * The VaadinServlet.
@@ -47,18 +49,24 @@ public class VaadinBoot {
     Class<? extends Servlet> servlet;
 
     /**
-     * Listen on interface handling given host name. Defaults to null which causes Jetty
+     * Listen on interface handling given host name. Defaults to <code>null</code> which causes Jetty
      * to listen on all interfaces.
+     * <br/>
+     * Can be configured via the <code>SERVER_ADDRESS</code> environment variable, or <code>-Dserver.address=</code> Java system property.
      */
     @Nullable
-    private String hostName = null;
+    @VisibleForTesting
+    String hostName = Env.getProperty("SERVER_ADDRESS", "server.address");
 
     /**
      * The context root to run under. Defaults to `/`.
      * Change this to e.g. /foo to host your app on a different context root
+     * <br/>
+     * Can be configured via the <code>SERVER_SERVLET_CONTEXT-PATH</code> environment variable, or <code>-Dserver.servlet.context-path=</code> Java system property.
      */
     @NotNull
-    private String contextRoot = "/";
+    @VisibleForTesting
+    String contextRoot = Env.getProperty("SERVER_SERVLET_CONTEXT-PATH", "server.servlet.context-path", "/");
 
     /**
      * When the app launches, open the browser automatically when in dev mode.
