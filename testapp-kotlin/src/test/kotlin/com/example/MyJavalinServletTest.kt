@@ -15,7 +15,7 @@ class MyJavalinServletTest {
     fun startJetty() {
         val ctx = WebAppContext()
         // This used to be EmptyResource, but it got removed in Jetty 12. Let's use some dummy resource instead.
-        ctx.baseResource = ctx.resourceFactory.newClassPathResource("com/example/MyJavalinServletTest.class")
+        ctx.baseResource = ctx.resourceFactory.newClassPathResource("java/lang/String.class")
         ctx.addServlet(MyJavalinServlet::class.java, "/rest/*")
         server = Server(30123)
         server!!.handler = ctx
