@@ -24,7 +24,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.mvysny.vaadin-boot:vaadin-boot:11.3")
+    implementation("com.github.mvysny.vaadin-boot:vaadin-boot:12.0")
 }
 ```
 Or Maven:
@@ -34,7 +34,7 @@ Or Maven:
 		<dependency>
 			<groupId>com.github.mvysny.vaadin-boot</groupId>
 			<artifactId>vaadin-boot</artifactId>
-			<version>11.3</version>
+			<version>12.0</version>
 		</dependency>
     </dependencies>
 </project>
@@ -46,7 +46,7 @@ Compatibility chart: Vaadin Boot follows Jetty versioning.
 |---------------------|----------|------------------|------------------|-------|
 | 10.x                | Java 11+ | javax.servlet    | Vaadin 14-23     | 10.x  |
 | 11.x                | Java 17+ | jakarta.servlet  | Vaadin 24+       | 11.x  |
-| 12.x (N/A yet)      | Java 17+ | jakarta.servlet  | Vaadin 24+       | 12.x  |
+| 12.x                | Java 17+ | jakarta.servlet  | Vaadin 24+       | 12.x  |
 
 See the [Vaadin-Boot Git Tags](https://github.com/mvysny/vaadin-boot/tags) for the list of
 released Vaadin-Boot versions.
