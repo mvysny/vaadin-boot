@@ -15,7 +15,7 @@ dependencies {
         }
     }
 
-    implementation("io.javalin:javalin:5.3.2") {
+    implementation("io.javalin:javalin:5.4.2") {
         exclude(group = "org.eclipse.jetty")
         exclude(group = "org.eclipse.jetty.websocket")
         exclude(group = "com.fasterxml.jackson.core")
