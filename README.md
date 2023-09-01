@@ -79,8 +79,8 @@ At the moment it's "Do it yourself". Good start
 is to use [Apache commons-cli](https://commons.apache.org/proper/commons-cli/),
 or [kotlinx-cli](https://github.com/Kotlin/kotlinx-cli) if you're using Kotlin.
 
-However, there's [#17](https://github.com/mvysny/vaadin-boot/issues/17) to add support
-for configuring Vaadin Boot via env variables + jvm args.
+However, certain settings can be configured via env variables / jvm args, please see
+the *Configuration* section below.
 
 ### Example Apps
 
