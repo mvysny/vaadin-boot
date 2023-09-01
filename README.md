@@ -94,6 +94,7 @@ Very basic example apps using Vaadin Boot:
 More advanced examples, demoing both security and SQL access:
 
 * Vaadin 24, Gradle: [vaadin-simple-security-example](https://github.com/mvysny/vaadin-simple-security-example)
+* All [Karibu-DSL](https://github.com/mvysny/karibu-dsl) example apps run on Vaadin-Boot, too.
 
 ## Preparing environment
 
