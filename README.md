@@ -110,7 +110,8 @@ Grab the sources of your app from the git repository.
 To run your app quickly from command-line, without having to run your IDE:
 
 1. Run `./gradlew run` (or `./mvnw -C exec:java` for Maven)
-    * Note you'll need to use the Gradle Application plugin, or the `exec-maven-plugin`
+    * Note that your app needs to use the Gradle Application plugin, or the `exec-maven-plugin`.
+    * All example apps use those plugins automatically, you don't need to do anything.
 2. Your app will be running on [http://localhost:8080](http://localhost:8080).
 
 To run the app from your IDE (we recommend using [Intellij IDEA](https://www.jetbrains.com/idea/download), the Community edition):
