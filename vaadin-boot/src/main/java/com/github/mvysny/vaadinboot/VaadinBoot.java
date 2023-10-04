@@ -5,7 +5,10 @@ import jakarta.servlet.Servlet;
 import org.eclipse.jetty.ee10.webapp.MetaInfConfiguration;
 import org.eclipse.jetty.ee10.webapp.WebAppContext;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import org.eclipse.jetty.util.thread.ThreadPool;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
@@ -13,9 +16,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.util.Objects;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * Bootstraps your Vaadin application from your main() function. Simply call
@@ -91,6 +97,14 @@ public class VaadinBoot {
      * Ignored if {@link #disableClasspathScanning} is true.
      */
     private boolean isScanTestClasspath = false;
+
+    /**
+     * If true and we're running on JDK 21+, we'll configure Jetty to take advantage
+     * of virtual threads.
+     * <br/>
+     * Defaults to true.
+     */
+    private boolean useVirtualThreadsIfAvailable = true;
 
     /**
      * Creates the new instance of the Boot launcher.
@@ -222,6 +236,18 @@ public class VaadinBoot {
         return this;
     }
 
+    /**
+     * If true and we're running on JDK 21+, we'll configure Jetty to take advantage
+     * of virtual threads.
+     * <br/>
+     * Defaults to true.
+     */
+    @NotNull
+    public VaadinBoot useVirtualThreadsIfAvailable(boolean useVirtualThreadsIfAvailable) {
+        this.useVirtualThreadsIfAvailable = useVirtualThreadsIfAvailable;
+        return this;
+    }
+
     // mark volatile: might be accessed by the shutdown hook from a different thread.
     private volatile Server server;
 
@@ -282,11 +308,13 @@ public class VaadinBoot {
         final WebAppContext context = createWebAppContext();
         log.debug("Jetty WebAppContext created");
 
+        server = new Server(newThreadPool());
+        final ServerConnector serverConnector = new ServerConnector(server);
+        serverConnector.setPort(port);
         if (hostName != null) {
-            server = new Server(new InetSocketAddress(hostName, port));
-        } else {
-            server = new Server(port);
+            serverConnector.setHost(hostName);
         }
+        server.addConnector(serverConnector);
         server.setHandler(context);
         log.debug("Jetty Server configured");
         try {
@@ -374,4 +402,22 @@ public class VaadinBoot {
 
     @NotNull
     private static final Logger log = LoggerFactory.getLogger(VaadinBoot.class);
+
+    @Nullable
+    protected ThreadPool newThreadPool() {
+        if (useVirtualThreadsIfAvailable && Env.getJavaVersion() >= 21) {
+            log.info("Configuring Jetty to use JVM 21+ virtual threads");
+            final QueuedThreadPool threadPool = new QueuedThreadPool();
+            try {
+                final Method m = Executors.class.getDeclaredMethod("newVirtualThreadPerTaskExecutor");
+                threadPool.setVirtualThreadsExecutor(((Executor) m.invoke(null)));
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+            return threadPool;
+        } else {
+            log.info("Configuring Jetty to use regular JVM threads");
+            return null;
+        }
+    }
 }
