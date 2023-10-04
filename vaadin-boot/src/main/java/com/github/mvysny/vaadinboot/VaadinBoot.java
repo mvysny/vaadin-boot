@@ -2,6 +2,8 @@ package com.github.mvysny.vaadinboot;
 
 import com.vaadin.open.Open;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
 import org.eclipse.jetty.webapp.MetaInfConfiguration;
@@ -87,6 +89,14 @@ public class VaadinBoot {
      * Ignored if {@link #disableClasspathScanning} is true.
      */
     private boolean isScanTestClasspath = false;
+
+    /**
+     * If true and we're running on JDK 21+, we'll configure Jetty to take advantage
+     * of virtual threads.
+     * <br/>
+     * Defaults to true.
+     */
+    private boolean useVirtualThreadsIfAvailable = true;
 
     /**
      * Creates the new instance of the Boot launcher.
@@ -330,11 +340,13 @@ public class VaadinBoot {
         final WebAppContext context = createWebAppContext();
         log.debug("Jetty WebAppContext created");
 
+        server = new Server(newThreadPool());
+        final ServerConnector serverConnector = new ServerConnector(server);
+        serverConnector.setPort(port);
         if (hostName != null) {
-            server = new Server(new InetSocketAddress(hostName, port));
-        } else {
-            server = new Server(port);
+            serverConnector.setHost(hostName);
         }
+        server.addConnector(serverConnector);
         server.setHandler(context);
         log.debug("Jetty Server configured");
         try {
