@@ -99,13 +99,23 @@ final class Env {
     }
 
     /**
+     * Returns the JVM major version.
+     * @return 17 or 21.
+     */
+    static int getJavaVersion() {
+        return Runtime.version().version().get(0);
+    }
+
+    /**
      * Returns a short string containing Java version and OS info, for example
-     * <code>Java Amazon.com Inc. 17.0.5, OS amd64 Linux 5.19.0-35-generic</code>
+     * <code>Java: Amazon.com Inc. 17.0.5, major version 17, OS: amd64 Linux 5.19.0-35-generic</code>
      * @return short host info
      */
     @NotNull
     static String dumpHost() {
-        return "Java " + System.getProperty("java.vendor") + " " + System.getProperty("java.version") + ", OS " + System.getProperty("os.arch") + " " + System.getProperty("os.name") + " " + System.getProperty("os.version");
+        final String os = System.getProperty("os.arch") + " " + System.getProperty("os.name") + " " + System.getProperty("os.version");
+        final String java = System.getProperty("java.vendor") + " " + System.getProperty("java.version") + ", major version " + getJavaVersion();
+        return "Java: " + java + ", OS: " + os;
     }
 
     /**
