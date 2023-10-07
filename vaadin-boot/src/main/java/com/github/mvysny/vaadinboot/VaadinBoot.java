@@ -370,6 +370,8 @@ public class VaadinBoot {
                 pattern += "|.*/test-classes/.*";
             }
             context.setAttribute(MetaInfConfiguration.CONTAINER_JAR_PATTERN, pattern);
+            // must be set to true, to enable classpath scanning:
+            // https://eclipse.dev/jetty/documentation/jetty-12/operations-guide/index.html#og-annotations-scanning
             context.setConfigurationDiscovered(true);
         }
         return context;
