@@ -14,5 +14,6 @@ class MainView : VerticalLayout() {
     init {
         add(H3("Yay, your Vaadin app is running!"))
         add(Button("Click me") { Notification.show("Clicked!") })
+        add(Counter())
     }
 }

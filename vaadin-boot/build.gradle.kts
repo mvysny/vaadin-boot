@@ -6,9 +6,11 @@ dependencies {
     implementation("org.slf4j:slf4j-api:${properties["slf4j_version"]}")
     api("org.jetbrains:annotations:24.0.1")
 
-    // Embedded Jetty dependencies
-    api("org.eclipse.jetty.ee10:jetty-ee10-webapp:${properties["jetty_version"]}")
-    api("org.eclipse.jetty.ee10.websocket:jetty-ee10-websocket-jakarta-server:${properties["jetty_version"]}")
+    // Embedded Jetty dependencies.
+    // This one is needed to host webapps and perform classpath scanning for annotations
+    api("org.eclipse.jetty.ee10:jetty-ee10-annotations:${properties["jetty_version"]}")
+    // This one is required to have websocket/push support.
+    implementation("org.eclipse.jetty.ee10.websocket:jetty-ee10-websocket-jakarta-server:${properties["jetty_version"]}")
 
     // opens url in a browser; Vaadin dependency
     implementation("com.vaadin:open:8.5.0")
