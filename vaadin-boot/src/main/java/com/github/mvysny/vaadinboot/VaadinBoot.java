@@ -241,6 +241,9 @@ public class VaadinBoot {
      * of virtual threads.
      * <br/>
      * Defaults to true.
+     * @param useVirtualThreadsIfAvailable if true (default), use virtual threads to
+     *                                     handle http requests if running on JDK21+
+     * @return this
      */
     @NotNull
     public VaadinBoot useVirtualThreadsIfAvailable(boolean useVirtualThreadsIfAvailable) {
@@ -405,10 +408,15 @@ public class VaadinBoot {
     @NotNull
     private static final Logger log = LoggerFactory.getLogger(VaadinBoot.class);
 
+    /**
+     * Creates a thread pool for Jetty to serve http requests.
+     * @return the thread pool, may be null if the default one is to be used.
+     */
     @Nullable
     protected ThreadPool newThreadPool() {
         if (useVirtualThreadsIfAvailable && Env.getJavaVersion() >= 21) {
             log.info("Configuring Jetty to use JVM 21+ virtual threads");
+            // see https://eclipse.dev/jetty/documentation/jetty-12/programming-guide/index.html#pg-arch-threads-thread-pool-virtual-threads
             final QueuedThreadPool threadPool = new QueuedThreadPool();
             try {
                 final Method m = Executors.class.getDeclaredMethod("newVirtualThreadPerTaskExecutor");
