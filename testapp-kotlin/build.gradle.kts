@@ -1,13 +1,18 @@
+val vaadin_version: String by extra
+val slf4j_version: String by extra
+val junit_version: String by extra
+val kaributesting_version: String by extra
+
 plugins {
     id("com.vaadin")
-    id("application")
-    kotlin("jvm") version "1.9.0"
+    application
+    kotlin("jvm") version "1.9.20"
 }
 
 dependencies {
     implementation(project(":vaadin-boot"))
-    implementation("org.slf4j:slf4j-simple:${properties["slf4j_version"]}")
-    implementation("com.vaadin:vaadin-core:${properties["vaadin_version"]}") {
+    implementation("org.slf4j:slf4j-simple:$slf4j_version")
+    implementation("com.vaadin:vaadin-core:$vaadin_version") {
         afterEvaluate {
             if (vaadin.productionMode) {
                 exclude(module = "vaadin-dev")
@@ -21,8 +26,8 @@ dependencies {
         exclude(group = "com.fasterxml.jackson.core")
     }
 
-    testImplementation("com.github.mvysny.kaributesting:karibu-testing-v23:${properties["kaributesting_version"]}")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:${properties["junit_version"]}")
+    testImplementation("com.github.mvysny.kaributesting:karibu-testing-v23:$kaributesting_version")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:$junit_version")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
@@ -30,5 +35,5 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 }
 
 application {
-    mainClass.set("com.example.Main")
+    mainClass = "com.example.Main"
 }

@@ -1,6 +1,11 @@
+val vaadin_version: String by extra
+val slf4j_version: String by extra
+val junit_version: String by extra
+val kaributesting_version: String by extra
+
 plugins {
     id("com.vaadin")
-    id("application")
+    application
 }
 
 dependencies {
@@ -8,8 +13,8 @@ dependencies {
         // we are not using Push, therefore we can exclude the websocket jars, to significantly decrease the app zip file size
         exclude(module = "jetty-ee10-websocket-jakarta-server")
     }
-    implementation("org.slf4j:slf4j-simple:${properties["slf4j_version"]}")
-    implementation("com.vaadin:vaadin-core:${properties["vaadin_version"]}") {
+    implementation("org.slf4j:slf4j-simple:$slf4j_version")
+    implementation("com.vaadin:vaadin-core:$vaadin_version") {
         afterEvaluate {
             if (vaadin.productionMode) {
                 exclude(module = "vaadin-dev")
@@ -17,10 +22,10 @@ dependencies {
         }
     }
 
-    testImplementation("com.github.mvysny.kaributesting:karibu-testing-v23:${properties["kaributesting_version"]}")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:${properties["junit_version"]}")
+    testImplementation("com.github.mvysny.kaributesting:karibu-testing-v23:$kaributesting_version")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:$junit_version")
 }
 
 application {
-    mainClass.set("com.example.Main")
+    mainClass = "com.example.Main"
 }
