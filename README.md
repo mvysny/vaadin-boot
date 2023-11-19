@@ -164,7 +164,7 @@ developer tools:
 ### Advanced HotSwapping
 
 The default Java hot-redeployment is limited to Java method in-body code changes only.
-The easiest way to improve is to use the [JetBrainsRuntime](https://github.com/JetBrains/JetBrainsRuntime) which
+The easiest way to improve is to use [JetBrainsRuntime](https://github.com/JetBrains/JetBrainsRuntime) (or JBR) which
 is a Java version modified for better hot-redeployment (to be precise, contains DCEVM patches).
 The easiest way to obtain and use JBR is:
 
