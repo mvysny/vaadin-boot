@@ -176,12 +176,12 @@ The easiest way to obtain and use JBR is:
   * Run via Intellij instead of via Gradle, see the "Build and run using" tip above
   * Add the following JVM flags: `-XX:+AllowEnhancedClassRedefinition -dcevm`
 
-This will give you pretty awesome hot-redeployment capabilities. Expert: if you need even
-better hot-redeployment capabilities, please try following the links below:
+This will give you pretty awesome hot-redeployment capabilities, but Vaadin will still complain that
+"Java live reload unavailable", and won't refresh the browser automatically. To achieve that, the
+recommended way is to
+follow the [Live Reload](https://vaadin.com/docs/latest/configuration/live-reload/hotswap-agent) documentation and add
+the `hotswap-agent.jar` as directed. Alternatively:
 
-* Please follow the [Live Reload](https://vaadin.com/docs/latest/configuration/live-reload/hotswap-agent) documentation.
-* (Ubuntu): install `openjdk-11-jre-dcevm` and run your app with the `-dcevm` VM parameter.
-* [Use HotSwapAgent](http://hotswapagent.org/mydoc_setup_intellij_idea.html)
 * Install a JVM which supports DCEVM+HotswapAgent (e.g. [trava-jdk](https://github.com/TravaOpenJDK/trava-jdk-11-dcevm));
   you may then need to run the app with the following VM options: `-dcevm -XX:HotswapAgent=fatjar`.
 * Use JRebel
