@@ -34,7 +34,7 @@ Or Maven:
 		<dependency>
 			<groupId>com.github.mvysny.vaadin-boot</groupId>
 			<artifactId>vaadin-boot</artifactId>
-			<version>12.0</version>
+			<version>12.1</version>
 		</dependency>
     </dependencies>
 </project>
