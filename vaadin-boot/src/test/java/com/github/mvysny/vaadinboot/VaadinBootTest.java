@@ -1,5 +1,9 @@
 package com.github.mvysny.vaadinboot;
 
+import com.vaadin.flow.server.VaadinServlet;
+import jakarta.servlet.Servlet;
+import jakarta.servlet.annotation.WebInitParam;
+import jakarta.servlet.annotation.WebServlet;
 import org.eclipse.jetty.ee10.webapp.WebAppContext;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,8 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class VaadinBootTest {
     /**
@@ -123,5 +126,13 @@ public class VaadinBootTest {
     public void scanTestClasspathModifiesWebAppConfig() throws Exception {
         final WebAppContext ctx = new VaadinBoot().scanTestClasspath().createWebAppContext();
         assertEquals(".*\\.jar|.*/classes/.*|.*/test-classes/.*", ctx.getAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern"));
+    }
+
+    @WebServlet(name = "myservlet", initParams = @WebInitParam(name = "foo", value = "bar"))
+    public static class MyServlet extends VaadinServlet {}
+
+    @Test
+    public void smokeCustomServlet() throws Exception {
+        new VaadinBoot().withServlet((Class<? extends Servlet>) MyServlet.class);
     }
 }

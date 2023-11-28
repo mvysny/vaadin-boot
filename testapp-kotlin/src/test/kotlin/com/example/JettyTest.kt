@@ -1,11 +1,11 @@
 package com.example
 
 import com.github.mvysny.vaadinboot.VaadinBoot
+import jakarta.servlet.Servlet
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.io.IOException
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -18,21 +18,23 @@ class JettyTest {
     private var vaadinBoot: VaadinBoot? = null
     @BeforeEach
     fun startJetty() {
-        Assertions.assertFalse(Bootstrap.initialized)
-        vaadinBoot = VaadinBoot().setPort(44312).localhostOnly()
+        assertFalse(Bootstrap.initialized)
+        vaadinBoot = VaadinBoot().setPort(44312).localhostOnly().withServlet(MyServlet::class.java as Class<Servlet>)
         vaadinBoot!!.start()
     }
 
     @AfterEach
     fun stopJetty() {
         vaadinBoot!!.stop("tests")
-        Assertions.assertFalse(Bootstrap.initialized)
+        assertFalse(Bootstrap.initialized)
     }
 
     @Test
     fun testAppIsUp() {
         // make sure Bootstrap was called
-        Assertions.assertTrue(Bootstrap.initialized)
+        assertTrue(Bootstrap.initialized)
+        // make sure the init parameter is parsed by Jetty correctly
+        assertEquals("bar", Bootstrap.fooInitParamValue)
 
         // make sure something is running on port 44312
         val client = HttpClient.newBuilder().build()
