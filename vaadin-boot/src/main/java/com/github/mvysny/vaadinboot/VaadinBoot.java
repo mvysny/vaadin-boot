@@ -48,13 +48,6 @@ public class VaadinBoot {
     int port = Integer.parseInt(Env.getProperty("SERVER_PORT", "server.port", "" + DEFAULT_PORT));
 
     /**
-     * The VaadinServlet.
-     */
-    @VisibleForTesting
-    @NotNull
-    Class<? extends Servlet> servlet;
-
-    /**
      * Listen on interface handling given host name. Defaults to <code>null</code> which causes Jetty
      * to listen on all interfaces.
      * <br/>
@@ -107,17 +100,6 @@ public class VaadinBoot {
     private boolean useVirtualThreadsIfAvailable = true;
 
     /**
-     * Creates the new instance of the Boot launcher.
-     */
-    public VaadinBoot() {
-        try {
-            servlet = Class.forName("com.vaadin.flow.server.VaadinServlet").asSubclass(Servlet.class);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
      * Sets the port to listen on. Listens on {@value #DEFAULT_PORT} by default.
      * @param port the new port, 1..65535
      * @return this
@@ -150,17 +132,6 @@ public class VaadinBoot {
     @NotNull
     public VaadinBoot localhostOnly() {
         return listenOn("localhost");
-    }
-
-    /**
-     * Bootstraps custom servlet instead of the default <code>com.vaadin.flow.server.VaadinServlet</code>.
-     * @param vaadinServlet the custom servlet, not null.
-     * @return this
-     */
-    @NotNull
-    public VaadinBoot withServlet(@NotNull Class<? extends Servlet> vaadinServlet) {
-        this.servlet = Objects.requireNonNull(vaadinServlet);
-        return this;
     }
 
     /**
@@ -360,7 +331,11 @@ public class VaadinBoot {
         final Resource webRoot = Env.findWebRoot(context.getResourceFactory());
         context.setBaseResource(webRoot);
         context.setContextPath(contextRoot);
-        context.addServlet(servlet, "/*");
+
+        // don't add the servlet this way - the @WebServlet annotation is ignored!
+        // https://github.com/mvysny/vaadin-boot/issues/22
+//        context.addServlet(servlet, "/*");
+
         // when the webapp fails to initialize, make sure that start() throws.
         context.setThrowUnavailableOnStartupException(true);
         if (!disableClasspathScanning) {

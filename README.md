@@ -317,6 +317,21 @@ public class Main {
 }
 ```
 
+This way is not recommended since any annotations on the servlet will be ignored.
+
+### Overriding Vaadin Servlet
+
+Simply introduce a class into your project which extends `VaadinServlet`, then add any necessary annotations,
+for example:
+
+```java
+@WebServlet(name = "myservlet", urlPatterns = {"/*"}, initParams = @WebInitParam(name = "foo", value = "bar"))
+class MyServlet extends VaadinServlet {}
+```
+
+By default, Vaadin's `ServletDeployer` will auto-register `VaadinServlet` but it will skip
+this kind of registration if there's already another servlet inheriting from `VaadinServlet`.
+
 ## Packaging Your Apps
 
 This part documents hints for buildscripts (`pom.xml`/`build.gradle`) of your app. When in doubt, take a look

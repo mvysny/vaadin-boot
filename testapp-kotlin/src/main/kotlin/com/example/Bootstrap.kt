@@ -63,14 +63,12 @@ class AppShell : AppShellConfigurator
 /**
  * Tests a custom servlet with an init parameter. Tests for https://github.com/mvysny/vaadin-boot/issues/22
  */
-@WebServlet(name = "myservlet", initParams = [WebInitParam(name = "foo", value = "bar")])
+@WebServlet(name = "myservlet", urlPatterns = ["/*"], initParams = [WebInitParam(name = "foo", value = "bar")])
 class MyServlet : VaadinServlet()
 
 object Main {
     @JvmStatic
     fun main(args: Array<String>) {
-        VaadinBoot()
-            .withServlet(MyServlet::class.java as Class<Servlet>)
-            .run()
+        VaadinBoot().run()
     }
 }
