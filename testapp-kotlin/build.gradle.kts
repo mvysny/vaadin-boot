@@ -6,7 +6,7 @@ val kaributesting_version: String by extra
 plugins {
     id("com.vaadin")
     application
-    kotlin("jvm") version "1.9.20"
+    kotlin("jvm") version "1.9.22"
 }
 
 dependencies {
@@ -14,7 +14,7 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:$slf4j_version")
     implementation("com.vaadin:vaadin-core:$vaadin_version") {
         afterEvaluate {
-            if (vaadin.productionMode) {
+            if (vaadin.productionMode.get()) {
                 exclude(module = "vaadin-dev")
             }
         }

@@ -16,7 +16,7 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:$slf4j_version")
     implementation("com.vaadin:vaadin-core:$vaadin_version") {
         afterEvaluate {
-            if (vaadin.productionMode) {
+            if (vaadin.productionMode.get()) {
                 exclude(module = "vaadin-dev")
             }
         }
