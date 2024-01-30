@@ -1,0 +1,20 @@
+[versions]
+
+vaadin = "24.3.3"
+kaributesting = "2.1.1"
+# https://repo1.maven.org/maven2/org/slf4j/slf4j-api/
+slf4j = "2.0.9"
+# https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/
+junit = "5.9.3"
+# check latest version at https://eclipse.dev/jetty/download.php
+jetty = "12.0.5"
+
+[libraries]
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
+jetbrains-annotations = "org.jetbrains:annotations:24.0.1"
+jetty-webapp = { module = "org.eclipse.jetty.ee10:jetty-ee10-annotations", version.ref = "jetty" }
+jetty-websocket = { module = "org.eclipse.jetty.ee10.websocket:jetty-ee10-websocket-jakarta-server", version.ref = "jetty" }
+vaadin-open = "com.vaadin:open:8.5.0"  # opens url in a browser
+vaadin-core = { module = "com.vaadin:vaadin-core", version.ref = "vaadin" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
