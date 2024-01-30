@@ -1,7 +1,6 @@
 [versions]
 
 vaadin = "24.3.3"
-kaributesting = "2.1.1"
 # https://repo1.maven.org/maven2/org/slf4j/slf4j-api/
 slf4j = "2.0.9"
 # https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/
@@ -18,3 +17,4 @@ jetty-websocket = { module = "org.eclipse.jetty.ee10.websocket:jetty-ee10-websoc
 vaadin-open = "com.vaadin:open:8.5.0"  # opens url in a browser
 vaadin-core = { module = "com.vaadin:vaadin-core", version.ref = "vaadin" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
+kaributesting = "com.github.mvysny.kaributesting:karibu-testing-v23:2.1.2"
