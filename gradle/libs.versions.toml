@@ -18,3 +18,4 @@ vaadin-open = "com.vaadin:open:8.5.0"  # opens url in a browser
 vaadin-core = { module = "com.vaadin:vaadin-core", version.ref = "vaadin" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
 kaributesting = "com.github.mvysny.kaributesting:karibu-testing-v23:2.1.2"
+javalin = "io.javalin:javalin:5.6.1"

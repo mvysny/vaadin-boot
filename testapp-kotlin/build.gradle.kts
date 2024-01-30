@@ -1,7 +1,4 @@
-val vaadin_version: String by extra
-val slf4j_version: String by extra
-val junit_version: String by extra
-val kaributesting_version: String by extra
+import com.vaadin.gradle.getBooleanProperty
 
 plugins {
     id("com.vaadin")
@@ -11,23 +8,22 @@ plugins {
 
 dependencies {
     implementation(project(":vaadin-boot"))
-    implementation("org.slf4j:slf4j-simple:$slf4j_version")
-    implementation("com.vaadin:vaadin-core:$vaadin_version") {
-        afterEvaluate {
-            if (vaadin.productionMode.get()) {
-                exclude(module = "vaadin-dev")
-            }
+    implementation(libs.slf4j.simple)
+    implementation(libs.vaadin.core) {
+        // https://github.com/vaadin/flow/issues/18572
+        if (vaadin.productionMode.map { v -> getBooleanProperty("vaadin.productionMode") ?: v }.get()) {
+            exclude(module = "vaadin-dev")
         }
     }
 
-    implementation("io.javalin:javalin:5.6.1") {
+    implementation(libs.javalin) {
         exclude(group = "org.eclipse.jetty")
         exclude(group = "org.eclipse.jetty.websocket")
         exclude(group = "com.fasterxml.jackson.core")
     }
 
-    testImplementation("com.github.mvysny.kaributesting:karibu-testing-v23:$kaributesting_version")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:$junit_version")
+    testImplementation(libs.kaributesting)
+    testImplementation(libs.junit.jupiter.engine)
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
