@@ -757,9 +757,14 @@ to localize your apps. Please find more at [Vaadin Localization](https://mvysny.
 
 ### Configuration
 
-To configure your app, simply read a JSON file from `/etc/your-app/config.json` via
-[Gson](https://github.com/google/gson) (or a YAML file via [SnakeYAML](https://github.com/snakeyaml/snakeyaml))
-directly to a Java bean. If the file doesn't exist, you can notify the user and use a default
+To configure your app, simply read a config file from the filesystem, e.g. `/etc/your-app/config.toml`.
+We recommend to use [TOML](https://toml.io) file via the [toml4j](https://github.com/mwanji/toml4j) parser,
+but any of the following will do as well:
+
+* JSON file from `/etc/your-app/config.json` via [Gson](https://github.com/google/gson)
+* YAML file via [SnakeYAML](https://github.com/snakeyaml/snakeyaml)
+
+You read the config file directly to a Java bean. If the file doesn't exist, you can notify the user and use a default
 config file, or you may throw an exception if the configuration file is required.
 
 You can also use a standard Java validation (or your own `validate()` methods) to validate the values in
