@@ -758,7 +758,7 @@ to localize your apps. Please find more at [Vaadin Localization](https://mvysny.
 ### Configuration
 
 To configure your app, simply read a config file from the filesystem, e.g. `/etc/your-app/config.toml`.
-We recommend to use [TOML](https://toml.io) file via the [toml4j](https://github.com/mwanji/toml4j) parser,
+We recommend to use [TOML](https://toml.io) file via the [tomlj](https://github.com/tomlj/tomlj) parser,
 but any of the following will do as well:
 
 * JSON file from `/etc/your-app/config.json` via [Gson](https://github.com/google/gson)
