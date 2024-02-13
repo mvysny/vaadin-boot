@@ -1,7 +1,7 @@
 [versions]
 vaadin = "24.3.4"
 # https://repo1.maven.org/maven2/org/slf4j/slf4j-api/
-slf4j = "2.0.9"
+slf4j = "2.0.11"
 # https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/
 junit = "5.9.3"
 # check latest version at https://eclipse.dev/jetty/download.php
