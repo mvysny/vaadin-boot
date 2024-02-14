@@ -113,7 +113,7 @@ final class Env {
 
     /**
      * Returns the JVM major version.
-     * @return 17 or 21.
+     * @return JVM major version, such as 17 or 21.
      */
     static int getJavaVersion() {
         return Runtime.version().version().get(0);

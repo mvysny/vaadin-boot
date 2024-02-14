@@ -100,6 +100,12 @@ public class VaadinBoot {
     private boolean useVirtualThreadsIfAvailable = true;
 
     /**
+     * Creates new boot instance.
+     */
+    public VaadinBoot() {
+    }
+
+    /**
      * Sets the port to listen on. Listens on {@value #DEFAULT_PORT} by default.
      * @param port the new port, 1..65535
      * @return this
