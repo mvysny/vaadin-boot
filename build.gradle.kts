@@ -50,6 +50,10 @@ subprojects {
             isFailOnError = false
         }
 
+        tasks.withType<JavaCompile> {
+            options.isDeprecation = true
+        }
+
         publishing {
             repositories {
                 maven {
