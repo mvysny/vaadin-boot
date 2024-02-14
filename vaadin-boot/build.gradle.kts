@@ -18,6 +18,7 @@ dependencies {
     testImplementation(libs.slf4j.simple)
     testImplementation(libs.junit.jupiter.engine)
     testImplementation(libs.vaadin.core)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 val configureMavenCentral = ext["configureMavenCentral"] as (artifactId: String) -> Unit

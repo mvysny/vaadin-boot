@@ -24,6 +24,7 @@ dependencies {
 
     testImplementation(libs.kaributesting)
     testImplementation(libs.junit.jupiter.engine)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {

@@ -15,6 +15,7 @@ vaadin-open = "com.vaadin:open:8.5.0"  # opens url in a browser
 vaadin-core = { module = "com.vaadin:vaadin-core", version.ref = "vaadin" }
 # https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/
 junit-jupiter-engine = "org.junit.jupiter:junit-jupiter-engine:5.10.2"
+junit-platform-launcher = "org.junit.platform:junit-platform-launcher:1.10.2"
 kaributesting = "com.github.mvysny.kaributesting:karibu-testing-v24:2.1.2"
 javalin = "io.javalin:javalin:5.6.1"
 
