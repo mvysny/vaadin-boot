@@ -24,5 +24,6 @@ dependencies {
     testRuntimeOnly(libs.junit.platform.launcher)
 }
 
+@Suppress("UNCHECKED_CAST")
 val configureMavenCentral = ext["configureMavenCentral"] as (artifactId: String) -> Unit
 configureMavenCentral("vaadin-boot")
