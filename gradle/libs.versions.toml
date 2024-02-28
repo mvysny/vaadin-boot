@@ -17,7 +17,7 @@ vaadin-core = { module = "com.vaadin:vaadin-core", version.ref = "vaadin" }
 junit-jupiter-engine = "org.junit.jupiter:junit-jupiter-engine:5.10.2"
 junit-platform-launcher = "org.junit.platform:junit-platform-launcher:1.10.2"
 kaributesting = "com.github.mvysny.kaributesting:karibu-testing-v24:2.1.4"
-javalin = "io.javalin:javalin:5.6.1"
+javalin = "io.javalin:javalin:6.1.2"
 commons-io = "commons-io:commons-io:2.15.0"
 
 [plugins]
