@@ -10,8 +10,7 @@ dependencies {
     implementation(project(":vaadin-boot"))
     implementation(libs.slf4j.simple)
     implementation(libs.vaadin.core) {
-        // https://github.com/vaadin/flow/issues/18572
-        if (vaadin.productionMode.map { v -> getBooleanProperty("vaadin.productionMode") ?: v }.get()) {
+        if (vaadin.effective.productionMode.get()) {
             exclude(module = "vaadin-dev")
         }
     }
