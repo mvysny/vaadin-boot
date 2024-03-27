@@ -3,7 +3,7 @@ vaadin = "24.3.8"
 # https://repo1.maven.org/maven2/org/slf4j/slf4j-api/
 slf4j = "2.0.12"
 # check latest version at https://eclipse.dev/jetty/download.php
-jetty = "12.0.6"
+jetty = "12.0.7"
 
 [libraries]
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
@@ -16,7 +16,7 @@ vaadin-core = { module = "com.vaadin:vaadin-core", version.ref = "vaadin" }
 # https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/
 junit-jupiter-engine = "org.junit.jupiter:junit-jupiter-engine:5.10.2"
 junit-platform-launcher = "org.junit.platform:junit-platform-launcher:1.10.2"
-kaributesting = "com.github.mvysny.kaributesting:karibu-testing-v24:2.1.4"
+kaributesting = "com.github.mvysny.kaributesting:karibu-testing-v24:2.1.5"
 javalin = "io.javalin:javalin:5.6.1"
 commons-io = "commons-io:commons-io:2.15.0"
 
