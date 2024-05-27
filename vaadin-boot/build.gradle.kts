@@ -3,19 +3,19 @@ plugins {
 }
 
 dependencies {
-    implementation("org.slf4j:slf4j-api:${properties["slf4j_version"]}")
-    implementation("org.jetbrains:annotations:23.1.0")
+    implementation(libs.slf4j.api)
+    implementation(libs.jetbrains.annotations)
 
     // Embedded Jetty dependencies
-    api("org.eclipse.jetty:jetty-webapp:${properties["jetty_version"]}")
-    api("org.eclipse.jetty.websocket:websocket-javax-server:${properties["jetty_version"]}")
+    api(libs.jetty.webapp)
+    api(libs.jetty.websocket)
 
     // opens url in a browser; Vaadin dependency
-    implementation("com.vaadin:open:8.5.0")
+    implementation(libs.vaadin.open)
 
-    testImplementation("org.slf4j:slf4j-simple:${properties["slf4j_version"]}")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:${properties["junit_version"]}")
-    testImplementation("com.vaadin:vaadin-core:${properties["vaadin_version"]}") {
+    testImplementation(libs.slf4j.simple)
+    testImplementation(libs.junit.jupiter.engine)
+    testImplementation(libs.vaadin.core) {
         exclude(module = "javax.annotation-api")
     }
 }

@@ -6,23 +6,21 @@ plugins {
 
 dependencies {
     implementation(project(":vaadin-boot"))
-    implementation("org.slf4j:slf4j-simple:${properties["slf4j_version"]}")
-    implementation("com.vaadin:vaadin-core:${properties["vaadin_version"]}") {
-        afterEvaluate {
-            if (vaadin.productionMode) {
-                exclude(module = "vaadin-dev-server")
-            }
+    implementation(libs.slf4j.simple)
+    implementation(libs.vaadin.core) {
+        if (vaadin.productionMode) {
+            exclude(module = "vaadin-dev-server")
         }
     }
 
-    implementation("io.javalin:javalin:4.6.7") {
+    implementation(libs.javalin) {
         exclude(group = "org.eclipse.jetty")
         exclude(group = "org.eclipse.jetty.websocket")
         exclude(group = "com.fasterxml.jackson.core")
     }
 
-    testImplementation("com.github.mvysny.kaributesting:karibu-testing-v23:${properties["kaributesting_version"]}")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:${properties["junit_version"]}")
+    testImplementation(libs.kaributesting)
+    testImplementation(libs.junit.jupiter.engine)
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
