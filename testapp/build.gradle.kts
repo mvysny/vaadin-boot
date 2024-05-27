@@ -1,6 +1,6 @@
 plugins {
-    id("com.vaadin")
-    id("application")
+    alias(libs.plugins.vaadin)
+    application
 }
 
 dependencies {

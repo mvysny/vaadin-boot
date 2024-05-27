@@ -1,7 +1,7 @@
 plugins {
-    id("com.vaadin")
-    id("application")
-    kotlin("jvm") version "1.8.21"
+    alias(libs.plugins.vaadin)
+    application
+    kotlin("jvm") version "1.9.23"
 }
 
 dependencies {
