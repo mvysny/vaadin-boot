@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        java: [11, 17, 21]
+        java: [11, 17]   # Vaadin 23 classpath scanning doesn't seem to support temurin 21 but happily works with openjdk-21???
 
     runs-on: ${{ matrix.os }}
 
