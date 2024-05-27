@@ -1,7 +1,9 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.vaadin)
     application
-    kotlin("jvm") version "1.9.23"
+    kotlin("jvm") version "2.0.0"
 }
 
 dependencies {
@@ -24,7 +26,7 @@ dependencies {
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions.jvmTarget = "11"
+    compilerOptions.jvmTarget = JvmTarget.JVM_11
 }
 
 application {
