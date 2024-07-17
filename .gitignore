@@ -1,8 +1,8 @@
 .idea
 .gradle
 build
-testapp/frontend/generated
-testapp-kotlin/frontend/generated
+testapp/src/main/frontend/generated
+testapp-kotlin/src/main/frontend/generated
 out
 
 !**/src/main/dev-bundle/webapp/VAADIN/build
