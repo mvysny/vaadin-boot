@@ -263,6 +263,7 @@ public class VaadinBoot {
             System.out.println("No stdin available. press CTRL+C to shutdown");
             server.join(); // blocks endlessly
         } else {
+            // Enter pressed - shut down.
             stop("Main: Shutting down");
         }
     }
