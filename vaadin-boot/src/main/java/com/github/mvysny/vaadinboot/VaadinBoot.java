@@ -2,6 +2,8 @@ package com.github.mvysny.vaadinboot;
 
 import com.vaadin.open.Open;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import org.eclipse.jetty.util.thread.ThreadPool;
 import org.eclipse.jetty.webapp.MetaInfConfiguration;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.jetbrains.annotations.NotNull;
@@ -12,9 +14,12 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.Servlet;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.util.Objects;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * Bootstraps your Vaadin application from your main() function. Simply call
@@ -172,6 +177,14 @@ public class VaadinBoot {
     }
 
     /**
+     * When the app launches, open the browser automatically when in dev mode.
+     * @return if true, open the browser automatically when in dev mode.
+     */
+    public boolean isOpenBrowserInDevMode() {
+        return openBrowserInDevMode;
+    }
+
+    /**
      * Returns the URL where the app is running, for example <code>http://localhost:8080/app</code>.
      * @return the server URL, not null.
      */
@@ -193,6 +206,14 @@ public class VaadinBoot {
     }
 
     /**
+     * See {@link #disableClasspathScanning()}.
+     * @return If true, no classpath scanning is performed - no servlets nor weblisteners are detected.
+     */
+    public boolean isDisableClasspathScanning() {
+        return disableClasspathScanning;
+    }
+
+    /**
      * When called, the test classpath will also be scanned for annotations. Defaults to false.
      * <p></p>
      * Use only in case when you have Vaadin routes in <code>src/test/java/</code> - it's
@@ -205,6 +226,39 @@ public class VaadinBoot {
     public VaadinBoot scanTestClasspath() {
         isScanTestClasspath = true;
         return this;
+    }
+
+    /**
+     * See {@link #scanTestClasspath()}.
+     * @return if true, the test classpath will also be scanned for annotations. Defaults to false.
+     */
+    public boolean isScanTestClasspath() {
+        return isScanTestClasspath;
+    }
+
+    /**
+     * If true and we're running on JDK 21+, we'll configure Jetty to take advantage
+     * of virtual threads.
+     * <br/>
+     * Defaults to true.
+     * @param useVirtualThreadsIfAvailable if true (default), use virtual threads to
+     *                                     handle http requests if running on JDK21+
+     * @return this
+     */
+    @NotNull
+    public VaadinBoot useVirtualThreadsIfAvailable(boolean useVirtualThreadsIfAvailable) {
+        this.useVirtualThreadsIfAvailable = useVirtualThreadsIfAvailable;
+        return this;
+    }
+
+    /**
+     * If true and we're running on JDK 21+, we'll configure Jetty to take advantage
+     * of virtual threads. See {@link #useVirtualThreadsIfAvailable(boolean)}.
+     * @return If true and we're running on JDK 21+, we'll configure Jetty to take advantage
+     * of virtual threads.
+     */
+    public boolean isUseVirtualThreadsIfAvailable() {
+        return useVirtualThreadsIfAvailable;
     }
 
     // mark volatile: might be accessed by the shutdown hook from a different thread.
@@ -231,7 +285,7 @@ public class VaadinBoot {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> stop("Shutdown hook called, shutting down")));
         System.out.println("Press ENTER or CTRL+C to shutdown");
 
-        if (openBrowserInDevMode && !Env.isVaadinProductionMode) {
+        if (isOpenBrowserInDevMode() && !Env.isVaadinProductionMode) {
             Open.open(getServerURL());
         }
 
@@ -323,13 +377,13 @@ public class VaadinBoot {
         context.addServlet(servlet, "/*");
         // when the webapp fails to initialize, make sure that start() throws.
         context.setThrowUnavailableOnStartupException(true);
-        if (!disableClasspathScanning) {
+        if (!isDisableClasspathScanning()) {
             // this will properly scan the classpath for all @WebListeners, including the most important
             // com.vaadin.flow.server.startup.ServletContextListeners.
             // See also https://mvysny.github.io/vaadin-lookup-vs-instantiator/
             // Jetty documentation: https://www.eclipse.org/jetty/documentation/jetty-12/operations-guide/index.html#og-annotations-scanning
             String pattern = ".*\\.jar|.*/classes/.*";
-            if (isScanTestClasspath) {
+            if (isScanTestClasspath()) {
                 pattern += "|.*/test-classes/.*";
             }
             context.setAttribute(MetaInfConfiguration.CONTAINER_JAR_PATTERN, pattern);
@@ -365,4 +419,28 @@ public class VaadinBoot {
 
     @NotNull
     private static final Logger log = LoggerFactory.getLogger(VaadinBoot.class);
+
+    /**
+     * Creates a thread pool for Jetty to serve http requests.
+     * @return the thread pool, may be null if the default one is to be used.
+     */
+    @Nullable
+    protected ThreadPool newThreadPool() {
+        if (isUseVirtualThreadsIfAvailable() && Env.getJavaVersion() >= 21) {
+            log.info("Configuring Jetty to use JVM 21+ virtual threads");
+            // see https://eclipse.dev/jetty/documentation/jetty-12/programming-guide/index.html#pg-arch-threads-thread-pool-virtual-threads
+            final QueuedThreadPool threadPool = new QueuedThreadPool();
+            try {
+                // reflection: we call Java 21+ method, however we're compiled with Java 17
+                final Method m = Executors.class.getDeclaredMethod("newVirtualThreadPerTaskExecutor");
+                threadPool.setVirtualThreadsExecutor(((Executor) m.invoke(null)));
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+            return threadPool;
+        } else {
+            log.info("Configuring Jetty to use regular JVM threads");
+            return null;
+        }
+    }
 }
