@@ -3,7 +3,7 @@ import com.vaadin.gradle.getBooleanProperty
 plugins {
     alias(libs.plugins.vaadin)
     application
-    kotlin("jvm") version "1.9.22"
+    kotlin("jvm") version "2.0.0"
 }
 
 dependencies {
