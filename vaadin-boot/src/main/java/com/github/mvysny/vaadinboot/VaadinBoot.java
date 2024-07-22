@@ -278,6 +278,9 @@ public class VaadinBoot {
      * Runs your app. Blocks until the user presses Enter or CTRL+C.
      * <p></p>
      * WARNING: this function may never terminate when the entire JVM may be killed on CTRL+C.
+     * <br/>
+     * If you wish to wait for the Enter press yourself (if you want to control the lifecycle yourself),
+     * call {@link #start()}/{@link #stop(String)} instead of this function.
      * @throws Exception when the webapp fails to start.
      */
     public void run() throws Exception {
@@ -320,8 +323,8 @@ public class VaadinBoot {
     }
 
     /**
-     * Starts the Jetty server and your app. Blocks until the app is fully started, then
-     * resumes execution. Mostly used for testing.
+     * Starts the Jetty server and your app. Blocks until the app is fully started, then returns.
+     * Mostly used for testing.
      * @throws Exception when the webapp fails to start.
      */
     public void start() throws Exception {
