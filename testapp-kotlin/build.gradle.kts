@@ -1,4 +1,5 @@
 import com.vaadin.gradle.getBooleanProperty
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.vaadin)
@@ -27,7 +28,7 @@ dependencies {
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions.jvmTarget = "17"
+    compilerOptions.jvmTarget = JvmTarget.JVM_17
 }
 
 application {
