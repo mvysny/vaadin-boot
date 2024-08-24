@@ -19,9 +19,9 @@ dependencies {
     implementation(libs.commons.io)
 
     testImplementation(libs.slf4j.simple)
-    testImplementation(libs.junit.jupiter.engine)
+    testImplementation(libs.junit)
     testImplementation(libs.vaadin.core)
-    testRuntimeOnly(libs.junit.platform.launcher)
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 @Suppress("UNCHECKED_CAST")
