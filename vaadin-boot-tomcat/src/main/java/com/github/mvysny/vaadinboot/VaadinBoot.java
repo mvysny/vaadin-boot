@@ -1,28 +1,18 @@
 package com.github.mvysny.vaadinboot;
 
 import com.vaadin.open.Open;
-import jakarta.servlet.Servlet;
+import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
-import org.eclipse.jetty.ee10.webapp.MetaInfConfiguration;
-import org.eclipse.jetty.ee10.webapp.WebAppContext;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.util.resource.Resource;
-import org.eclipse.jetty.util.thread.QueuedThreadPool;
-import org.eclipse.jetty.util.thread.ThreadPool;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.util.Objects;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 /**
  * Bootstraps your Vaadin application from your main() function. Simply call
@@ -39,6 +29,17 @@ public class VaadinBoot {
      * The default port where Tomcat will listen for http:// traffic.
      */
     private static final int DEFAULT_PORT = 8080;
+
+    @NotNull
+    private Class<?> servletClass;
+
+    {
+        try {
+            servletClass = Class.forName("com.vaadin.flow.server.VaadinServlet");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      * The port where Jetty will listen for http:// traffic. Defaults to {@value #DEFAULT_PORT}.
@@ -77,6 +78,12 @@ public class VaadinBoot {
      * Creates new boot instance.
      */
     public VaadinBoot() {
+    }
+
+    @NotNull
+    public VaadinBoot setServletClass(@NotNull Class<?> servletClass) {
+        this.servletClass = Objects.requireNonNull(servletClass);
+        return this;
     }
 
     /**
@@ -211,21 +218,21 @@ public class VaadinBoot {
             System.setProperty("vaadin.productionMode", "true");
         }
 
-        final WebAppContext context = createWebAppContext();
-        log.debug("Jetty WebAppContext created");
+        server = new Tomcat();
+        server.setPort(port);
+        server.setHostname(hostName);
+        server.getConnector(); // make sure the Connector is created so that Tomcat listens for http on 8080
+        log.debug("Tomcat Connector created");
+        final File basedir = File.createTempFile("tomcat-" + port, "war").getAbsoluteFile();
+        server.setBaseDir(basedir.getAbsolutePath());
+        log.debug("Tomcat basedir configured to " + basedir);
 
-        server = new Server(newThreadPool());
-        final ServerConnector serverConnector = new ServerConnector(server);
-        serverConnector.setPort(port);
-        if (hostName != null) {
-            serverConnector.setHost(hostName);
-        }
-        server.addConnector(serverConnector);
-        server.setHandler(context);
-        log.debug("Jetty Server configured");
+        final Context context = createWebAppContext();
+        log.debug("Tomcat Context created");
+
         try {
             server.start();
-            log.debug("Jetty Server started");
+            log.debug("Tomcat Server started");
 
             onStarted(context);
 
@@ -244,47 +251,33 @@ public class VaadinBoot {
     }
 
     /**
-     * Invoked when the Jetty server has been started. By default, does nothing. You can
+     * Invoked when the Tomcat server has been started. By default, does nothing. You can
      * for example dump the quickstart configuration here.
      * @param context the web app context.
      * @throws IOException on i/o exception
      */
-    protected void onStarted(@NotNull WebAppContext context) throws IOException {
+    protected void onStarted(@NotNull Context context) throws IOException {
     }
 
     /**
-     * Creates the Jetty {@link WebAppContext}.
-     * @return the {@link WebAppContext}
+     * Creates the Tomcat {@link Context}.
+     * @return the {@link Context}
      * @throws IOException on i/o exception
      */
     @NotNull
-    protected WebAppContext createWebAppContext() throws IOException {
-        final WebAppContext context = new WebAppContext();
-        final Resource webRoot = Env.findWebRoot(context.getResourceFactory());
-        context.setBaseResource(webRoot);
-        context.setContextPath(contextRoot);
-
-        // don't add the servlet this way - the @WebServlet annotation is ignored!
-        // https://github.com/mvysny/vaadin-boot/issues/22
-//        context.addServlet(servlet, "/*");
-
-        // when the webapp fails to initialize, make sure that start() throws.
-        context.setThrowUnavailableOnStartupException(true);
-        if (!isDisableClasspathScanning()) {
-            // this will properly scan the classpath for all @WebListeners, including the most important
-            // com.vaadin.flow.server.startup.ServletContextListeners.
-            // See also https://mvysny.github.io/vaadin-lookup-vs-instantiator/
-            // Jetty documentation: https://www.eclipse.org/jetty/documentation/jetty-12/operations-guide/index.html#og-annotations-scanning
-            String pattern = ".*\\.jar|.*/classes/.*";
-            if (isScanTestClasspath()) {
-                pattern += "|.*/test-classes/.*";
-            }
-            context.setAttribute(MetaInfConfiguration.CONTAINER_JAR_PATTERN, pattern);
-            // must be set to true, to enable classpath scanning:
-            // https://eclipse.dev/jetty/documentation/jetty-12/operations-guide/index.html#og-annotations-scanning
-            context.setConfigurationDiscovered(true);
+    protected Context createWebAppContext() throws IOException {
+        File wr = new File("src/main/webapp").getAbsoluteFile();
+        if (!wr.exists()) {
+            wr = new File("webapp").getAbsoluteFile();
         }
-        return context;
+        if (!wr.exists()) {
+            throw new IllegalStateException("Invalid state: The webapp folder isn't present neither at src/main/webapp (development mode) nor at webapp (production)");
+        }
+
+        final Context ctx = server.addWebapp("", wr.getAbsolutePath());
+        server.addServlet("", "", servletClass.getName());
+        ctx.addServletMappingDecoded("/*", "");
+        return ctx;
     }
 
     /**
