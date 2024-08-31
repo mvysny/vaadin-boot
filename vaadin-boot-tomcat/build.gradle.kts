@@ -13,8 +13,8 @@ dependencies {
     // we need to include basic support for jsp otherwise Tomcat would complain
     implementation(libs.tomcat.jasper) {
         // but we can exclude the jsp compiler and all other unnecessary stuff
-    	exclude(module = "ecj")
-        exclude(module = "tomcat-embed-el")
+    	exclude(group = "org.eclipse.jdt", module = "ecj")
+        exclude(group = "org.apache.tomcat.embed", module = "tomcat-embed-el")
     }
 
     // opens url in a browser
