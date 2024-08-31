@@ -220,9 +220,11 @@ public class VaadinBoot {
         }
 
         server = new Tomcat();
+        // first thing we need to do is to configure the basedir: if the basedir is configured
+        // after connector is created, the setting will be ignored.
         final File basedir = Files.createTempDirectory("tomcat-" + port).toFile().getAbsoluteFile();
-        log.debug("Tomcat basedir configured to " + basedir);
         server.setBaseDir(basedir.getAbsolutePath());
+        log.debug("Tomcat basedir configured to " + basedir);
         server.setPort(port);
         server.setHostname(hostName);
         server.getConnector(); // make sure the Connector is created so that Tomcat listens for http on 8080
