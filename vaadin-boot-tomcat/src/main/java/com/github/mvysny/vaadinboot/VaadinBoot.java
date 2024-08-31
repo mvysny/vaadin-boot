@@ -266,7 +266,7 @@ public class VaadinBoot {
             throw new IllegalStateException("Invalid state: The webapp folder isn't present neither at " + webappFolderDev + " (development mode) nor at " + webappFolderProd + " (production)");
         }
 
-        final Context ctx = server.addWebapp("", docBase.getAbsolutePath());
+        final Context ctx = server.addWebapp(contextRoot, docBase.getAbsolutePath());
         // we need to add classes to Tomcat to enable classpath scanning, in order to
         // auto-discover app @WebServlet and @WebListener.
         File additionWebInfClasses = new File("target/classes").getAbsoluteFile();  // dev env with Maven
