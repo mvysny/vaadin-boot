@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collections;
@@ -77,25 +76,17 @@ public class TomcatWebServer implements WebServer {
     /**
      * Creates the Tomcat {@link Context}.
      * @return the {@link Context}
-     * @throws IOException on i/o exception
      */
     @NotNull
-    protected Context createWebAppContext(@NotNull VaadinBootBase<?> configuration) throws IOException {
-        final File webappFolderDev = new File("src/dist/webapp").getAbsoluteFile();
-        final File webappFolderProd = new File("../webapp").getAbsoluteFile();
-        File docBase = webappFolderDev;
-        if (!docBase.exists()) {
-            docBase = webappFolderProd;
-        }
-        if (!docBase.exists()) {
-            throw new IllegalStateException("Invalid state: The webapp folder isn't present neither at " + webappFolderDev + " (development mode) nor at " + webappFolderProd + " (production)");
-        }
+    protected Context createWebAppContext(@NotNull VaadinBootBase<?> configuration) {
+        final File webappFolder = getWebappFolder();
 
         String contextRoot = configuration.contextRoot;
         if (contextRoot.equals("/")) {
             contextRoot = "";
         }
-        final Context ctx = server.addWebapp(contextRoot, docBase.getAbsolutePath());
+        final Context ctx = server.addWebapp(contextRoot, webappFolder.getAbsolutePath());
+
         // we need to add classes to Tomcat to enable classpath scanning, in order to
         // auto-discover app @WebServlet and @WebListener.
         final File classDirMaven = new File("target/classes").getAbsoluteFile();
@@ -129,5 +120,18 @@ public class TomcatWebServer implements WebServer {
             ctx.setResources(resources);
         }
         return ctx;
+    }
+
+    private static @NotNull File getWebappFolder() {
+        final File webappFolderDev = new File("src/dist/webapp").getAbsoluteFile();
+        final File webappFolderProd = new File("../webapp").getAbsoluteFile();
+        File docBase = webappFolderDev;
+        if (!docBase.exists()) {
+            docBase = webappFolderProd;
+        }
+        if (!docBase.exists()) {
+            throw new IllegalStateException("Invalid state: The webapp folder isn't present neither at " + webappFolderDev + " (development mode) nor at " + webappFolderProd + " (production)");
+        }
+        return docBase;
     }
 }
