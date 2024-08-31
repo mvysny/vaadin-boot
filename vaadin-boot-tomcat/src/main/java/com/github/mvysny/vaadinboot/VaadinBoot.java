@@ -16,6 +16,12 @@ import org.jetbrains.annotations.NotNull;
  * listen on localhost.
  */
 public class VaadinBoot extends VaadinBootBase<VaadinBoot> {
+    /**
+     * The regexp matching the file name of the main jar of the app.
+     * <br/>
+     * Used to perform classpath scanning for <code>@WebServlet</code>, <code>@WebListener</code>
+     * and such.
+     */
     @NotNull
     public final String mainJarNameRegex;
 
