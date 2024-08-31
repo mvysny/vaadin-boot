@@ -249,8 +249,7 @@ public class VaadinBoot {
     }
 
     /**
-     * Invoked when the Tomcat server has been started. By default, does nothing. You can
-     * for example dump the quickstart configuration here.
+     * Invoked when the Tomcat server has been started. By default, does nothing.
      * @param context the web app context.
      * @throws IOException on i/o exception
      */
