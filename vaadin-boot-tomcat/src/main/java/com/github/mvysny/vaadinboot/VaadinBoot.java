@@ -57,7 +57,7 @@ public class VaadinBoot {
      */
     @Nullable
     @VisibleForTesting
-    String hostName = Env.getProperty("SERVER_ADDRESS", "server.address");
+    String hostName = Env.getProperty("SERVER_ADDRESS", "server.address", "0.0.0.0");
 
     /**
      * The context root to run under. Defaults to "".
@@ -266,15 +266,17 @@ public class VaadinBoot {
      */
     @NotNull
     protected Context createWebAppContext() throws IOException {
-        File wr = new File("src/main/webapp").getAbsoluteFile();
-        if (!wr.exists()) {
-            wr = new File("webapp").getAbsoluteFile();
+        final File webappFolderDev = new File("src/main/webapp").getAbsoluteFile();
+        final File webappFolderProd = new File("webapp").getAbsoluteFile();
+        File docBase = webappFolderDev;
+        if (!docBase.exists()) {
+            docBase = webappFolderProd;
         }
-        if (!wr.exists()) {
-            throw new IllegalStateException("Invalid state: The webapp folder isn't present neither at src/main/webapp (development mode) nor at webapp (production)");
+        if (!docBase.exists()) {
+            throw new IllegalStateException("Invalid state: The webapp folder isn't present neither at " + webappFolderDev + " (development mode) nor at " + webappFolderProd + " (production)");
         }
 
-        final Context ctx = server.addWebapp("", wr.getAbsolutePath());
+        final Context ctx = server.addWebapp("", docBase.getAbsolutePath());
         server.addServlet("", "", servletClass.getName());
         ctx.addServletMappingDecoded("/*", "");
         return ctx;
