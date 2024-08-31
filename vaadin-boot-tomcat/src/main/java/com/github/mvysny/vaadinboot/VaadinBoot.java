@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.time.Duration;
 import java.util.Objects;
 
@@ -219,13 +220,13 @@ public class VaadinBoot {
         }
 
         server = new Tomcat();
+        final File basedir = Files.createTempDirectory("tomcat-" + port).toFile().getAbsoluteFile();
+        log.debug("Tomcat basedir configured to " + basedir);
+        server.setBaseDir(basedir.getAbsolutePath());
         server.setPort(port);
         server.setHostname(hostName);
         server.getConnector(); // make sure the Connector is created so that Tomcat listens for http on 8080
         log.debug("Tomcat Connector created");
-        final File basedir = File.createTempFile("tomcat-" + port, "war").getAbsoluteFile();
-        server.setBaseDir(basedir.getAbsolutePath());
-        log.debug("Tomcat basedir configured to " + basedir);
 
         final Context context = createWebAppContext();
         log.debug("Tomcat Context created");
