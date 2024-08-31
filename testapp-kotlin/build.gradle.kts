@@ -1,4 +1,3 @@
-import com.vaadin.gradle.getBooleanProperty
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
