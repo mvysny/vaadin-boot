@@ -61,6 +61,7 @@ public class TomcatWebServer implements WebServer {
     @Override
     public void stop() throws Exception {
         server.stop();
+        server = null;
     }
 
     @Override
