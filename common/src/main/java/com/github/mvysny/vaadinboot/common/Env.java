@@ -1,4 +1,4 @@
-package com.github.mvysny.vaadinboot;
+package com.github.mvysny.vaadinboot.common;
 
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
@@ -15,9 +15,9 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 
 /**
- * Environment-related utility functions.
+ * Environment-related utility functions. Internal to Vaadin-Boot, don't use - the API can change at any time.
  */
-final class Env {
+public final class Env {
     private static final Logger log = LoggerFactory.getLogger(Env.class);
     private Env() {}
 
@@ -69,7 +69,7 @@ final class Env {
      * Returns the JVM major version.
      * @return JVM major version, such as 17 or 21.
      */
-    static int getJavaVersion() {
+    public static int getJavaVersion() {
         return Runtime.version().version().get(0);
     }
 
@@ -79,7 +79,7 @@ final class Env {
      * @return short host info
      */
     @NotNull
-    static String dumpHost() {
+    public static String dumpHost() {
         final String os = System.getProperty("os.arch") + " " + System.getProperty("os.name") + " " + System.getProperty("os.version");
         final String java = System.getProperty("java.vendor") + " " + System.getProperty("java.version") + ", major version " + getJavaVersion();
         return "Java: " + java + ", OS: " + os;
@@ -95,7 +95,7 @@ final class Env {
      * @return the value of the configuration property.
      */
     @NotNull
-    static String getProperty(@NotNull String envVariableName, @NotNull String systemPropertyName, @NotNull String defaultValue) {
+    public static String getProperty(@NotNull String envVariableName, @NotNull String systemPropertyName, @NotNull String defaultValue) {
         String result = getProperty(envVariableName, systemPropertyName);
         if (result == null || result.isBlank()) {
             result = defaultValue;
@@ -112,7 +112,7 @@ final class Env {
      * @return the value of the configuration property.
      */
     @Nullable
-    static String getProperty(@NotNull String envVariableName, @NotNull String systemPropertyName) {
+    public static String getProperty(@NotNull String envVariableName, @NotNull String systemPropertyName) {
         Objects.requireNonNull(envVariableName);
         Objects.requireNonNull(systemPropertyName);
         String result = System.getProperty(systemPropertyName);

@@ -3,8 +3,8 @@ plugins {
 }
 
 dependencies {
+    api(project(":common"))
     implementation(libs.slf4j.api)
-    api(libs.jetbrains.annotations)
 
     // Embedded Tomcat dependencies.
     api(libs.tomcat.core)
