@@ -7,6 +7,7 @@ import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.JarResourceSet;
 import org.apache.catalina.webresources.StandardRoot;
+import org.intellij.lang.annotations.RegExp;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
@@ -17,6 +18,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -34,6 +38,8 @@ public class VaadinBoot {
      * The default port where Tomcat will listen for http:// traffic.
      */
     private static final int DEFAULT_PORT = 8080;
+    @NotNull
+    private final String mainJarNameRegex;
 
     /**
      * The port where Jetty will listen for http:// traffic. Defaults to {@value #DEFAULT_PORT}.
@@ -70,8 +76,10 @@ public class VaadinBoot {
 
     /**
      * Creates new boot instance.
+     * @param mainJarNameRegex the regex of the main app jar file name, e.g. <code>testapp-.*\\.jar</code>
      */
-    public VaadinBoot() {
+    public VaadinBoot(@NotNull @RegExp String mainJarNameRegex) {
+        this.mainJarNameRegex = mainJarNameRegex;
     }
 
     /**
@@ -256,8 +264,8 @@ public class VaadinBoot {
      */
     @NotNull
     protected Context createWebAppContext() throws IOException {
-        final File webappFolderDev = new File("src/main/webapp").getAbsoluteFile();
-        final File webappFolderProd = new File("webapp").getAbsoluteFile();
+        final File webappFolderDev = new File("src/dist/webapp").getAbsoluteFile();
+        final File webappFolderProd = new File("../webapp").getAbsoluteFile();
         File docBase = webappFolderDev;
         if (!docBase.exists()) {
             docBase = webappFolderProd;
@@ -269,24 +277,34 @@ public class VaadinBoot {
         final Context ctx = server.addWebapp(contextRoot, docBase.getAbsolutePath());
         // we need to add classes to Tomcat to enable classpath scanning, in order to
         // auto-discover app @WebServlet and @WebListener.
-        File additionWebInfClasses = new File("target/classes").getAbsoluteFile();  // dev env with Maven
+        final File classDirMaven = new File("target/classes").getAbsoluteFile();
+        final File classDirGradle = new File("build/classes").getAbsoluteFile();
+        File additionWebInfClasses = classDirMaven;  // dev env with Maven
         if (!additionWebInfClasses.exists()) {
-            additionWebInfClasses = new File("build/classes").getAbsoluteFile();  // dev env with Gradle
+            additionWebInfClasses = classDirGradle;  // dev env with Gradle
         }
         if (additionWebInfClasses.exists()) {
-            WebResourceRoot resources = new StandardRoot(ctx);
-            resources.addPreResources(new DirResourceSet(resources, "/WEB-INF/classes",
-                    additionWebInfClasses.getAbsolutePath(), "/"));
+            final WebResourceRoot resources = new StandardRoot(ctx);
+            resources.addPreResources(new DirResourceSet(resources, "/WEB-INF/classes", additionWebInfClasses.getAbsolutePath(), "/"));
             ctx.setResources(resources);
         } else {
-            // @todo mavi how to figure out which jar file is the app jar?
-            File productionJar = new File("libs/vaadin-boot-example-maven-1.0-SNAPSHOT.jar").getAbsoluteFile();
-            if (productionJar.exists()) {
-                WebResourceRoot resources = new StandardRoot(ctx);
-                resources.addPreResources(new JarResourceSet(resources, "/WEB-INF/classes",
-                        productionJar.getAbsolutePath(), "/"));
-                ctx.setResources(resources);
+            final File libs = new File("../lib").getAbsoluteFile();
+            if (!libs.exists()) {
+                throw new IllegalStateException("Invalid state: " + libs + " does not exist");
             }
+            final File[] possibleProductionJarFilesArray = libs.listFiles((dir, name) -> name.matches(mainJarNameRegex));
+            final List<File> possibleProductionJarFiles = possibleProductionJarFilesArray == null ? Collections.emptyList() : Arrays.asList(possibleProductionJarFilesArray);
+            if (possibleProductionJarFiles.size() != 1) {
+                throw new IllegalStateException("Invalid state: expected exactly one app jar file " + mainJarNameRegex + " but got " + possibleProductionJarFiles);
+            }
+            final File productionJar = possibleProductionJarFiles.get(0);
+            if (!productionJar.exists()) {
+                throw new IllegalStateException("Invalid state: " + productionJar + " doesn't exist");
+            }
+            final WebResourceRoot resources = new StandardRoot(ctx);
+            resources.addPreResources(new JarResourceSet(resources, "/WEB-INF/classes",
+                    productionJar.getAbsolutePath(), "/"));
+            ctx.setResources(resources);
         }
         return ctx;
     }
