@@ -2,7 +2,11 @@ package com.github.mvysny.vaadinboot;
 
 import com.vaadin.open.Open;
 import org.apache.catalina.Context;
+import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.startup.Tomcat;
+import org.apache.catalina.webresources.DirResourceSet;
+import org.apache.catalina.webresources.JarResourceSet;
+import org.apache.catalina.webresources.StandardRoot;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
@@ -30,17 +34,6 @@ public class VaadinBoot {
      * The default port where Tomcat will listen for http:// traffic.
      */
     private static final int DEFAULT_PORT = 8080;
-
-    @NotNull
-    private Class<?> servletClass;
-
-    {
-        try {
-            servletClass = Class.forName("com.vaadin.flow.server.VaadinServlet");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     /**
      * The port where Jetty will listen for http:// traffic. Defaults to {@value #DEFAULT_PORT}.
@@ -79,12 +72,6 @@ public class VaadinBoot {
      * Creates new boot instance.
      */
     public VaadinBoot() {
-    }
-
-    @NotNull
-    public VaadinBoot setServletClass(@NotNull Class<?> servletClass) {
-        this.servletClass = Objects.requireNonNull(servletClass);
-        return this;
     }
 
     /**
@@ -280,8 +267,27 @@ public class VaadinBoot {
         }
 
         final Context ctx = server.addWebapp("", docBase.getAbsolutePath());
-        server.addServlet("", "", servletClass.getName());
-        ctx.addServletMappingDecoded("/*", "");
+        // we need to add classes to Tomcat to enable classpath scanning, in order to
+        // auto-discover app @WebServlet and @WebListener.
+        File additionWebInfClasses = new File("target/classes").getAbsoluteFile();  // dev env with Maven
+        if (!additionWebInfClasses.exists()) {
+            additionWebInfClasses = new File("build/classes").getAbsoluteFile();  // dev env with Gradle
+        }
+        if (additionWebInfClasses.exists()) {
+            WebResourceRoot resources = new StandardRoot(ctx);
+            resources.addPreResources(new DirResourceSet(resources, "/WEB-INF/classes",
+                    additionWebInfClasses.getAbsolutePath(), "/"));
+            ctx.setResources(resources);
+        } else {
+            // @todo mavi how to figure out which jar file is the app jar?
+            File productionJar = new File("libs/vaadin-boot-example-maven-1.0-SNAPSHOT.jar").getAbsoluteFile();
+            if (productionJar.exists()) {
+                WebResourceRoot resources = new StandardRoot(ctx);
+                resources.addPreResources(new JarResourceSet(resources, "/WEB-INF/classes",
+                        productionJar.getAbsolutePath(), "/"));
+                ctx.setResources(resources);
+            }
+        }
         return ctx;
     }
 
