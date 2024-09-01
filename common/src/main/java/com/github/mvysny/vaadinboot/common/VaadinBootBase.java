@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Bootstraps your Vaadin application from your <code>main()</code> function. Simply call
@@ -195,12 +194,18 @@ public abstract class VaadinBootBase<THIS extends VaadinBootBase<THIS>> {
         }
     }
 
+    private boolean serverStarted = false;
+
     /**
      * Starts the web server and your app. Blocks until the app is fully started, then returns.
      * Mostly used for testing.
      * @throws Exception when the webapp fails to start.
      */
-    public void start() throws Exception {
+    public synchronized void start() throws Exception {
+        if (serverStarted) {
+            throw new IllegalStateException("Invalid state: already has been started - can not be started again");
+        }
+        serverStarted = true;
         final long startupMeasurementSince = System.currentTimeMillis();
         log.info("Starting App");
 
@@ -243,10 +248,14 @@ public abstract class VaadinBootBase<THIS extends VaadinBootBase<THIS>> {
 
     /**
      * Stops your app. Blocks until the webapp is fully stopped. Mostly used for tests.
-     * Never throws an exception.
+     * Never throws an exception. Does nothing if the web server is already stopped.
      * @param reason why we're shutting down. Logged as info.
+     * @throws IllegalStateException if {@link #start()} wasn't called yet.
      */
-    public void stop(@NotNull String reason) {
+    public synchronized void stop(@NotNull String reason) {
+        if (!serverStarted) {
+            throw new IllegalStateException("Invalid state: start() not called yet");
+        }
         try {
             if (!serverStopped) {
                 log.info(reason);
