@@ -24,6 +24,9 @@ import org.jetbrains.annotations.NotNull;
  * The following is not required:
  * <ul>
  *     <li>https support - we expect Traefik or Nginx front which will unwrap https, possibly refreshing certificates via ACME/Let's Encrypt.</li>
+ *     <li>No <code>web.xml</code> is parsed</li>
+ *     <li>The static content folder is served as-is: no modification is done to the files, no jsp compilation</li>
+ *     <li>No JSP/JSF support</li>
  * </ul>
  */
 public interface WebServer {
