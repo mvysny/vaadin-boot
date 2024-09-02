@@ -47,6 +47,6 @@ class JettyTest {
     @Test
     fun testStaticResourcesServed() {
         val body = wget("http://localhost:44312/ROOT")
-        assertEquals("Don't delete this file; see Main.java for details.\n", body);
+        assertEquals("Don't delete this file; see Main.java for details.", body.trim());
     }
 }

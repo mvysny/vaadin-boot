@@ -43,6 +43,6 @@ public class TomcatTest {
     @Test
     public void testStaticFilesServedFromWebappFolder() throws Exception {
         final String response = TestUtils.wget("http://localhost:44312/ROOT");
-        assertEquals("Don't delete this file; see Main.java for details.\n", response);
+        assertEquals("Don't delete this file; see Main.java for details.", response.trim());
     }
 }
