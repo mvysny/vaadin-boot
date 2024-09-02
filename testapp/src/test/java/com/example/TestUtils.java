@@ -14,7 +14,7 @@ public class TestUtils {
     public static String wget(@NotNull String url) throws IOException, InterruptedException {
         final HttpClient client = HttpClient.newBuilder().build();
         final HttpRequest request = HttpRequest.newBuilder(URI.create(url))
-                .timeout(Duration.ofSeconds(3))
+                .timeout(Duration.ofSeconds(10)) // 3 seconds isn't enough for Windows in GitHub Actions. Increase to 10s
                 .build();
         final HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 200) {
