@@ -117,7 +117,7 @@ public class TomcatWebServer implements WebServer {
         return ctx;
     }
 
-    protected void addStaticWebapp(@NotNull WebResourceRoot root) throws MalformedURLException {
+    protected void addStaticWebapp(@NotNull WebResourceRoot root) throws IOException {
         final URL webapp = Env.findWebRoot();
         final File file = Env.findResourcesJarOrFolder(webapp);
         if (file.isDirectory()) {

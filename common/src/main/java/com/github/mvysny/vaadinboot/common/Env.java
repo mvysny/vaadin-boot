@@ -187,7 +187,7 @@ public final class Env {
      * @return the jar file or a directory from which the class files are being served.
      */
     @NotNull
-    public static File findResourcesJarOrFolder(@NotNull URL webRoot) {
+    public static File findResourcesJarOrFolder(@NotNull URL webRoot) throws IOException {
         final File file = FileUtils.toFile(webRoot);
         if (file != null) {
             // probably dev env: serving webroot from a directory
@@ -206,14 +206,22 @@ public final class Env {
         if (!"jar".equals(webRoot.getProtocol())) {
             throw new IllegalArgumentException("Parameter webRoot: invalid value " + webRoot + ": unsupported URL type");
         }
-        System.out.println("!!! " + webRoot.getPath());
-        try {
-            System.out.println("!!! " + webRoot.toURI().getPath());
-            System.out.println("!!! " + webRoot.toURI().resolve("..").getPath());
-            System.out.println("!!! " + webRoot.toURI().resolve(".."));
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+        // path looks like: file:/mnt/disk1/mavi/work/my/vaadin-boot/testapp-tomcat/build/distributions/testapp-tomcat-12.4-SNAPSHOT/lib/testapp-tomcat-12.4-SNAPSHOT.jar!/webapp
+        final String path = webRoot.getPath();
+        if (!path.endsWith("!/webapp")) {
+            throw new IllegalStateException("Invalid state: unexpected path " + path);
         }
-        throw new UnsupportedOperationException();
+        final URL url = new URL(path.substring(0, path.length() - 8));
+        final File jarFile = FileUtils.toFile(url);
+        if (jarFile == null) {
+            throw new IllegalStateException("Invalid state: can't convert URL to file: " + url);
+        }
+        if (!jarFile.exists()) {
+            throw new IllegalStateException("Invalid state: doesn't exist: " + jarFile);
+        }
+        if (!jarFile.isFile()) {
+            throw new IllegalStateException("Invalid state: not a file: " + jarFile);
+        }
+        return jarFile;
     }
 }
