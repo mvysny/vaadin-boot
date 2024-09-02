@@ -144,6 +144,7 @@ public class TomcatWebServer implements WebServer {
             }
             root.addPreResources(new DirResourceSet(root, "/WEB-INF/classes", additionWebInfClasses.getAbsolutePath(), "/"));
         } else {
+            // @TODO mavi: this code only supports Gradle Application plugin. We need to possibly support more complex directories?
             final File libs = new File("../lib").getAbsoluteFile();
             if (!libs.exists()) {
                 throw new IllegalStateException("Invalid state: " + libs + " does not exist");
