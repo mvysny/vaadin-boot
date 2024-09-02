@@ -2,8 +2,6 @@ package com.github.mvysny.vaadinboot;
 
 import com.github.mvysny.vaadinboot.common.TomcatWebServer;
 import com.github.mvysny.vaadinboot.common.VaadinBootBase;
-import org.intellij.lang.annotations.RegExp;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Bootstraps your Vaadin application from your main() function. Simply call
@@ -17,20 +15,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public class VaadinBoot extends VaadinBootBase<VaadinBoot> {
     /**
-     * The regexp matching the file name of the main jar of the app.
-     * <br/>
-     * Used to perform classpath scanning for <code>@WebServlet</code>, <code>@WebListener</code>
-     * and such.
-     */
-    @NotNull
-    public final String mainJarNameRegex;
-
-    /**
      * Creates new boot instance.
-     * @param mainJarNameRegex the regex of the main app jar file name, e.g. <code>testapp-.*\\.jar</code>
      */
-    public VaadinBoot(@NotNull @RegExp String mainJarNameRegex) {
+    public VaadinBoot() {
         super(new TomcatWebServer());
-        this.mainJarNameRegex = mainJarNameRegex;
     }
 }

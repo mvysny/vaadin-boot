@@ -12,7 +12,7 @@ import java.net.http.HttpResponse;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Actually starts up Jetty. DON'T USE FOR TESTING OF YOUR APPS: see {@link MainViewTest} instead.
+ * Actually starts up Tomcat. DON'T USE FOR TESTING OF YOUR APPS: see {@link MainViewTest} instead.
  */
 public class TomcatTest {
     private static VaadinBoot vaadinBoot;
@@ -20,7 +20,7 @@ public class TomcatTest {
     @BeforeAll
     public static void startTomcat() throws Exception {
         assertFalse(Bootstrap.initialized);
-        vaadinBoot = new VaadinBoot("").setPort(44312).localhostOnly();
+        vaadinBoot = new VaadinBoot().setPort(44312).localhostOnly();
         vaadinBoot.start();
     }
 

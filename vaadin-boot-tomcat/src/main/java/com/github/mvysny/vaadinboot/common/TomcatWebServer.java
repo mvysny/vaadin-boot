@@ -111,25 +111,27 @@ public class TomcatWebServer implements WebServer {
         ctx.getLoader().setDelegate(true);
 
         final WebResourceRoot root = new StandardRoot(ctx);
-        enableClasspathScanning((VaadinBoot) configuration, root);
-        addStaticWebapp(root);
+        final File mainJarFile = addStaticWebapp(root);
+        enableClasspathScanning(root, mainJarFile);
         ctx.setResources(root);
         return ctx;
     }
 
-    protected void addStaticWebapp(@NotNull WebResourceRoot root) throws IOException {
+    @NotNull
+    protected File addStaticWebapp(@NotNull WebResourceRoot root) throws IOException {
         final URL webapp = Env.findWebRoot();
-        final File file = Env.findResourcesJarOrFolder(webapp);
-        if (file.isDirectory()) {
+        final File mainJarFile = Env.findResourcesJarOrFolder(webapp);
+        if (mainJarFile.isDirectory()) {
             root.addPreResources(new DirResourceSet(root, "/",
-                    file.getAbsolutePath(), "/webapp"));
+                    mainJarFile.getAbsolutePath(), "/webapp"));
         } else {
             root.addPreResources(new JarResourceSet(root, "/",
-                    file.getAbsolutePath(), "/webapp"));
+                    mainJarFile.getAbsolutePath(), "/webapp"));
         }
+        return mainJarFile;
     }
 
-    private static void enableClasspathScanning(@NotNull VaadinBoot configuration, @NotNull WebResourceRoot root) {
+    private static void enableClasspathScanning(@NotNull WebResourceRoot root, @NotNull File mainJarFile) {
         // we need to add your app's classes to Tomcat to enable classpath scanning, in order to
         // auto-discover app @WebServlet and @WebListener.
         if (Env.isDevelopmentEnvironment) {
@@ -144,23 +146,8 @@ public class TomcatWebServer implements WebServer {
             }
             root.addPreResources(new DirResourceSet(root, "/WEB-INF/classes", additionWebInfClasses.getAbsolutePath(), "/"));
         } else {
-            // @TODO mavi: this code only supports Gradle Application plugin. We need to possibly support more complex directories?
-            final File libs = new File("../lib").getAbsoluteFile();
-            if (!libs.exists()) {
-                throw new IllegalStateException("Invalid state: " + libs + " does not exist");
-            }
-            final String mainJarNameRegex = configuration.mainJarNameRegex;
-            final File[] possibleProductionJarFilesArray = libs.listFiles((dir, name) -> name.matches(mainJarNameRegex));
-            final List<File> possibleProductionJarFiles = possibleProductionJarFilesArray == null ? Collections.emptyList() : Arrays.asList(possibleProductionJarFilesArray);
-            if (possibleProductionJarFiles.size() != 1) {
-                throw new IllegalStateException("Invalid state: expected exactly one app jar file " + mainJarNameRegex + " but got " + possibleProductionJarFiles);
-            }
-            final File productionJar = possibleProductionJarFiles.get(0);
-            if (!productionJar.exists()) {
-                throw new IllegalStateException("Invalid state: " + productionJar + " doesn't exist");
-            }
-            root.addPreResources(new JarResourceSet(root, "/WEB-INF/classes",
-                    productionJar.getAbsolutePath(), "/"));
+            // the main jar file contains not only the static `webapp` but also the classes of the project.
+            root.addPreResources(new JarResourceSet(root, "/WEB-INF/classes", mainJarFile.getAbsolutePath(), "/"));
         }
     }
 }
