@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
  *     <li>WebSocket support</li>
  *     <li><code>@WebServlet</code> and <code>@WebListener</code> class auto-discovery, at least from the main app jar.</li>
  *     <li>Additional servlets besides Vaadin servlet, e.g. additional Javalin servlet</li>
+ *     <li>Class hot-redeployment when JVM is running in debug mode. At least a basic hot-redeployment, as offered by the JVM, should be supported.</li>
  * </ul>
  * The following is not required:
  * <ul>
