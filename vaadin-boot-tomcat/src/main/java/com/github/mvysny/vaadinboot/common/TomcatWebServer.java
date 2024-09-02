@@ -18,6 +18,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Wraps a Tomcat web server:
+ * <ul>
+ *     <li>Homepage: <a href="https://tomcat.apache.org">Apache Tomcat</a></li>
+ *     <li><a href="https://tomcat.apache.org/tomcat-10.1-doc/index.html">Documentation</a></li>
+ *     <li>Embedded documentation: missing? or can't find the official one;
+ *       <a href="https://devcenter.heroku.com/articles/create-a-java-web-application-using-embedded-tomcat">Heroku Embedded Tomcat docs</a>
+ *     </li>
+ * </ul>
+ */
 public class TomcatWebServer implements WebServer {
     private static final Logger log = LoggerFactory.getLogger(TomcatWebServer.class);
 
