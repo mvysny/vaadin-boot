@@ -118,6 +118,9 @@ public abstract class VaadinBootBase<THIS extends VaadinBootBase<THIS>> {
     @NotNull
     public THIS withContextRoot(@NotNull String contextRoot) {
         this.contextRoot = Objects.requireNonNull(contextRoot);
+        if (this.contextRoot.equals("/")) {
+            this.contextRoot = "";
+        }
         return getThis();
     }
 
