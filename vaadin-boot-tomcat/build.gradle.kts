@@ -17,9 +17,6 @@ dependencies {
         exclude(group = "org.apache.tomcat.embed", module = "tomcat-embed-el")
     }
 
-    // opens url in a browser
-    implementation(libs.vaadin.open)
-
     testImplementation(libs.slf4j.simple)
     testImplementation(libs.junit)
     testImplementation(libs.vaadin.core)
