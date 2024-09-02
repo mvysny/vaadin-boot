@@ -73,6 +73,11 @@ in a way so that it's served from the jar itself. Indeed, the directory is locat
 Make sure to add an empty file named `src/main/resources/webapp/ROOT` - that will allow Vaadin Boot
 to quickly figure out the precise location of your webapp directory in the class loader.
 
+Packaging `webapp` folder to jar file indeed slows down the retrieval of static resources a bit.
+However, this is not really a big performance problem since the browsers will cache the static resources;
+this also simplifies and hardens Vaadin Boot itself since we don't have to figure out
+the webapp folder location based on the app zip file structure or your dev env file system structure.
+
 ### Command-line Args
 
 At the moment it's "Do it yourself". Good start
