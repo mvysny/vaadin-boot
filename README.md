@@ -78,6 +78,9 @@ However, this is not really a big performance problem since the browsers will ca
 this also simplifies and hardens Vaadin Boot itself since we don't have to figure out
 the webapp folder location based on the app zip file structure or your dev env file system structure.
 
+`webapp` location also doesn't depend on a CWD (current working directory) which is important for Intellij IDEA: in multi-module projects,
+IDEA is dumb to insist to setting CWD to the root of the project, not to the module.
+
 ### Command-line Args
 
 At the moment it's "Do it yourself". Good start
