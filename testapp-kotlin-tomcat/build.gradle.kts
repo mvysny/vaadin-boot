@@ -7,7 +7,7 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":vaadin-boot"))
+    implementation(project(":vaadin-boot-tomcat"))
     implementation(libs.slf4j.simple)
     implementation(libs.vaadin.core) {
         if (vaadin.effective.productionMode.get()) {

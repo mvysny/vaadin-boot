@@ -4,6 +4,7 @@ include(
 	"vaadin-boot-tomcat",
 	"testapp",
 	"testapp-tomcat",
-	"testapp-kotlin"
+	"testapp-kotlin",
+	"testapp-kotlin-tomcat",
 )
 
