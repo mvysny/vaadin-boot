@@ -1,6 +1,5 @@
 package com.github.mvysny.vaadinboot.common;
 
-import com.github.mvysny.vaadinboot.VaadinBoot;
 import org.apache.catalina.Context;
 import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.loader.WebappLoader;
@@ -14,12 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -40,7 +35,10 @@ public class TomcatWebServer implements WebServer {
 
     private volatile Context context;
 
-    private volatile File resourcesJarOrFolder;
+    /**
+     * The outcome of {@link Env#findResourcesJarOrFolder(URL)}.
+     */
+    protected volatile File resourcesJarOrFolder;
 
     @NotNull
     public Context getContext() {
@@ -111,27 +109,23 @@ public class TomcatWebServer implements WebServer {
         ctx.getLoader().setDelegate(true);
 
         final WebResourceRoot root = new StandardRoot(ctx);
-        final File mainJarFile = addStaticWebapp(root);
-        enableClasspathScanning(root, mainJarFile);
+        addStaticWebapp(root);
+        enableClasspathScanning(root);
         ctx.setResources(root);
         return ctx;
     }
 
-    @NotNull
-    protected File addStaticWebapp(@NotNull WebResourceRoot root) throws IOException {
-        final URL webapp = Env.findWebRoot();
-        final File mainJarFile = Env.findResourcesJarOrFolder(webapp);
-        if (mainJarFile.isDirectory()) {
+    protected void addStaticWebapp(@NotNull WebResourceRoot root) throws IOException {
+        if (resourcesJarOrFolder.isDirectory()) {
             root.addPreResources(new DirResourceSet(root, "/",
-                    mainJarFile.getAbsolutePath(), "/webapp"));
+                    resourcesJarOrFolder.getAbsolutePath(), "/webapp"));
         } else {
             root.addPreResources(new JarResourceSet(root, "/",
-                    mainJarFile.getAbsolutePath(), "/webapp"));
+                    resourcesJarOrFolder.getAbsolutePath(), "/webapp"));
         }
-        return mainJarFile;
     }
 
-    private static void enableClasspathScanning(@NotNull WebResourceRoot root, @NotNull File mainJarFile) {
+    protected void enableClasspathScanning(@NotNull WebResourceRoot root) {
         // we need to add your app's classes to Tomcat to enable classpath scanning, in order to
         // auto-discover app @WebServlet and @WebListener.
         if (Env.isDevelopmentEnvironment) {
@@ -147,7 +141,7 @@ public class TomcatWebServer implements WebServer {
             root.addPreResources(new DirResourceSet(root, "/WEB-INF/classes", additionWebInfClasses.getAbsolutePath(), "/"));
         } else {
             // the main jar file contains not only the static `webapp` but also the classes of the project.
-            root.addPreResources(new JarResourceSet(root, "/WEB-INF/classes", mainJarFile.getAbsolutePath(), "/"));
+            root.addPreResources(new JarResourceSet(root, "/WEB-INF/classes", resourcesJarOrFolder.getAbsolutePath(), "/"));
         }
     }
 }
