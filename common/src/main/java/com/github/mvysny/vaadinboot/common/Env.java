@@ -1,5 +1,6 @@
 package com.github.mvysny.vaadinboot.common;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -9,6 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -144,5 +148,61 @@ public final class Env {
                 new File("pom.xml").exists() ||
                         new File("build.gradle").exists() ||
                         new File("build.gradle.kts").exists();
+    }
+
+    /**
+     * Detects the <code>/webapp</code> web root folder, used to serve static content.
+     * @return resource serving web root.
+     * @throws MalformedURLException when the webroot URL auto-detection fails and produces an invalid URL.
+     */
+    @NotNull
+    public static URL findWebRoot() throws MalformedURLException {
+        // don't look up directory as a resource, it's unreliable: https://github.com/eclipse/jetty.project/issues/4173#issuecomment-539769734
+        // instead we'll look up the /webapp/ROOT and retrieve the parent folder from that.
+        final URL f = Env.class.getResource("/webapp/ROOT");
+        if (f == null) {
+            throw new IllegalStateException("Invalid state: the resource /webapp/ROOT doesn't exist, has the 'webapp' folder been packaged in as a resource?");
+        }
+        final String url = f.toExternalForm();
+        if (!url.endsWith("/ROOT")) {
+            throw new RuntimeException("Parameter url: invalid value " + url + ": doesn't end with /ROOT");
+        }
+
+        // Resolve file to directory
+        final URL webRoot;
+        try {
+            webRoot = new URI(url.substring(0, url.length() - 5)).toURL();
+        } catch (URISyntaxException e) {
+            final MalformedURLException ex = new MalformedURLException(e.getMessage());
+            ex.initCause(e);
+            throw ex;
+        }
+        log.info("WebRoot is served from " + webRoot);
+        return webRoot;
+    }
+
+    /**
+     * The `webapp` folder is being served from a resources folder, or from a jar file.
+     * @param webRoot the `webapp` folder resource as detected by {@link #findWebRoot()}.
+     * @return the jar file or a directory from which the class files are being served.
+     */
+    @NotNull
+    public static File findResourcesJarOrFolder(@NotNull URL webRoot) {
+        final File file = FileUtils.toFile(webRoot);
+        if (file != null) {
+            // probably dev env: serving webroot from a directory
+            final File classDirectory = file.getAbsoluteFile().getParentFile();
+            if (!classDirectory.exists()) {
+                throw new IllegalStateException("Invalid state: " + classDirectory + " doesn't exist");
+            }
+            if (!classDirectory.isDirectory()) {
+                throw new IllegalStateException("Invalid state: " + classDirectory + " is not a directory");
+            }
+            return classDirectory;
+        }
+        // the webapp folder is served from a jar file. Find the name of the jar file.
+        // example URL: TODO
+        final String url = webRoot.toExternalForm();
+        throw new RuntimeException("Unimplemented: url=" + url);
     }
 }

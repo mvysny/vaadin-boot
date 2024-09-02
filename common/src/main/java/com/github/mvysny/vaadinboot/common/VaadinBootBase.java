@@ -205,7 +205,6 @@ public abstract class VaadinBootBase<THIS extends VaadinBootBase<THIS>> {
         if (serverStarted) {
             throw new IllegalStateException("Invalid state: already has been started - can not be started again");
         }
-        serverStarted = true;
         final long startupMeasurementSince = System.currentTimeMillis();
         log.info("Starting App");
 
@@ -221,6 +220,7 @@ public abstract class VaadinBootBase<THIS extends VaadinBootBase<THIS>> {
             server.start();
             log.debug(server.getName() + " Server started");
 
+            serverStarted = true;
             onStarted(server);
 
             final Duration startupDuration = Duration.ofMillis(System.currentTimeMillis() - startupMeasurementSince);

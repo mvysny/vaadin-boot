@@ -13,6 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,6 +40,8 @@ public class TomcatWebServer implements WebServer {
 
     private volatile Context context;
 
+    private volatile File resourcesJarOrFolder;
+
     @NotNull
     public Context getContext() {
         return Objects.requireNonNull(context);
@@ -49,6 +54,10 @@ public class TomcatWebServer implements WebServer {
 
     @Override
     public void configure(@NotNull VaadinBootBase<?> configuration) throws Exception {
+
+        final URL webRoot = Env.findWebRoot();
+        resourcesJarOrFolder = Env.findResourcesJarOrFolder(webRoot);
+
         server = new Tomcat();
         // first thing we need to do is to configure the basedir: if the basedir is configured
         // after connector is created, the setting will be ignored.
@@ -90,24 +99,37 @@ public class TomcatWebServer implements WebServer {
      * @return the {@link Context}
      */
     @NotNull
-    protected Context createWebAppContext(@NotNull VaadinBootBase<?> configuration) {
-        final File webappFolder = getWebappFolder();
-
+    protected Context createWebAppContext(@NotNull VaadinBootBase<?> configuration) throws IOException {
         String contextRoot = configuration.contextRoot;
         if (contextRoot.equals("/")) {
             contextRoot = "";
         }
-        final Context ctx = server.addWebapp(contextRoot, webappFolder.getAbsolutePath());
+        final Context ctx = server.addWebapp(contextRoot, Files.createTempDirectory("tomcat-" + configuration.port).toFile().getAbsolutePath());
         // in embedded mode there's just one webapp, and in that case the standard JVM class loading
         // makes more sense. Probably also improves JVM class hotswap.
         ctx.setLoader(new WebappLoader());
         ctx.getLoader().setDelegate(true);
 
-        enableClasspathScanning((VaadinBoot) configuration, ctx);
+        final WebResourceRoot root = new StandardRoot(ctx);
+        enableClasspathScanning((VaadinBoot) configuration, root);
+        addStaticWebapp(root);
+        ctx.setResources(root);
         return ctx;
     }
 
-    private static void enableClasspathScanning(@NotNull VaadinBoot configuration, @NotNull Context ctx) {
+    protected void addStaticWebapp(@NotNull WebResourceRoot root) throws MalformedURLException {
+        final URL webapp = Env.findWebRoot();
+        final File file = Env.findResourcesJarOrFolder(webapp);
+        if (file.isDirectory()) {
+            root.addPreResources(new DirResourceSet(root, "/",
+                    file.getAbsolutePath(), "/webapp"));
+        } else {
+            root.addPreResources(new JarResourceSet(root, "/",
+                    file.getAbsolutePath(), "/webapp"));
+        }
+    }
+
+    private static void enableClasspathScanning(@NotNull VaadinBoot configuration, @NotNull WebResourceRoot root) {
         // we need to add your app's classes to Tomcat to enable classpath scanning, in order to
         // auto-discover app @WebServlet and @WebListener.
         if (Env.isDevelopmentEnvironment) {
@@ -120,9 +142,7 @@ public class TomcatWebServer implements WebServer {
             if (!additionWebInfClasses.exists()) {
                 throw new IllegalStateException("Invalid state: " + additionWebInfClasses + " does not exist");
             }
-            final WebResourceRoot resources = new StandardRoot(ctx);
-            resources.addPreResources(new DirResourceSet(resources, "/WEB-INF/classes", additionWebInfClasses.getAbsolutePath(), "/"));
-            ctx.setResources(resources);
+            root.addPreResources(new DirResourceSet(root, "/WEB-INF/classes", additionWebInfClasses.getAbsolutePath(), "/"));
         } else {
             final File libs = new File("../lib").getAbsoluteFile();
             if (!libs.exists()) {
@@ -138,23 +158,8 @@ public class TomcatWebServer implements WebServer {
             if (!productionJar.exists()) {
                 throw new IllegalStateException("Invalid state: " + productionJar + " doesn't exist");
             }
-            final WebResourceRoot resources = new StandardRoot(ctx);
-            resources.addPreResources(new JarResourceSet(resources, "/WEB-INF/classes",
+            root.addPreResources(new JarResourceSet(root, "/WEB-INF/classes",
                     productionJar.getAbsolutePath(), "/"));
-            ctx.setResources(resources);
         }
-    }
-
-    private static @NotNull File getWebappFolder() {
-        final File docBase;
-        if (Env.isDevelopmentEnvironment) {
-            docBase = new File("src/dist/webapp").getAbsoluteFile();
-        } else {
-            docBase = new File("../webapp").getAbsoluteFile();
-        }
-        if (!docBase.exists()) {
-            throw new IllegalStateException("Invalid state: The webapp folder is expected at " + docBase + "but it's missing");
-        }
-        return docBase;
     }
 }
