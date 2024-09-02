@@ -201,8 +201,19 @@ public final class Env {
             return classDirectory;
         }
         // the webapp folder is served from a jar file. Find the name of the jar file.
-        // example URL: TODO
-        final String url = webRoot.toExternalForm();
-        throw new RuntimeException("Unimplemented: url=" + url);
+        // example URL:
+        //  jar:file:/mnt/disk1/mavi/work/my/vaadin-boot/testapp-tomcat/build/distributions/testapp-tomcat-12.4-SNAPSHOT/lib/testapp-tomcat-12.4-SNAPSHOT.jar!/webapp
+        if (!"jar".equals(webRoot.getProtocol())) {
+            throw new IllegalArgumentException("Parameter webRoot: invalid value " + webRoot + ": unsupported URL type");
+        }
+        System.out.println("!!! " + webRoot.getPath());
+        try {
+            System.out.println("!!! " + webRoot.toURI().getPath());
+            System.out.println("!!! " + webRoot.toURI().resolve("..").getPath());
+            System.out.println("!!! " + webRoot.toURI().resolve(".."));
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+        throw new UnsupportedOperationException();
     }
 }
