@@ -7,6 +7,7 @@ import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -128,4 +129,20 @@ public final class Env {
      */
     @VisibleForTesting
     static Function<String, String> ENV_RESOLVER = System::getenv;
+
+    /**
+     * True if it looks like we're running in a development environment, false if we're most probably running from a production zip file.
+     * Note that this may differ from {@link #isVaadinProductionMode}: it's possible to run vaadin dev mode from a zip file for example,
+     * even though it makes little sense. Also, it's possibly to develop Vaadin app while having Vaadin running in production mode -
+     * again highly unusual but might make sense in certain dev envs.
+     */
+    public static final boolean isDevelopmentEnvironment;
+    static {
+        // check whether there's a pom.xml or build.gradle(.kts) - if yes, we're running in development environment (most probably
+        // from an IDE launch configuration).
+        isDevelopmentEnvironment =
+                new File("pom.xml").exists() ||
+                        new File("build.gradle").exists() ||
+                        new File("build.gradle.kts").exists();
+    }
 }

@@ -103,15 +103,23 @@ public class TomcatWebServer implements WebServer {
         ctx.setLoader(new WebappLoader());
         ctx.getLoader().setDelegate(true);
 
-        // we need to add classes to Tomcat to enable classpath scanning, in order to
+        enableClasspathScanning((VaadinBoot) configuration, ctx);
+        return ctx;
+    }
+
+    private static void enableClasspathScanning(@NotNull VaadinBoot configuration, @NotNull Context ctx) {
+        // we need to add your app's classes to Tomcat to enable classpath scanning, in order to
         // auto-discover app @WebServlet and @WebListener.
-        final File classDirMaven = new File("target/classes").getAbsoluteFile();
-        final File classDirGradle = new File("build/classes").getAbsoluteFile();
-        File additionWebInfClasses = classDirMaven;  // dev env with Maven
-        if (!additionWebInfClasses.exists()) {
-            additionWebInfClasses = classDirGradle;  // dev env with Gradle
-        }
-        if (additionWebInfClasses.exists()) {
+        if (Env.isDevelopmentEnvironment) {
+            final File classDirMaven = new File("target/classes").getAbsoluteFile();
+            final File classDirGradle = new File("build/classes").getAbsoluteFile();
+            File additionWebInfClasses = classDirMaven;  // dev env with Maven
+            if (!additionWebInfClasses.exists()) {
+                additionWebInfClasses = classDirGradle;  // dev env with Gradle
+            }
+            if (!additionWebInfClasses.exists()) {
+                throw new IllegalStateException("Invalid state: " + additionWebInfClasses + " does not exist");
+            }
             final WebResourceRoot resources = new StandardRoot(ctx);
             resources.addPreResources(new DirResourceSet(resources, "/WEB-INF/classes", additionWebInfClasses.getAbsolutePath(), "/"));
             ctx.setResources(resources);
@@ -120,7 +128,7 @@ public class TomcatWebServer implements WebServer {
             if (!libs.exists()) {
                 throw new IllegalStateException("Invalid state: " + libs + " does not exist");
             }
-            final String mainJarNameRegex = ((VaadinBoot) configuration).mainJarNameRegex;
+            final String mainJarNameRegex = configuration.mainJarNameRegex;
             final File[] possibleProductionJarFilesArray = libs.listFiles((dir, name) -> name.matches(mainJarNameRegex));
             final List<File> possibleProductionJarFiles = possibleProductionJarFilesArray == null ? Collections.emptyList() : Arrays.asList(possibleProductionJarFilesArray);
             if (possibleProductionJarFiles.size() != 1) {
@@ -135,18 +143,17 @@ public class TomcatWebServer implements WebServer {
                     productionJar.getAbsolutePath(), "/"));
             ctx.setResources(resources);
         }
-        return ctx;
     }
 
     private static @NotNull File getWebappFolder() {
-        final File webappFolderDev = new File("src/dist/webapp").getAbsoluteFile();
-        final File webappFolderProd = new File("../webapp").getAbsoluteFile();
-        File docBase = webappFolderDev;
-        if (!docBase.exists()) {
-            docBase = webappFolderProd;
+        final File docBase;
+        if (Env.isDevelopmentEnvironment) {
+            docBase = new File("src/dist/webapp").getAbsoluteFile();
+        } else {
+            docBase = new File("../webapp").getAbsoluteFile();
         }
         if (!docBase.exists()) {
-            throw new IllegalStateException("Invalid state: The webapp folder isn't present neither at " + webappFolderDev + " (development mode) nor at " + webappFolderProd + " (production)");
+            throw new IllegalStateException("Invalid state: The webapp folder is expected at " + docBase + "but it's missing");
         }
         return docBase;
     }
