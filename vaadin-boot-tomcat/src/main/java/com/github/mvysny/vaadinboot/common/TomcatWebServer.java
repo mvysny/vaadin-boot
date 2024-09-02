@@ -3,6 +3,7 @@ package com.github.mvysny.vaadinboot.common;
 import com.github.mvysny.vaadinboot.VaadinBoot;
 import org.apache.catalina.Context;
 import org.apache.catalina.WebResourceRoot;
+import org.apache.catalina.loader.WebappLoader;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.JarResourceSet;
@@ -97,6 +98,10 @@ public class TomcatWebServer implements WebServer {
             contextRoot = "";
         }
         final Context ctx = server.addWebapp(contextRoot, webappFolder.getAbsolutePath());
+        // in embedded mode there's just one webapp, and in that case the standard JVM class loading
+        // makes more sense. Probably also improves JVM class hotswap.
+        ctx.setLoader(new WebappLoader());
+        ctx.getLoader().setDelegate(true);
 
         // we need to add classes to Tomcat to enable classpath scanning, in order to
         // auto-discover app @WebServlet and @WebListener.
