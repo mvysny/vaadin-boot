@@ -188,9 +188,11 @@ public final class Env {
      */
     @NotNull
     public static File findResourcesJarOrFolder(@NotNull URL webRoot) throws IOException {
+        // we know that the `webapp` folder is somewhere on classpath, and webRoot parameter is pointing to it.
+        // we need to figure out where exactly on the filesystem the folder is.
         final File file = FileUtils.toFile(webRoot);
         if (file != null) {
-            // probably dev env: serving webroot from a directory
+            // serving the `webapp` folder from a directory
             final File classDirectory = file.getAbsoluteFile().getParentFile();
             if (!classDirectory.exists()) {
                 throw new IllegalStateException("Invalid state: " + classDirectory + " doesn't exist");
