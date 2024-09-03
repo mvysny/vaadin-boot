@@ -130,6 +130,7 @@ public class TomcatWebServer implements WebServer {
         // we need to add your app's classes to Tomcat to enable classpath scanning, in order to
         // auto-discover app @WebServlet and @WebListener.
         final Set<File> classesDirOrFolders = Env.findClassesJarOrFolder(webRoot);
+        log.info("Classpath scanning enabled for " + classesDirOrFolders);
         if (classesDirOrFolders.isEmpty()) {
             throw new IllegalStateException("Invalid state: no class folders found");
         }
