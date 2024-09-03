@@ -1,42 +1,10 @@
-package com.github.mvysny.vaadinboot;
+package com.github.mvysny.vaadinboot.common;
 
-import org.eclipse.jetty.util.resource.URLResourceFactory;
 import org.junit.jupiter.api.Test;
-
-import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class EnvTest {
-
-    @Test
-    public void testFixClasspath() {
-        final String cp = System.getProperty("java.class.path");
-        try {
-            // test crazy classpaths
-            System.setProperty("java.class.path", File.pathSeparator);
-            Env.fixClasspath();
-            assertEquals("", System.getProperty("java.class.path"));
-            System.setProperty("java.class.path", "a" + File.pathSeparator + "b" + File.pathSeparator + "c");
-            Env.fixClasspath();
-            assertEquals("", System.getProperty("java.class.path"));
-            System.setProperty("java.class.path", File.pathSeparator + "a" + File.pathSeparator + "b" + File.pathSeparator + "c" + File.pathSeparator);
-            Env.fixClasspath();
-            assertEquals("", System.getProperty("java.class.path"));
-
-            // classpath with existing entry
-            System.setProperty("java.class.path", File.pathSeparator + "src/main/java" + File.pathSeparator);
-            Env.fixClasspath();
-            assertEquals("src/main/java", System.getProperty("java.class.path"));
-
-            // filters out non-existing entries
-            System.setProperty("java.class.path", File.pathSeparator + "src/main/java" + File.pathSeparator + "nonexisting");
-            Env.fixClasspath();
-            assertEquals("src/main/java", System.getProperty("java.class.path"));
-        } finally {
-            System.setProperty("java.class.path", cp);
-        }
-    }
 
     @Test
     public void flowBuildInfoJsonParsing() {
@@ -58,6 +26,6 @@ class EnvTest {
 
     @Test
     public void smokeFindWebRoot() throws Exception {
-        assertNotNull(Env.findWebRoot(new URLResourceFactory()));
+        assertNotNull(Env.findWebRoot());
     }
 }

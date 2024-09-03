@@ -73,6 +73,14 @@ in a way so that it's served from the jar itself. Indeed, the directory is locat
 Make sure to add an empty file named `src/main/resources/webapp/ROOT` - that will allow Vaadin Boot
 to quickly figure out the precise location of your webapp directory in the class loader.
 
+Packaging `webapp` folder to jar file indeed slows down the retrieval of static resources a bit.
+However, this is not really a big performance problem since the browsers will cache the static resources;
+this also simplifies and hardens Vaadin Boot itself since we don't have to figure out
+the webapp folder location based on the app zip file structure or your dev env file system structure.
+
+`webapp` location also doesn't depend on a CWD (current working directory) which is important for Intellij IDEA: in multi-module projects,
+IDEA is dumb to insist to setting CWD to the root of the project, not to the module.
+
 ### Command-line Args
 
 At the moment it's "Do it yourself". Good start
@@ -88,6 +96,8 @@ Very basic example apps using Vaadin Boot:
 
 * Vaadin 24, Gradle: [vaadin-boot-example-gradle](https://github.com/mvysny/vaadin-boot-example-gradle)
 * Vaadin 24, Maven: [vaadin-boot-example-maven](https://github.com/mvysny/vaadin-boot-example-maven)
+* Vaadin 23, Gradle: [vaadin-boot-example-gradle](https://github.com/mvysny/vaadin-boot-example-gradle), the v23 branch.
+* Vaadin 23, Maven: [vaadin-boot-example-maven](https://github.com/mvysny/vaadin-boot-example-maven), the v23 branch.
 * Vaadin 14, Gradle: [vaadin14-boot-example-gradle](https://github.com/mvysny/vaadin14-boot-example-gradle)
 * Vaadin 14, Maven: [vaadin14-boot-example-maven](https://github.com/mvysny/vaadin14-boot-example-maven)
 

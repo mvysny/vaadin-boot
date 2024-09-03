@@ -1,10 +1,9 @@
-import com.vaadin.gradle.getBooleanProperty
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.vaadin)
     application
-    kotlin("jvm") version "2.0.0"
+    kotlin("jvm") version "2.0.20"
 }
 
 dependencies {

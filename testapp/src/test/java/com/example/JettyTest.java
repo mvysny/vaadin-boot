@@ -1,9 +1,7 @@
 package com.example;
 
 import com.github.mvysny.vaadinboot.VaadinBoot;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 import java.net.URI;
@@ -12,24 +10,23 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Actually starts up Jetty. DON'T USE FOR TESTING OF YOUR APPS: see {@link MainViewTest} instead.
  */
 public class JettyTest {
-    private VaadinBoot vaadinBoot;
+    private static VaadinBoot vaadinBoot;
 
-    @BeforeEach
-    public void startJetty() throws Exception {
+    @BeforeAll
+    public static void startJetty() throws Exception {
         assertFalse(Bootstrap.initialized);
         vaadinBoot = new VaadinBoot().setPort(44312).localhostOnly();
         vaadinBoot.start();
     }
 
-    @AfterEach
-    public void stopJetty() throws Exception {
+    @AfterAll
+    public static void stopJetty() throws Exception {
         vaadinBoot.stop("tests");
         assertFalse(Bootstrap.initialized);
     }
@@ -40,13 +37,13 @@ public class JettyTest {
         assertTrue(Bootstrap.initialized);
 
         // make sure something is running on port 44312
-        final HttpClient client = HttpClient.newBuilder().build();
-        final HttpRequest request = HttpRequest.newBuilder(URI.create("http://localhost:44312")).build();
-        final HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        if (response.statusCode() != 200) {
-            throw new IOException(response + " failed: " + response.body());
-        }
-        final String body = response.body();
-        assertTrue(body.contains("window.Vaadin"), body);
+        final String response = TestUtils.wget("http://localhost:44312");
+        assertTrue(response.contains("window.Vaadin"), response);
+    }
+
+    @Test
+    public void testStaticFilesServedFromWebappFolder() throws Exception {
+        final String response = TestUtils.wget("http://localhost:44312/ROOT");
+        assertEquals("Don't delete this file; see Main.java for details.", response.trim());
     }
 }

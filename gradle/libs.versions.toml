@@ -4,6 +4,8 @@ vaadin = "24.4.10"
 slf4j = "2.0.13"
 # check latest version at https://eclipse.dev/jetty/download.php
 jetty = "12.0.10"
+# latest version at https://repo1.maven.org/maven2/org/apache/tomcat/embed/
+tomcat = "10.1.28"
 
 [libraries]
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
@@ -18,6 +20,9 @@ junit = "org.junit.jupiter:junit-jupiter-engine:5.11.0"
 kaributesting = "com.github.mvysny.kaributesting:karibu-testing-v24:2.1.8"
 javalin = "io.javalin:javalin:5.6.1"
 commons-io = "commons-io:commons-io:2.15.0"
+tomcat-core = { module = "org.apache.tomcat.embed:tomcat-embed-core", version.ref = "tomcat" }
+tomcat-jasper = { module = "org.apache.tomcat.embed:tomcat-embed-jasper", version.ref = "tomcat" }
+tomcat-websocket = { module = "org.apache.tomcat.embed:tomcat-embed-websocket", version.ref = "tomcat" }
 
 [plugins]
 vaadin = { id = "com.vaadin", version.ref = "vaadin" }

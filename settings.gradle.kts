@@ -1,6 +1,10 @@
 include(
+	"common",
 	"vaadin-boot",
+	"vaadin-boot-tomcat",
 	"testapp",
-	"testapp-kotlin"
+	"testapp-tomcat",
+	"testapp-kotlin",
+	"testapp-kotlin-tomcat",
 )
 
