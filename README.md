@@ -381,8 +381,10 @@ home page for more details.
 
 ### Maven
 
-Use Maven Assembly plugin to build a zip file with all dependencies and a run script file. To configure
-the assembly plugin, create the `src/main/assembly/zip.xml` file with the following contents:
+We'll use two Maven plugins: the [appassembler-maven-plugin](http://www.mojohaus.org/appassembler/appassembler-maven-plugin/)
+to prepare run scripts and the app; and the assembly plugin to create a zip file out of the app.
+
+To configure the assembly plugin, create the `src/main/assembly/zip.xml` file with the following contents:
 ```xml
 <assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -392,58 +394,62 @@ the assembly plugin, create the `src/main/assembly/zip.xml` file with the follow
         <format>zip</format>
     </formats>
     <includeBaseDirectory>false</includeBaseDirectory>
-    <dependencySets>
-        <dependencySet>
-            <outputDirectory>libs</outputDirectory>
-        </dependencySet>
-    </dependencySets>
     <fileSets>
         <fileSet>
-            <directory>src/main/scripts</directory>
-            <outputDirectory></outputDirectory>
+            <directory>target/appassembler</directory>
+            <outputDirectory>/</outputDirectory>
             <fileMode>0755</fileMode>
         </fileSet>
     </fileSets>
 </assembly>
 ```
 
-Then create a script named `run` and place it into `src/main/scripts/`:
-```bash
-#!/bin/bash
-set -e -o pipefail
-CP=`ls libs/*.jar|tr '\n' ':'`
-java -cp $CP com.vaadin.starter.skeleton.Main "$@"
-```
-
-Then configure the assembly plugin:
+Then configure the plugins in your `pom.xml`:
 ```xml
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.2.0</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>com.vaadin.starter.skeleton.Main</mainClass>
-                        </manifest>
-                    </archive>
-                    <descriptors>
-                        <descriptor>src/main/assembly/zip.xml</descriptor>
-                    </descriptors>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+<plugins>
+    <!-- creates an executable app -->
+    <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>appassembler-maven-plugin</artifactId>
+        <version>2.1.0</version>
+        <configuration>
+            <programs>
+                <program>
+                    <mainClass>com.vaadin.starter.skeleton.Main</mainClass>
+                    <name>app</name>
+                </program>
+            </programs>
+        </configuration>
+        <executions>
+            <execution>
+                <phase>package</phase>
+                <goals>
+                    <goal>assemble</goal>
+                </goals>
+            </execution>
+        </executions>
+    </plugin>
+    <!-- creates the "zip" distribution -->
+    <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.2.0</version>
+        <configuration>
+            <descriptors>
+                <descriptor>src/main/assembly/zip.xml</descriptor>
+            </descriptors>
+        </configuration>
+        <executions>
+            <execution>
+                <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                <phase>package</phase> <!-- append to the packaging phase. -->
+                <goals>
+                    <goal>single</goal> <!-- goals == mojos -->
+                </goals>
+            </execution>
+        </executions>
+    </plugin>
+</plugins>
 ```
-
-Alternatively, you can package your app as a huge jar file which can then be launched via `java -jar yourapp.jar`.
-See [vaadin-boot-example-maven](https://github.com/mvysny/vaadin-boot-example-maven) for a full example.
 
 You can also use the `exec-maven-plugin` to run your app easily from Maven:
 ```xml
