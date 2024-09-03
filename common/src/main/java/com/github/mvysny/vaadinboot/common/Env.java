@@ -10,14 +10,14 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Environment-related utility functions. Internal to Vaadin-Boot, don't use - the API can change at any time.
@@ -225,5 +225,60 @@ public final class Env {
             throw new IllegalStateException("Invalid state: not a file: " + jarFile);
         }
         return jarFile;
+    }
+
+    /**
+     * Returns a set of folders or jar files with app's classes. Only this project's
+     * modules are considered - third-party dependencies are never present.
+     * @param webRoot produced by {@link #findWebRoot()}.
+     * @return a set of folders, or a set of a single jar file. Never empty, never contains non-existing files.
+     * @throws IOException if the detection fails.
+     */
+    @NotNull
+    public static Set<File> findClassesJarOrFolder(@NotNull URL webRoot) throws IOException {
+        if (!isDevelopmentEnvironment) {
+            // when running from a zip file, we expect classes and resources
+            // to be packaged into the same jar.
+            return Set.of(findResourcesJarOrFolder(webRoot));
+        }
+
+        // Approach 1: analyze the classpath
+        final String classpath = System.getProperty("java.class.path");
+        if (classpath != null) {
+            final String[] entries = classpath.split("[" + File.pathSeparator + "]");
+            final Set<File> foldersOnClasspath = Arrays.stream(entries)
+                    .filter(it -> !it.isBlank())
+                    .map(File::new)
+                    .filter(it -> it.exists() && it.isDirectory() && it.getAbsolutePath().contains("/classes"))
+                    .collect(Collectors.toSet());
+            if (!foldersOnClasspath.isEmpty()) {
+                return foldersOnClasspath;
+            }
+        }
+
+        // Approach 2: maybe the classloader is the URLClassLoader?
+        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        if (contextClassLoader instanceof URLClassLoader) {
+            final URL[] urls = ((URLClassLoader) contextClassLoader).getURLs();
+            final Set<File> foldersOnClasspath = Arrays.stream(urls)
+                    .map(FileUtils::toFile)
+                    .filter(it -> it != null && it.exists() && it.isDirectory() && it.getAbsolutePath().contains("/classes"))
+                    .collect(Collectors.toSet());
+            if (!foldersOnClasspath.isEmpty()) {
+                return foldersOnClasspath;
+            }
+        }
+
+        // Fallback: just open target/classes or build/classes
+        final File classDirMaven = new File("target/classes").getAbsoluteFile();
+        final File classDirGradle = new File("build/classes").getAbsoluteFile();
+        File additionWebInfClasses = classDirMaven;  // dev env with Maven
+        if (!additionWebInfClasses.exists()) {
+            additionWebInfClasses = classDirGradle;  // dev env with Gradle
+        }
+        if (!additionWebInfClasses.exists()) {
+            throw new IllegalStateException("Invalid state: " + additionWebInfClasses + " does not exist");
+        }
+        return Set.of(additionWebInfClasses);
     }
 }

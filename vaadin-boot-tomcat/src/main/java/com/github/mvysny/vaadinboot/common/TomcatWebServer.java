@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Wraps a Tomcat web server:
@@ -39,6 +40,7 @@ public class TomcatWebServer implements WebServer {
      * The outcome of {@link Env#findResourcesJarOrFolder(URL)}.
      */
     protected volatile File resourcesJarOrFolder;
+    protected volatile URL webRoot;
 
     @NotNull
     public Context getContext() {
@@ -52,8 +54,7 @@ public class TomcatWebServer implements WebServer {
 
     @Override
     public void configure(@NotNull VaadinBootBase<?> configuration) throws Exception {
-
-        final URL webRoot = Env.findWebRoot();
+        webRoot = Env.findWebRoot();
         resourcesJarOrFolder = Env.findResourcesJarOrFolder(webRoot);
 
         server = new Tomcat();
@@ -125,23 +126,19 @@ public class TomcatWebServer implements WebServer {
         }
     }
 
-    protected void enableClasspathScanning(@NotNull WebResourceRoot root) {
+    protected void enableClasspathScanning(@NotNull WebResourceRoot root) throws IOException {
         // we need to add your app's classes to Tomcat to enable classpath scanning, in order to
         // auto-discover app @WebServlet and @WebListener.
-        if (Env.isDevelopmentEnvironment) {
-            final File classDirMaven = new File("target/classes").getAbsoluteFile();
-            final File classDirGradle = new File("build/classes").getAbsoluteFile();
-            File additionWebInfClasses = classDirMaven;  // dev env with Maven
-            if (!additionWebInfClasses.exists()) {
-                additionWebInfClasses = classDirGradle;  // dev env with Gradle
+        final Set<File> classesDirOrFolders = Env.findClassesJarOrFolder(webRoot);
+        if (classesDirOrFolders.isEmpty()) {
+            throw new IllegalStateException("Invalid state: no class folders found");
+        }
+        for (File classesDirOrFolder : classesDirOrFolders) {
+            if (classesDirOrFolder.isDirectory()) {
+                root.addPreResources(new DirResourceSet(root, "/WEB-INF/classes", classesDirOrFolder.getAbsolutePath(), "/"));
+            } else {
+                root.addPreResources(new JarResourceSet(root, "/WEB-INF/classes", classesDirOrFolder.getAbsolutePath(), "/"));
             }
-            if (!additionWebInfClasses.exists()) {
-                throw new IllegalStateException("Invalid state: " + additionWebInfClasses + " does not exist");
-            }
-            root.addPreResources(new DirResourceSet(root, "/WEB-INF/classes", additionWebInfClasses.getAbsolutePath(), "/"));
-        } else {
-            // the main jar file contains not only the static `webapp` but also the classes of the project.
-            root.addPreResources(new JarResourceSet(root, "/WEB-INF/classes", resourcesJarOrFolder.getAbsolutePath(), "/"));
         }
     }
 }
