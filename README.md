@@ -24,7 +24,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.mvysny.vaadin-boot:vaadin-boot:12.1")
+    implementation("com.github.mvysny.vaadin-boot:vaadin-boot:13.0")
 }
 ```
 Or Maven:
@@ -34,19 +34,20 @@ Or Maven:
 		<dependency>
 			<groupId>com.github.mvysny.vaadin-boot</groupId>
 			<artifactId>vaadin-boot</artifactId>
-			<version>12.1</version>
+			<version>13.0</version>
 		</dependency>
     </dependencies>
 </project>
 ```
 
-Compatibility chart: Vaadin Boot follows Jetty versioning.
+Compatibility chart:
 
-| Vaadin-Boot version | Min Java | Servlet Spec     | Supported Vaadin | Jetty |
-|---------------------|----------|------------------|------------------|-------|
-| 10.x                | Java 11+ | javax.servlet    | Vaadin 14-23     | 10.x  |
-| 11.x                | Java 17+ | jakarta.servlet  | Vaadin 24+       | 11.x  |
-| 12.x                | Java 17+ | jakarta.servlet  | Vaadin 24+       | 12.x  |
+| Vaadin-Boot version | Min Java | Servlet Spec     | Supported Vaadin | Jetty | Tomcat |
+|---------------------|----------|------------------|------------------|-------|--------|
+| 10.x                | Java 11+ | javax.servlet    | Vaadin 14-23     | 10.x  | N/A    |
+| 11.x                | Java 17+ | jakarta.servlet  | Vaadin 24+       | 11.x  | N/A    |
+| 12.x                | Java 17+ | jakarta.servlet  | Vaadin 24+       | 12.x  | N/A    |
+| 13.x                | Java 17+ | jakarta.servlet  | Vaadin 24+       | 12.x  | 10.1.x |
 
 See the [Vaadin-Boot Git Tags](https://github.com/mvysny/vaadin-boot/tags) for the list of
 released Vaadin-Boot versions.
@@ -65,6 +66,24 @@ Vaadin Boot will then serve static files from this folder.
 
 By default, VaadinBoot listens on all interfaces; call `localhostOnly()` to
 only listen on localhost.
+
+### Tomcat
+
+To run your ap with Tomcat, make sure to use Vaadin-Boot 13.0 or higher; then
+depend on `vaadin-boot-tomcat` instead on `vaadin-boot`.
+
+**Important**: you need to define your own servlet when running Tomcat, otherwise
+you'll get HTTP 404. Simply define this class in your project:
+
+```java
+@WebServlet(urlPatterns = "/*")
+class MyServlet extends VaadinServlet {}
+```
+
+### Jetty vs Tomcat
+
+Both are excellent choices, battle-tested in production. If you have no opinion on this,
+just go with Jetty.
 
 ### Missing `/src/main/webapp`?
 
@@ -96,6 +115,7 @@ Very basic example apps using Vaadin Boot:
 
 * Vaadin 24, Gradle: [vaadin-boot-example-gradle](https://github.com/mvysny/vaadin-boot-example-gradle)
 * Vaadin 24, Maven: [vaadin-boot-example-maven](https://github.com/mvysny/vaadin-boot-example-maven)
+* Vaadin 24, Maven, Tomcat: [vaadin-boot-example-maven-tomcat](https://github.com/mvysny/vaadin-boot-example-maven-tomcat)
 * Vaadin 23, Gradle: [vaadin-boot-example-gradle](https://github.com/mvysny/vaadin-boot-example-gradle), the v23 branch.
 * Vaadin 23, Maven: [vaadin-boot-example-maven](https://github.com/mvysny/vaadin-boot-example-maven), the v23 branch.
 * Vaadin 14, Gradle: [vaadin14-boot-example-gradle](https://github.com/mvysny/vaadin14-boot-example-gradle)
