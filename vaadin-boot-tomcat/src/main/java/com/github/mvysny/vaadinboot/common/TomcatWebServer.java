@@ -116,6 +116,11 @@ public class TomcatWebServer implements WebServer {
         return ctx;
     }
 
+    /**
+     * Configure the virtual WAR to serve static contents from {@link #resourcesJarOrFolder}'s <code>/webapp</code> package.
+     * @param root the virtual WAR
+     * @throws IOException on I/O error.
+     */
     protected void addStaticWebapp(@NotNull WebResourceRoot root) throws IOException {
         if (resourcesJarOrFolder.isDirectory()) {
             root.addPreResources(new DirResourceSet(root, "/",
@@ -126,6 +131,26 @@ public class TomcatWebServer implements WebServer {
         }
     }
 
+    /**
+     * To enable classpath scanning, we need to mount all app classes to the <code>WEB-INF/classes</code>
+     * of the virtual WAR being created.
+     * <br/>
+     * Oddly enough, Vaadin's <code>LookupServletContainerInitializer</code> (which is annotated with
+     * <code>@HandlesTypes</code>) <b>is</b> discovered and initialized, even though it's not present in <code>WEB-INF/classes</code>.
+     * Even more odd, it fails to register the standard Vaadin Servlet if the app doesn't offer its own;
+     * this is the reason why the app must define its own servlet at the moment.
+     * <br/>
+     * Alternative way would be to register the servlet manually via
+     * <pre><code>
+     * tomcat.addServlet("", "", VaadinServlet.class.getName());
+     * ctx.addServletMappingDecoded("/*", "");
+     * </code></pre>
+     * But the app would need to add every servlet (e.g. Javalin servlet) and every
+     * <code>@WebListener</code>; this would also break the requirement of {@link WebServer} interface
+     * to have classpath scanning enabled.
+     * @param root the virtual WAR
+     * @throws IOException on I/O error.
+     */
     protected void enableClasspathScanning(@NotNull WebResourceRoot root) throws IOException {
         // we need to add your app's classes to Tomcat to enable classpath scanning, in order to
         // auto-discover app @WebServlet and @WebListener.

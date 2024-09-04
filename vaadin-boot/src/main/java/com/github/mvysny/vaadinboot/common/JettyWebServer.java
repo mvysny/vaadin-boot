@@ -25,6 +25,14 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+/**
+ * Wraps an embedded Jetty web server:
+ * <ul>
+ *     <li>Homepage: <a href="https://jetty.org">jetty.org</a></li>
+ *     <li><a href="https://jetty.org/docs/jetty/12/index.html">Documentation for Jetty 12</a></li>
+ *     <li>Documentation for Embedded Jetty: <a href="https://jetty.org/docs/jetty/12/programming-guide/server/http.html">HTTP Server Libraries</a></li>
+ * </ul>
+ */
 public class JettyWebServer implements WebServer {
     @NotNull
     private static final Logger log = LoggerFactory.getLogger(JettyWebServer.class);

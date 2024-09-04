@@ -194,10 +194,12 @@ public final class Env {
         if (file != null) {
             // serving the `webapp` folder from a directory
             final File classDirectory = file.getAbsoluteFile().getParentFile();
+            Objects.requireNonNull(classDirectory, () -> "Unexpected: " + file.getAbsoluteFile() + " has no parent!");
             if (!classDirectory.exists()) {
                 throw new IllegalStateException("Invalid state: " + classDirectory + " doesn't exist");
             }
             if (!classDirectory.isDirectory()) {
+                // this should never happen since File.getParentFile() should always return a directory!
                 throw new IllegalStateException("Invalid state: " + classDirectory + " is not a directory");
             }
             return classDirectory;
@@ -229,7 +231,7 @@ public final class Env {
 
     /**
      * Returns a set of folders or jar files with app's classes. Only this project's
-     * modules are considered - third-party dependencies are never present.
+     * modules and submodules are considered - third-party dependencies are never present.
      * @param webRoot produced by {@link #findWebRoot()}.
      * @return a set of folders, or a set of a single jar file. Never empty, never contains non-existing files.
      * @throws IOException if the detection fails.
@@ -269,7 +271,9 @@ public final class Env {
             }
         }
 
-        // Fallback: just open target/classes or build/classes
+        // Fallback: just open target/classes or build/classes. Note this depends on the CWD (current working directory)
+        // and is known to break when running a submodule in IDEA since IDEA (for some crazy reason)
+        // insists on setting CWD to the main project, instead to the submodule.
         final File classDirMaven = new File("target/classes").getAbsoluteFile();
         final File classDirGradle = new File("build/classes").getAbsoluteFile();
         File additionWebInfClasses = classDirMaven;  // dev env with Maven
