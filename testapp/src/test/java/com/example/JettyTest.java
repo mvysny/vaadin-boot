@@ -7,8 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.net.URL;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Actually starts up Jetty. DON'T USE FOR TESTING OF YOUR APPS: see {@link MainViewTest} instead.
@@ -32,8 +31,11 @@ public class JettyTest {
     @Test
     public void testAppIsUp() throws Exception {
         // make sure something is running on port 44312
-        new URL("http://localhost:44312").openStream().close();
+        final String vaadinPage = TestUtils.wget("http://localhost:44312");
+        assertTrue(vaadinPage.contains("window.Vaadin = {Flow: {devServerIsNotLoaded: true}};"), vaadinPage);
         // make sure Bootstrap was called
         assertTrue(Bootstrap.initialized);
+        // ensure static content is served
+        assertEquals("Don't delete this file; see Main.java for details.", TestUtils.wget("http://localhost:44312/ROOT").trim());
     }
 }
