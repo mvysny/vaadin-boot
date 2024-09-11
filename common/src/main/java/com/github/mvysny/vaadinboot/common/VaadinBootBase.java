@@ -219,11 +219,11 @@ public abstract class VaadinBootBase<THIS extends VaadinBootBase<THIS>> {
 
         server.configure(this);
 
+        server.start();
+        serverStarted = true;
         try {
-            server.start();
             log.debug(server.getName() + " Server started");
 
-            serverStarted = true;
             onStarted(server);
 
             final Duration startupDuration = Duration.ofMillis(System.currentTimeMillis() - startupMeasurementSince);
@@ -259,14 +259,14 @@ public abstract class VaadinBootBase<THIS extends VaadinBootBase<THIS>> {
         if (!serverStarted) {
             throw new IllegalStateException("Invalid state: start() not called yet");
         }
-        try {
-            if (!serverStopped) {
+        if (!serverStopped) {
+            try {
                 log.info(reason);
                 server.stop(); // blocks until the webapp stops fully
                 log.info("Stopped");
+            } catch (Throwable t) {
+                log.error("stop() failed: " + t, t);
             }
-        } catch (Throwable t) {
-            log.error("stop() failed: " + t, t);
         }
         serverStopped = true;
     }
