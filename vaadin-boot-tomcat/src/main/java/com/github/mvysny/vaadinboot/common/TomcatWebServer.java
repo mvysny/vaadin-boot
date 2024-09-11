@@ -66,6 +66,7 @@ public class TomcatWebServer implements WebServer {
         server.setPort(configuration.port);
         server.setHostname(configuration.hostName == null ? "0.0.0.0" : configuration.hostName);
         server.getConnector(); // make sure the Connector is created so that Tomcat listens for http on 8080
+        server.getConnector().setThrowOnFailure(true); // otherwise Tomcat would continue initializing even if 8080 was occupied.
         log.debug("Tomcat Connector created");
 
         context = createWebAppContext(configuration);
