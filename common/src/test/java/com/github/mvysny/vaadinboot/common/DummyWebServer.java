@@ -8,30 +8,33 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class DummyWebServer implements WebServer {
     public VaadinBootBase<?> configured;
-    public boolean started;
+    public boolean startCalled = false;
+    public boolean running = false;
     @Override
-    public void configure(@NotNull VaadinBootBase<?> configuration) throws Exception {
+    public synchronized void configure(@NotNull VaadinBootBase<?> configuration) throws Exception {
         this.configured = configuration;
     }
 
     @Override
-    public void start() throws Exception {
+    public synchronized void start() throws Exception {
         assertNotNull(configured, "configure() not called");
-        assertFalse(started, "start() called repeatedly");
-        started = true;
+        assertFalse(running, "start() called repeatedly");
+        assertFalse(startCalled, "start() called repeatedly");
+        running = true;
+        startCalled = true;
     }
 
     @Override
-    public void stop() throws Exception {
+    public synchronized void stop() throws Exception {
         assertNotNull(configured, "configure() not called");
-        assertTrue(started, "start() not called");
-        started = false;
+        assertTrue(running, "start() not called");
+        running = false;
     }
 
     @Override
-    public void await() throws InterruptedException {
+    public synchronized void await() throws InterruptedException {
         assertNotNull(configured, "configure() not called");
-        assertTrue(started, "start() not called");
+        assertTrue(running, "start() not called");
     }
 
     @Override
@@ -41,27 +44,27 @@ public class DummyWebServer implements WebServer {
 
     public static class FailsToStart extends DummyWebServer {
         @Override
-        public void start() throws Exception {
+        public synchronized void start() throws Exception {
             super.start();
-            started = false;
+            running = false;
             throw new IOException("Port 8080 is occupied, cannot bind");
         }
 
         @Override
-        public void stop() throws Exception {
+        public synchronized void stop() throws Exception {
             super.stop();
             fail("Shouldn't be called");
         }
 
         @Override
-        public void await() throws InterruptedException {
+        public synchronized void await() throws InterruptedException {
             fail("Shouldn't be called");
         }
     }
 
     public static class FailsToStop extends DummyWebServer {
         @Override
-        public void stop() throws Exception {
+        public synchronized void stop() throws Exception {
             super.stop();
             throw new IOException("Failed to stop");
         }

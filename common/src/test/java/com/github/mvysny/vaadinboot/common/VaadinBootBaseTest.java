@@ -125,7 +125,7 @@ public class VaadinBootBaseTest {
                 new VaadinBoot(webServer).start()
         );
         assertEquals("Port 8080 is occupied, cannot bind", ex.getMessage());
-        assertFalse(webServer.started);
+        assertFalse(webServer.running);
     }
 
     @Test
@@ -134,6 +134,6 @@ public class VaadinBootBaseTest {
         final VaadinBoot boot = new VaadinBoot(webServer);
         boot.start();
         boot.stop("foo");
-        assertFalse(webServer.started);
+        assertFalse(webServer.running);
     }
 }
