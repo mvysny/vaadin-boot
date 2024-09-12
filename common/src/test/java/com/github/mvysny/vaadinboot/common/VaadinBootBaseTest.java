@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -115,5 +116,24 @@ public class VaadinBootBaseTest {
         assertEquals("/bar", new VaadinBoot().contextRoot);
         // manual config takes precedence
         assertEquals("", new VaadinBoot().withContextRoot("/").contextRoot);
+    }
+
+    @Test
+    public void failureToStartPropagatedProperly() throws Exception {
+        final DummyWebServer.FailsToStart webServer = new DummyWebServer.FailsToStart();
+        final IOException ex = assertThrows(IOException.class, () ->
+                new VaadinBoot(webServer).start()
+        );
+        assertEquals("Port 8080 is occupied, cannot bind", ex.getMessage());
+        assertFalse(webServer.started);
+    }
+
+    @Test
+    public void failureToStopNotPropagated() throws Exception {
+        final DummyWebServer.FailsToStop webServer = new DummyWebServer.FailsToStop();
+        final VaadinBoot boot = new VaadinBoot(webServer);
+        boot.start();
+        boot.stop("foo");
+        assertFalse(webServer.started);
     }
 }
