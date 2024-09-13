@@ -58,7 +58,7 @@ public interface WebServer {
      * After the de-initialization is done and the web server is stopped, this function returns.
      * <br/>
      * Will be called from one thread only, and at most once.
-     * @throws Exception if stop failed.
+     * @throws Exception if stop failed. In this case the state of the web server is undefined.
      */
     void stop() throws Exception;
 
