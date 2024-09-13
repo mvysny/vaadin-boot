@@ -47,7 +47,8 @@ public interface WebServer {
      * After the initialization is done and the web server is running, this function returns.
      * <br/>
      * Will be called from one thread only, exactly once.
-     * @throws Exception if start fails.
+     * @throws Exception if start fails, for example because the {@link VaadinBootBase#port port} is occupied.
+     * In case of any exception, before this function quits, the web server must be fully stopped.
      */
     void start() throws Exception;
 
