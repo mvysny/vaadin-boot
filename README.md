@@ -534,11 +534,13 @@ new VaadinBoot().localhostOnly().setPort(8081).run();
 
 On top of that, the following Vaadin Boot properties are configurable via environment variables and also Java system properties:
 
-| Vaadin Boot config property | Env variable                 | Java system property        |
-|-----------------------------|------------------------------|-----------------------------|
-| port                        | SERVER_PORT                  | server.port                 |
-| listen interface            | SERVER_ADDRESS               | server.address              |
-| context root                | SERVER_SERVLET_CONTEXT-PATH  | server.servlet.context-path |
+| Vaadin Boot config property | Env variable                | Java system property        | Example Value |
+|-----------------------------|-----------------------------|-----------------------------|---------------|
+| port                        | SERVER_PORT                 | server.port                 | 18080         |
+| listen interface            | SERVER_ADDRESS              | server.address              | localhost     |
+| context root                | SERVER_SERVLET_CONTEXT_PATH | server.servlet.context-path | /admin        |
+
+> Note: Vaadin Boot 13.1 and older honored `SERVER_SERVLET_CONTEXT-PATH` instead of `SERVER_SERVLET_CONTEXT_PATH`.
 
 You can not pass the Java system properties to your app run scripts directly, since they will be treated as
 program parameters. Instead, pass them via the `JAVA_OPTS` env variable (only works with script created by Gradle):

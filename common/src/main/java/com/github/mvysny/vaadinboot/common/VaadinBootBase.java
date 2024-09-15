@@ -48,13 +48,22 @@ public abstract class VaadinBootBase<THIS extends VaadinBootBase<THIS>> {
 
     /**
      * The context root to run under. Defaults to "".
-     * Change this to e.g. /foo to host your app on a different context root
+     * Change this to e.g. "/foo" to host your app on a different context root
      * <br/>
-     * Can be configured via the <code>SERVER_SERVLET_CONTEXT-PATH</code> environment variable, or <code>-Dserver.servlet.context-path=</code> Java system property.
+     * Can be configured via the <code>SERVER_SERVLET_CONTEXT_PATH</code> environment variable, or <code>-Dserver.servlet.context-path=</code> Java system property.
+     * <br/>
+     * Example values:
+     * <ul>
+     *     <li>""</li>
+     *     <li>"/" - will be changed to ""</li>
+     *     <li>"/foo"</li>
+     *     <li>"foobar" - will be changed to "/foobar"</li>
+     *     <li>"foo/bar/baz" - will be changed to "/foo/bar/baz"</li>
+     * </ul>
      */
     @NotNull
     @VisibleForTesting
-    String contextRoot = Env.getProperty("SERVER_SERVLET_CONTEXT-PATH", "server.servlet.context-path", "");
+    String contextRoot = postprocessContextRoot(Env.getProperty("SERVER_SERVLET_CONTEXT_PATH", "server.servlet.context-path", ""));
 
     /**
      * When the app launches, open the browser automatically when in dev mode.
@@ -117,11 +126,23 @@ public abstract class VaadinBootBase<THIS extends VaadinBootBase<THIS>> {
      */
     @NotNull
     public THIS withContextRoot(@NotNull String contextRoot) {
-        this.contextRoot = Objects.requireNonNull(contextRoot);
-        if (this.contextRoot.equals("/")) {
-            this.contextRoot = "";
-        }
+        this.contextRoot = postprocessContextRoot(contextRoot);
         return getThis();
+    }
+
+    @NotNull
+    private static String postprocessContextRoot(@NotNull String contextRoot) {
+        Objects.requireNonNull(contextRoot);
+        if (contextRoot.equals("/")) {
+            contextRoot = "";
+        }
+        if (!contextRoot.startsWith("/")) {
+            contextRoot = "/" + contextRoot;
+        }
+        if (contextRoot.endsWith("/")) {
+            contextRoot = contextRoot.substring(0, contextRoot.length() - 1);
+        }
+        return contextRoot;
     }
 
     /**
