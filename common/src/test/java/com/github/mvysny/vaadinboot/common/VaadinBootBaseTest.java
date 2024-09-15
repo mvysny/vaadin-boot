@@ -109,13 +109,25 @@ public class VaadinBootBaseTest {
 
     @Test
     public void testContextRootParsedCorrectlyFromSystemEnv() {
-        env.put("SERVER_SERVLET_CONTEXT-PATH", "/foo");
+        env.put("SERVER_SERVLET_CONTEXT_PATH", "/foo");
         assertEquals("/foo", new VaadinBoot().contextRoot);
         // system property takes precedence
         System.setProperty("server.servlet.context-path", "/bar");
         assertEquals("/bar", new VaadinBoot().contextRoot);
         // manual config takes precedence
         assertEquals("", new VaadinBoot().withContextRoot("/").contextRoot);
+    }
+
+    @Test
+    public void contextRootPostprocessedCorrectly() {
+        env.put("SERVER_SERVLET_CONTEXT_PATH", "/foo");
+        assertEquals("/foo", new VaadinBoot().contextRoot);
+        env.put("SERVER_SERVLET_CONTEXT_PATH", "/");
+        assertEquals("", new VaadinBoot().contextRoot);
+        env.put("SERVER_SERVLET_CONTEXT_PATH", "foo/bar");
+        assertEquals("/foo/bar", new VaadinBoot().contextRoot);
+        env.put("SERVER_SERVLET_CONTEXT_PATH", "foo/bar/");
+        assertEquals("/foo/bar", new VaadinBoot().contextRoot);
     }
 
     @Test
