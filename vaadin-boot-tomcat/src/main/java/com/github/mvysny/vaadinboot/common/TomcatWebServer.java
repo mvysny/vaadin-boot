@@ -40,13 +40,24 @@ public class TomcatWebServer implements WebServer {
      * The outcome of {@link Env#findResourcesJarOrFolder(URL)}.
      */
     protected volatile File resourcesJarOrFolder;
+    /**
+     * Cached outcome of {@link Env#findWebRoot()}.
+     */
     protected volatile URL webRoot;
 
+    /**
+     * Returns the Tomcat {@link Context} object. Fails if {@link #configure(VaadinBootBase)} wasn't called yet.
+     * @return Tomcat {@link Context} object.
+     */
     @NotNull
     public Context getContext() {
         return Objects.requireNonNull(context);
     }
 
+    /**
+     * Returns the Tomcat embedded server. Fails if {@link #configure(VaadinBootBase)} wasn't called yet.
+     * @return the Tomcat embedded server.
+     */
     @NotNull
     public Tomcat getServer() {
         return Objects.requireNonNull(server);
@@ -97,6 +108,7 @@ public class TomcatWebServer implements WebServer {
     /**
      * Creates the Tomcat {@link Context}.
      * @return the {@link Context}
+     * @throws IOException on i/o error
      */
     @NotNull
     protected Context createWebAppContext(@NotNull VaadinBootBase<?> configuration) throws IOException {

@@ -185,6 +185,7 @@ public final class Env {
      * The `webapp` folder is being served from a resources folder, or from a jar file.
      * @param webRoot the `webapp` folder resource as detected by {@link #findWebRoot()}.
      * @return the jar file or a directory from which the class files are being served.
+     * @throws IOException on i/o error
      */
     @NotNull
     public static File findResourcesJarOrFolder(@NotNull URL webRoot) throws IOException {

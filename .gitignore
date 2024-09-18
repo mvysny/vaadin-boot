@@ -5,3 +5,4 @@ build
 out
 
 !**/src/main/dev-bundle/webapp/VAADIN/build
+.kotlin
