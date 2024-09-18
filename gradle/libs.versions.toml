@@ -13,7 +13,7 @@ slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
 jetbrains-annotations = "org.jetbrains:annotations:24.1.0"
 jetty-webapp = { module = "org.eclipse.jetty.ee10:jetty-ee10-annotations", version.ref = "jetty" }
 jetty-websocket = { module = "org.eclipse.jetty.ee10.websocket:jetty-ee10-websocket-jakarta-server", version.ref = "jetty" }
-vaadin-open = "com.vaadin:open:8.5.0"  # opens url in a browser
+vaadin-open = "com.vaadin:open:8.5.0.2"  # opens url in a browser
 vaadin-core = { module = "com.vaadin:vaadin-core", version.ref = "vaadin" }
 # https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/
 junit = "org.junit.jupiter:junit-jupiter-engine:5.11.0"
