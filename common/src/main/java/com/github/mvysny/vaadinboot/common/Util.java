@@ -3,7 +3,16 @@ package com.github.mvysny.vaadinboot.common;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Internal utility methods.
+ */
 public final class Util {
+    /**
+     * Not meant to be instantiated.
+     */
+    private Util() {
+    }
+
     /**
      * Checks that value isn't null; if it is, throws {@link IllegalStateException}.
      * @param value the value

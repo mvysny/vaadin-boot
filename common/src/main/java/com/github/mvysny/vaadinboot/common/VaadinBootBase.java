@@ -92,9 +92,9 @@ public abstract class VaadinBootBase<THIS extends VaadinBootBase<THIS>> {
         return getThis();
     }
 
+    @SuppressWarnings("unchecked")
     @NotNull
     private THIS getThis() {
-        //noinspection unchecked
         return (THIS) this;
     }
 

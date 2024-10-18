@@ -40,6 +40,12 @@ public class JettyWebServer implements WebServer {
     private volatile Server server;
 
     /**
+     * Creates new Jetty wrapper. Only {@link VaadinBoot} is expected to call this.
+     */
+    public JettyWebServer() {
+    }
+
+    /**
      * Creates a thread pool for Jetty to serve http requests.
      * @param useVirtualThreadsIfAvailable if true and we're running on JVM 21+,
      *                                     create a thread pool which uses virtual threads.
@@ -120,6 +126,7 @@ public class JettyWebServer implements WebServer {
 
     /**
      * Creates the Jetty {@link WebAppContext}.
+     * @param cfg the VaadinBoot config.
      * @return the {@link WebAppContext}
      * @throws IOException on i/o exception
      */
