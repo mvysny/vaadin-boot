@@ -41,6 +41,8 @@ public class JettyWebServer implements WebServer {
 
     /**
      * Creates a thread pool for Jetty to serve http requests.
+     * @param useVirtualThreadsIfAvailable if true and we're running on JVM 21+,
+     *                                     create a thread pool which uses virtual threads.
      * @return the thread pool, may be null if the default one is to be used.
      */
     @Nullable
