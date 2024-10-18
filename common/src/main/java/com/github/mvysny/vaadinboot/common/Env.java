@@ -216,7 +216,7 @@ public final class Env {
         if (!path.endsWith("!/webapp")) {
             throw new IllegalStateException("Invalid state: unexpected path " + path);
         }
-        final URL url = new URL(path.substring(0, path.length() - 8));
+        final URL url = URI.create(path.substring(0, path.length() - 8)).toURL();
         final File jarFile = FileUtils.toFile(url);
         if (jarFile == null) {
             throw new IllegalStateException("Invalid state: can't convert URL to file: " + url);
