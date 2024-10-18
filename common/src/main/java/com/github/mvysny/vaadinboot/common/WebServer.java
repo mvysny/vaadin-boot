@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  * <br/>
  * The order of the calls:
  * <ul>
- *     <li>First {@link #configure(VaadinBootBase)} is called, to set up the server.</li>
+ *     <li>First, {@link #configure(VaadinBootBase)} is called, to set up the server.</li>
  *     <li>Afterwards, {@link #start()} is called.</li>
  *     <li>Afterwards, optionally, {@link #await()} is called, to block the main thread.</li>
  *     <li>Finally, {@link #stop()} is called. Afterwards, the main method exits and the JVM will terminate.</li>
@@ -26,8 +26,14 @@ import org.jetbrains.annotations.NotNull;
  * <ul>
  *     <li>https support - we expect Traefik or Nginx front which will unwrap https, possibly refreshing certificates via ACME/Let's Encrypt.</li>
  *     <li>No <code>web.xml</code> is parsed</li>
- *     <li>The static content folder is served as-is: no modification is done to the files, no jsp compilation</li>
+ *     <li>The static content folder is served as-is: no modification is done to the files: for example, no jsp compilation</li>
  *     <li>No JSP/JSF support</li>
+ * </ul>
+ * All implementations must be thread-safe:
+ * <ul>
+ *     <li>{@link #configure(VaadinBootBase)} and {@link #start()} and {@link #await()}
+ *     are called synchronously, from the main thread.</li>
+ *     <li></li>
  * </ul>
  */
 public interface WebServer {
@@ -47,6 +53,9 @@ public interface WebServer {
      * After the initialization is done and the web server is running, this function returns.
      * <br/>
      * Will be called from one thread only, exactly once.
+     * <br/>
+     * If this function fails with an exception, {@link #stop()} will not be called.
+     * This function therefore must clean up any half-initialized objects.
      * @throws Exception if start fails, for example because the {@link VaadinBootBase#port port} is occupied.
      * In case of any exception, before this function quits, the web server must be fully stopped.
      */
@@ -57,7 +66,8 @@ public interface WebServer {
      * all servlets and web listeners have been de-initialized properly.
      * After the de-initialization is done and the web server is stopped, this function returns.
      * <br/>
-     * Will be called from one thread only, and at most once.
+     * Will be called from one thread only, and at most once. Will be called only
+     * in case there was a previous call to {@link #start()} which succeeded.
      * @throws Exception if stop failed. In this case the state of the web server is undefined.
      */
     void stop() throws Exception;

@@ -46,6 +46,12 @@ public class TomcatWebServer implements WebServer {
     protected volatile URL webRoot;
 
     /**
+     * Creates a new instance of the wrapper. Only {@link com.github.mvysny.vaadinboot.VaadinBoot} is expected to call this.
+     */
+    public TomcatWebServer() {
+    }
+
+    /**
      * Returns the Tomcat {@link Context} object. Fails if {@link #configure(VaadinBootBase)} wasn't called yet.
      * @return Tomcat {@link Context} object.
      */
