@@ -107,6 +107,7 @@ public class TomcatWebServer implements WebServer {
 
     /**
      * Creates the Tomcat {@link Context}.
+     * @param configuration the configuration to pass on to Tomcat.
      * @return the {@link Context}
      * @throws IOException on i/o error
      */
@@ -116,13 +117,20 @@ public class TomcatWebServer implements WebServer {
         if (contextRoot.equals("/")) {
             contextRoot = "";
         }
-        final Context ctx = server.addWebapp(contextRoot, Files.createTempDirectory("tomcat-" + configuration.port).toFile().getAbsolutePath());
+        // Create an empty folder. Tomcat wants to serve static files from a folder,
+        // but we need to serve static files from classpath. Pass in an empty folder here -
+        // we'll configure the static file serving later on.
+        final String docBase = Files.createTempDirectory("tomcat-" + configuration.port).toFile().getAbsolutePath();
+
+        final Context ctx = server.addWebapp(contextRoot, docBase);
+
         // in embedded mode there's just one webapp, and in that case the standard JVM class loading
         // makes more sense. Probably also improves JVM class hotswap.
         ctx.setLoader(new WebappLoader());
         ctx.getLoader().setDelegate(true);
 
         final WebResourceRoot root = new StandardRoot(ctx);
+        // configure static file serving here.
         addStaticWebapp(root);
         enableClasspathScanning(root);
         ctx.setResources(root);
