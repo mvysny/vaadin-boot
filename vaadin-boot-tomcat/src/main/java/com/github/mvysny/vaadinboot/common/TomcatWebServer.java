@@ -54,10 +54,11 @@ public class TomcatWebServer implements WebServer {
     /**
      * Returns the Tomcat {@link Context} object. Fails if {@link #configure(VaadinBootBase)} wasn't called yet.
      * @return Tomcat {@link Context} object.
+     * @throws IllegalStateException if {@link #configure(VaadinBootBase)} wasn't called or the server is already stopped.
      */
     @NotNull
     public Context getContext() {
-        return Objects.requireNonNull(context);
+        return Util.checkNotNull(context, "not yet configured or was stopped already");
     }
 
     /**
@@ -97,6 +98,7 @@ public class TomcatWebServer implements WebServer {
 
     @Override
     public void stop() throws Exception {
+        context = null;
         server.stop();
         server = null;
     }

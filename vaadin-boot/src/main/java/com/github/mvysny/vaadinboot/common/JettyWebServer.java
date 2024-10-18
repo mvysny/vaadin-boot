@@ -20,7 +20,6 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -94,6 +93,7 @@ public class JettyWebServer implements WebServer {
 
     @Override
     public void stop() throws Exception {
+        context = null;
         server.stop();
     }
 
@@ -107,8 +107,13 @@ public class JettyWebServer implements WebServer {
         return "Jetty";
     }
 
+    /**
+     * Returns the Jetty webapp context.
+     * @return the webapp context, not null.
+     * @throws IllegalStateException if {@link #configure(VaadinBootBase)} wasn't called or the web server is already stopped.
+     */
     public @NotNull WebAppContext getContext() {
-        return Objects.requireNonNull(context);
+        return Util.checkNotNull(context, "configure() wasn't called or stop() was already called");
     }
 
     /**
