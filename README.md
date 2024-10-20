@@ -103,8 +103,8 @@ IDEA is dumb to insist to setting CWD to the root of the project, not to the mod
 ### Command-line Args
 
 At the moment it's "Do it yourself". Good start
-is to use [Apache commons-cli](https://commons.apache.org/proper/commons-cli/),
-or [kotlinx-cli](https://github.com/Kotlin/kotlinx-cli) if you're using Kotlin.
+is to use [Apache commons-cli](https://commons.apache.org/proper/commons-cli/) or
+[picocli](https://picocli.info).
 
 However, certain settings can be configured via env variables / jvm args, please see
 the *Configuration* section below.
