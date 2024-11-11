@@ -85,9 +85,9 @@ public class JettyWebServer implements WebServer {
 
         server = new Server(newThreadPool(cfg.isUseVirtualThreadsIfAvailable()));
         final ServerConnector serverConnector = new ServerConnector(server);
-        serverConnector.setPort(configuration.port);
-        if (configuration.hostName != null) {
-            serverConnector.setHost(configuration.hostName);
+        serverConnector.setPort(configuration.getPort());
+        if (configuration.getListenOn() != null) {
+            serverConnector.setHost(configuration.getListenOn());
         }
         server.addConnector(serverConnector);
         server.setHandler(context);
@@ -135,7 +135,7 @@ public class JettyWebServer implements WebServer {
         final WebAppContext context = new WebAppContext();
         final Resource webRoot = findWebRoot(context.getResourceFactory());
         context.setBaseResource(webRoot);
-        final String contextRoot = ((VaadinBootBase<?>) cfg).contextRoot;
+        final String contextRoot = cfg.getContextRoot();
         context.setContextPath(contextRoot.isEmpty() ? "/" : contextRoot);
 
         // don't add the servlet this way - the @WebServlet annotation is ignored!

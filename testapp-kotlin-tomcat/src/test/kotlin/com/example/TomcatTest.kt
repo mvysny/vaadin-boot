@@ -16,7 +16,7 @@ class TomcatTest {
     @BeforeAll
     fun startJetty() {
         assertFalse(Bootstrap.initialized)
-        vaadinBoot = VaadinBoot().setPort(44312).localhostOnly()
+        vaadinBoot = VaadinBoot().withPort(44312).localhostOnly()
         vaadinBoot!!.start()
     }
 

@@ -78,11 +78,11 @@ public class TomcatWebServer implements WebServer {
         server = new Tomcat();
         // first thing we need to do is to configure the basedir: if the basedir is configured
         // after connector is created, the setting will be ignored.
-        final File basedir = Files.createTempDirectory("tomcat-" + configuration.port).toFile().getAbsoluteFile();
+        final File basedir = Files.createTempDirectory("tomcat-" + configuration.getPort()).toFile().getAbsoluteFile();
         server.setBaseDir(basedir.getAbsolutePath());
         log.debug("Tomcat basedir configured to " + basedir);
-        server.setPort(configuration.port);
-        server.setHostname(configuration.hostName == null ? "0.0.0.0" : configuration.hostName);
+        server.setPort(configuration.getPort());
+        server.setHostname(configuration.getListenOn() == null ? "0.0.0.0" : configuration.getListenOn());
         server.getConnector(); // make sure the Connector is created so that Tomcat listens for http on 8080
         server.getConnector().setThrowOnFailure(true); // otherwise Tomcat would continue initializing even if 8080 was occupied.
         log.debug("Tomcat Connector created");
@@ -121,14 +121,14 @@ public class TomcatWebServer implements WebServer {
      */
     @NotNull
     protected Context createWebAppContext(@NotNull VaadinBootBase<?> configuration) throws IOException {
-        String contextRoot = configuration.contextRoot;
+        String contextRoot = configuration.getContextRoot();
         if (contextRoot.equals("/")) {
             contextRoot = "";
         }
         // Create an empty folder. Tomcat wants to serve static files from a folder,
         // but we need to serve static files from classpath. Pass in an empty folder here -
         // we'll configure the static file serving later on.
-        final String docBase = Files.createTempDirectory("tomcat-" + configuration.port).toFile().getAbsolutePath();
+        final String docBase = Files.createTempDirectory("tomcat-" + configuration.getPort()).toFile().getAbsolutePath();
 
         final Context ctx = server.addWebapp(contextRoot, docBase);
 

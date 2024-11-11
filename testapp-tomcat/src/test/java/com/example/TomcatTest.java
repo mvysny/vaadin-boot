@@ -20,7 +20,7 @@ public class TomcatTest {
     @BeforeAll
     public static void startTomcat() throws Exception {
         assertFalse(Bootstrap.initialized);
-        vaadinBoot = new VaadinBoot().setPort(44312).localhostOnly();
+        vaadinBoot = new VaadinBoot().withPort(44312).localhostOnly();
         vaadinBoot.start();
     }
 

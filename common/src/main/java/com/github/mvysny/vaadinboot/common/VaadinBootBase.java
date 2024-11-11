@@ -33,8 +33,7 @@ public abstract class VaadinBootBase<THIS extends VaadinBootBase<THIS>> {
      * <br/>
      * Can be configured via the <code>SERVER_PORT</code> environment variable, or <code>-Dserver.port=</code> Java system property.
      */
-    @VisibleForTesting
-    int port = Integer.parseInt(Env.getProperty("SERVER_PORT", "server.port", "" + DEFAULT_PORT));
+    private int port = Integer.parseInt(Env.getProperty("SERVER_PORT", "server.port", "" + DEFAULT_PORT));
 
     /**
      * Listen on interface handling given host name. Defaults to <code>null</code> which causes the web server
@@ -43,8 +42,7 @@ public abstract class VaadinBootBase<THIS extends VaadinBootBase<THIS>> {
      * Can be configured via the <code>SERVER_ADDRESS</code> environment variable, or <code>-Dserver.address=</code> Java system property.
      */
     @Nullable
-    @VisibleForTesting
-    String hostName = Env.getProperty("SERVER_ADDRESS", "server.address");
+    private String hostName = Env.getProperty("SERVER_ADDRESS", "server.address");
 
     /**
      * The context root to run under. Defaults to "".
@@ -62,8 +60,7 @@ public abstract class VaadinBootBase<THIS extends VaadinBootBase<THIS>> {
      * </ul>
      */
     @NotNull
-    @VisibleForTesting
-    String contextRoot = postprocessContextRoot(Env.getProperty("SERVER_SERVLET_CONTEXT_PATH", "server.servlet.context-path", ""));
+    private String contextRoot = postprocessContextRoot(Env.getProperty("SERVER_SERVLET_CONTEXT_PATH", "server.servlet.context-path", ""));
 
     /**
      * When the app launches, open the browser automatically when in dev mode.
@@ -81,15 +78,34 @@ public abstract class VaadinBootBase<THIS extends VaadinBootBase<THIS>> {
     /**
      * Sets the port to listen on. Listens on {@value #DEFAULT_PORT} by default.
      * @param port the new port, 1..65535
-     * @return this
      */
-    @NotNull
-    public THIS setPort(int port) {
+    public void setPort(int port) {
         if (port < 1 || port > 65535) {
             throw new IllegalArgumentException("Parameter port: invalid value " + port + ": must be 1..65535");
         }
         this.port = port;
+    }
+
+    /**
+     * Sets the port to listen on. Listens on {@value #DEFAULT_PORT} by default.
+     * @param port the new port, 1..65535
+     * @return this
+     */
+    @NotNull
+    public THIS withPort(int port) {
+        setPort(port);
         return getThis();
+    }
+
+    /**
+     * Returns the port to listen on. Listens on {@value #DEFAULT_PORT} by default.
+     * <br/>
+     * Can be configured via the <code>SERVER_PORT</code> environment variable, or <code>-Dserver.port=</code> Java system property,
+     * or via {@link #setPort(int)}.
+     * @return port the port, 1..65535
+     */
+    public int getPort() {
+        return port;
     }
 
     @SuppressWarnings("unchecked")
@@ -106,8 +122,29 @@ public abstract class VaadinBootBase<THIS extends VaadinBootBase<THIS>> {
      */
     @NotNull
     public THIS listenOn(@Nullable String hostName) {
-        this.hostName = hostName;
+        setListenOn(hostName);
         return getThis();
+    }
+
+    /**
+     * Listen on network interface handling given host name. Pass in <code>null</code> to listen on all interfaces;
+     * pass in `127.0.0.1` or `localhost` to listen on localhost only (or call {@link #localhostOnly()}).
+     * @param hostName the interface to listen on.
+     */
+    public void setListenOn(@Nullable String hostName) {
+        this.hostName = hostName;
+    }
+
+    /**
+     * Listen on network interface handling given host name. Pass in <code>null</code> to listen on all interfaces;
+     * pass in `127.0.0.1` or `localhost` to listen on localhost only (or call {@link #localhostOnly()}).
+     * <br/>
+     * Can be configured via the <code>SERVER_ADDRESS</code> environment variable, or <code>-Dserver.address=</code> Java system property,
+     * or via {@link #listenOn(String)} or {@link #localhostOnly()}.
+     * @return hostName interface to listen on.
+     */
+    public @Nullable String getListenOn() {
+        return hostName;
     }
 
     /**
@@ -126,8 +163,36 @@ public abstract class VaadinBootBase<THIS extends VaadinBootBase<THIS>> {
      */
     @NotNull
     public THIS withContextRoot(@NotNull String contextRoot) {
-        this.contextRoot = postprocessContextRoot(contextRoot);
+        setContextRoot(contextRoot);
         return getThis();
+    }
+
+    /**
+     * Change this to e.g. /foo to host your app on a different context root
+     * @param contextRoot the new context root, e.g. `/foo`. Pass in either an empty string or "/" to serve on the base context root.
+     */
+    public void setContextRoot(@NotNull String contextRoot) {
+        this.contextRoot = postprocessContextRoot(contextRoot);
+    }
+
+    /**
+     * Returns the current context root.
+     * <br/>
+     * Can be configured via the <code>SERVER_SERVLET_CONTEXT_PATH</code> environment variable, or <code>-Dserver.servlet.context-path=</code> Java system property,
+     * or via {@link #withContextRoot(String)}.
+     * <br/>
+     * Example values:
+     * <ul>
+     *     <li>""</li>
+     *     <li>"/" - same as ""</li>
+     *     <li>"/foo"</li>
+     *     <li>"foobar" - will be changed to "/foobar"</li>
+     *     <li>"foo/bar/baz" - will be changed to "/foo/bar/baz"</li>
+     * </ul>
+     * @return the context root, e.g. `/foo`. Defaults to "".
+     */
+    public @NotNull String getContextRoot() {
+        return contextRoot;
     }
 
     @NotNull
