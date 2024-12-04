@@ -120,6 +120,7 @@ Very basic example apps using Vaadin Boot:
 * Vaadin 23, Maven: [vaadin-boot-example-maven](https://github.com/mvysny/vaadin-boot-example-maven), the v23 branch.
 * Vaadin 14, Gradle: [vaadin14-boot-example-gradle](https://github.com/mvysny/vaadin14-boot-example-gradle)
 * Vaadin 14, Maven: [vaadin14-boot-example-maven](https://github.com/mvysny/vaadin14-boot-example-maven)
+* Vaadin 8, Maven: [vaadin8-sampler](https://github.com/mvysny/vaadin8-sampler)
 
 More advanced examples, demoing both security and SQL access:
 
