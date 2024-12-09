@@ -9,9 +9,6 @@ dependencies {
     // opens url in a browser
     implementation(libs.vaadin.open)
 
-    // both Vaadin and vaadin-open depends on commons-io, we can use it too.
-    implementation(libs.commons.io)
-
     testImplementation(libs.slf4j.simple)
     testImplementation(libs.junit)
     testImplementation(libs.vaadin.core)

@@ -19,7 +19,6 @@ vaadin-core = { module = "com.vaadin:vaadin-core", version.ref = "vaadin" }
 junit = "org.junit.jupiter:junit-jupiter-engine:5.11.0"
 kaributesting = "com.github.mvysny.kaributesting:karibu-testing-v24:2.2.0"
 javalin = "io.javalin:javalin:5.6.1"
-commons-io = "commons-io:commons-io:2.15.0"
 tomcat-core = { module = "org.apache.tomcat.embed:tomcat-embed-core", version.ref = "tomcat" }
 tomcat-jasper = { module = "org.apache.tomcat.embed:tomcat-embed-jasper", version.ref = "tomcat" }
 tomcat-websocket = { module = "org.apache.tomcat.embed:tomcat-embed-websocket", version.ref = "tomcat" }
