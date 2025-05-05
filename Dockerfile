@@ -20,4 +20,5 @@ COPY --from=builder /app/testapp/build/distributions/testapp-*/ /app/
 WORKDIR /app/bin
 RUN ls -la
 EXPOSE 8080
-ENTRYPOINT ./testapp
+ENTRYPOINT ["./testapp"]
+
