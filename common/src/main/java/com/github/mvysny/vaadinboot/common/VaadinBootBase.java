@@ -314,7 +314,7 @@ public abstract class VaadinBootBase<THIS extends VaadinBootBase<THIS>> {
 
             final Duration startupDuration = Duration.ofMillis(System.currentTimeMillis() - startupMeasurementSince);
             System.out.println("\n\n=================================================\n" +
-                    "Started in " + startupDuration + ". Running on " + Env.dumpHost() + "\n" +
+                    "Started in " + startupDuration + ". Running on " + Env.dumpHost() + ". PID: " + ProcessHandle.current().pid() + "\n" +
                     "Please open " + getServerURL() + " in your browser.");
             if (!Env.isVaadinProductionMode) {
                 System.out.println("If you see the 'Unable to determine mode of operation' exception, just kill me and run `./gradlew vaadinPrepareFrontend` or `./mvnw vaadin:prepare-frontend`");
