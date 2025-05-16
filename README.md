@@ -24,7 +24,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.mvysny.vaadin-boot:vaadin-boot:13.0")
+    implementation("com.github.mvysny.vaadin-boot:vaadin-boot:13.3")
 }
 ```
 Or Maven:
