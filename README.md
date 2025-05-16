@@ -34,7 +34,7 @@ Or Maven:
 		<dependency>
 			<groupId>com.github.mvysny.vaadin-boot</groupId>
 			<artifactId>vaadin-boot</artifactId>
-			<version>13.0</version>
+			<version>13.3</version>
 		</dependency>
     </dependencies>
 </project>
@@ -47,7 +47,7 @@ Compatibility chart:
 | 10.7+               | Java 11+ | javax.servlet    | Vaadin 8-23      | 10.x  | N/A    |
 | 11.x (deprecated)   | Java 17+ | jakarta.servlet  | Vaadin 24+       | 11.x  | N/A    |
 | 12.x (deprecated)   | Java 17+ | jakarta.servlet  | Vaadin 24+       | 12.x  | N/A    |
-| 13.x                | Java 17+ | jakarta.servlet  | Vaadin 24+       | 12.x  | 10.1.x |
+| 13.x                | Java 17+ | jakarta.servlet  | Vaadin 24+       | 12.x  | 11.x   |
 
 See the [Vaadin-Boot Git Tags](https://github.com/mvysny/vaadin-boot/tags) for the list of
 released Vaadin-Boot versions.
