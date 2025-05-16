@@ -1,5 +1,5 @@
 [versions]
-vaadin = "24.7.3"
+vaadin = "24.7.4"
 # https://repo1.maven.org/maven2/org/slf4j/slf4j-api/
 slf4j = "2.0.16"
 # check latest version at https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/
