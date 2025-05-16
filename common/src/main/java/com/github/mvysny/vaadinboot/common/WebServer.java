@@ -55,8 +55,9 @@ public interface WebServer {
      * Will be called from one thread only, exactly once.
      * <br/>
      * If this function fails with an exception, {@link #stop()} will not be called.
-     * This function therefore must clean up any half-initialized objects.
-     * @throws Exception if start fails, for example because the {@link VaadinBootBase#port port} is occupied.
+     * This function therefore must clean up any half-initialized objects, stop and kill
+     * the web server, etc.
+     * @throws Exception if start fails, for example because the {@link VaadinBootBase#getPort()} is occupied.
      * In case of any exception, before this function quits, the web server must be fully stopped.
      */
     void start() throws Exception;
@@ -73,7 +74,8 @@ public interface WebServer {
     void stop() throws Exception;
 
     /**
-     * Can only be called on a started web server. Blocks until some other thread calls {@link #stop()};
+     * Can only be called on a started web server (after {@link #start()} has been called
+     * and completed successfully). Blocks until some other thread calls {@link #stop()};
      * this function returns after the de-initialization is done and the web server is stopped.
      * <br/>
      * May be called from multiple threads at the same time.
