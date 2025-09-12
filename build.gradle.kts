@@ -4,6 +4,7 @@ plugins {
     java
     `maven-publish`
     signing
+    kotlin("jvm") version "2.2.20" apply false
 }
 
 defaultTasks("clean", "build")

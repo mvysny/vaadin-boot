@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.vaadin)
     application
-    kotlin("jvm") version "2.0.20"
+    kotlin("jvm")
 }
 
 dependencies {
