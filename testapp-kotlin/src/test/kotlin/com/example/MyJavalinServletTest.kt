@@ -2,21 +2,28 @@ package com.example
 
 import org.eclipse.jetty.ee10.webapp.WebAppContext
 import org.eclipse.jetty.server.Server
+import org.eclipse.jetty.util.resource.Resource
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.net.URI
-import java.net.URL
+import java.nio.file.Path
 import kotlin.test.assertEquals
+import kotlin.test.expect
 
+/**
+ * Not sure what this tests exactly - we should test MyJavalinServlet as a part of the Vaadin app...
+ * Keeping this test here for now.
+ * @deprecated
+ */
 class MyJavalinServletTest {
     private var server: Server? = null
 
     @BeforeEach
     fun startJetty() {
         val ctx = WebAppContext()
-        // This used to be EmptyResource, but it got removed in Jetty 12. Let's use some dummy resource instead.
-        ctx.baseResource = ctx.resourceFactory.newClassLoaderResource("java/lang/String.class")
+        ctx.baseResource = EmptyResource()
+        expect(false) { ctx.baseResource == null }
         ctx.addServlet(MyJavalinServlet::class.java, "/rest/*")
         server = Server(30123)
         server!!.handler = ctx
@@ -32,4 +39,14 @@ class MyJavalinServletTest {
     fun testRest() {
         assertEquals("Hello!", URI("http://localhost:30123/rest").toURL().readText())
     }
+}
+
+class EmptyResource : Resource() {
+    override fun getPath(): Path? = null
+    override fun isDirectory(): Boolean = true
+    override fun isReadable(): Boolean = true
+    override fun getURI(): URI? = null
+    override fun getName(): String = "EmptyResource"
+    override fun getFileName(): String? = null
+    override fun resolve(subUriPath: String?): Resource? = null
 }
