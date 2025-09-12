@@ -78,7 +78,6 @@ public class JettyWebServer implements WebServer {
         final VaadinBoot cfg = (VaadinBoot) configuration;
 
         fixClasspath();
-        log.debug("Classpath fixed");
 
         context = createWebAppContext(cfg);
         log.debug("Jetty WebAppContext created");
@@ -191,7 +190,10 @@ public class JettyWebServer implements WebServer {
             final String filteredClasspath = Arrays.stream(entries)
                     .filter(it -> !it.isBlank() && new File(it).exists())
                     .collect(Collectors.joining(File.pathSeparator));
-            System.setProperty("java.class.path", filteredClasspath);
+            if (!filteredClasspath.equals(classpath)) {
+                System.setProperty("java.class.path", filteredClasspath);
+                log.debug("Classpath fixed");
+            }
         }
     }
 }
