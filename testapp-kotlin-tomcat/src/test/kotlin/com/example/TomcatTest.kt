@@ -34,15 +34,18 @@ class TomcatTest {
         assertEquals("bar", Bootstrap.fooInitParamValue)
 
         val body = wget("http://localhost:44312")
-        assertTrue(body.contains("window.Vaadin"), body);
+        assertTrue(body.contains("window.Vaadin"), body)
     }
 
     @Test
     fun testStaticResourcesServed() {
         val body = wget("http://localhost:44312/ROOT")
-        assertEquals("Don't delete this file; see Main.java for details.", body.trim());
+        assertEquals("Don't delete this file; see Main.java for details.", body.trim())
     }
 
+    /**
+     * Test that [MyJavalinServlet] is loaded and activated correctly.
+     */
     @Test
     fun testRest() {
         assertEquals("Hello!", wget("http://localhost:44312/rest"))
