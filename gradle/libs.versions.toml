@@ -1,9 +1,9 @@
 [versions]
 vaadin = "24.8.8"
 # https://repo1.maven.org/maven2/org/slf4j/slf4j-api/
-slf4j = "2.0.16"
+slf4j = "2.0.17"
 # check latest version at https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/
-jetty = "12.0.21"
+jetty = "12.0.27"
 # latest version at https://repo1.maven.org/maven2/org/apache/tomcat/embed/
 tomcat = "11.0.7"
 
