@@ -7,3 +7,8 @@ out
 !**/src/main/dev-bundle/webapp/VAADIN/build
 .kotlin
 kls_database.db
+.settings
+bin
+.classpath
+.project
+
