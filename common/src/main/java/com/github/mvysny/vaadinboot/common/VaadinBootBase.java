@@ -3,7 +3,6 @@ package com.github.mvysny.vaadinboot.common;
 import com.vaadin.open.Open;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
