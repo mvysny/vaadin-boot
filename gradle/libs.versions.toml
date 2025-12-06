@@ -18,6 +18,7 @@ vaadin-core = { module = "com.vaadin:vaadin-core", version.ref = "vaadin" }
 # https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/
 junit = "org.junit.jupiter:junit-jupiter-engine:5.11.0"
 kaributesting = "com.github.mvysny.kaributesting:karibu-testing-v24:2.4.2"
+# Javalin 6 doesn't support Jetty 12; upgrade to Javalin 7 once it's out.
 javalin = "io.javalin:javalin:5.6.1"
 tomcat-core = { module = "org.apache.tomcat.embed:tomcat-embed-core", version.ref = "tomcat" }
 tomcat-jasper = { module = "org.apache.tomcat.embed:tomcat-embed-jasper", version.ref = "tomcat" }
