@@ -16,7 +16,7 @@ jetty-websocket = { module = "org.eclipse.jetty.ee10.websocket:jetty-ee10-websoc
 vaadin-open = "com.vaadin:open:8.5.0.2"  # opens url in a browser
 vaadin-core = { module = "com.vaadin:vaadin-core", version.ref = "vaadin" }
 # https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/
-junit = "org.junit.jupiter:junit-jupiter-engine:5.11.0"
+junit = "org.junit.jupiter:junit-jupiter-engine:5.14.1"
 kaributesting = "com.github.mvysny.kaributesting:karibu-testing-v24:2.4.2"
 # Javalin 6 doesn't support Jetty 12; upgrade to Javalin 7 once it's out.
 javalin = "io.javalin:javalin:5.6.1"
