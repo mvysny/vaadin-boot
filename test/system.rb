@@ -20,6 +20,7 @@ require 'io/console'
 require 'fileutils'
 
 FileUtils.cd '..'
+# Clean everything from any previous tests, to start at a known state.
 exec './gradlew clean --no-daemon --info'
 
 # Builds `project`, untars the runnable Vaadin-Boot archive and calls `block`.
