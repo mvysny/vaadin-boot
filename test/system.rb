@@ -12,10 +12,7 @@ def wget(url)
   response = Net::HTTP.get_response(uri)
   raise "#{url} failed: #{response.body}" unless response.code == '200'
 
-  body = response.body
-  raise 'Not a Vaadin index.ts' unless body.include? 'window.Vaadin'
-
-  puts "#{url}: OK"
+  response.body
 end
 
 require 'pty'
@@ -24,30 +21,42 @@ require 'fileutils'
 
 FileUtils.cd '..'
 exec './gradlew clean --no-daemon --info'
-exec './gradlew testapp:build -Pvaadin.productionMode -x test --no-daemon --info'
-FileUtils.cd 'testapp/build/distributions' do
-  exec 'tar xvf *.tar'
-  dir = Dir.glob('testapp-*').find { File.directory? it }
-  FileUtils.cd "#{dir}/bin" do
-    puts './testapp'
-    PTY.spawn('./testapp') do |reader, write, pid|
-      p = MyProc.new(pid)
-      # Wait for the app to boot up
-      sleep 4
-      # Test that the app is up
-      raise 'Not running!' unless p.running?
 
-      wget('http://localhost:8080')
+# Tests a project `project` {String} folder name.
+def test_project(project, &block)
+  exec "./gradlew #{project}:build -Pvaadin.productionMode -x test --no-daemon --info"
+  FileUtils.cd "#{project}/build/distributions" do
+    exec 'tar xvf *.tar'
+    dir = Dir.glob("#{project}-*").find { File.directory? it }
+    FileUtils.cd "#{dir}/bin" do
+      puts "./#{project}"
+      PTY.spawn("./#{project}") do |reader, write, pid|
+        p = MyProc.new(pid)
+        # Wait for the app to boot up
+        sleep 4
+        # Test that the app is up
+        raise 'Not running!' unless p.running?
 
-      # All's good. Now test that the app dies when Enter is pressed.
-      puts 'Sending Enter'
-      write.puts # sends Enter, VaadinBoot should quit gracefully
-      p.stop_cleanly
-    rescue StandardError => e
-      puts p.read_fully(reader)
-      raise e
-    ensure
-      write.close
+        body = wget('http://localhost:8080')
+        raise 'Not a Vaadin index.ts' unless body.include? 'window.Vaadin'
+
+        puts 'http://localhost:8080: OK'
+
+        block&.call
+
+        # All's good. Now test that the app dies when Enter is pressed.
+        puts 'Sending Enter'
+        write.puts # sends Enter, VaadinBoot should quit gracefully
+        p.stop_cleanly
+      rescue StandardError => e
+        puts p.read_fully(reader)
+        raise e
+      ensure
+        write.close
+      end
     end
   end
 end
+
+test_project 'testapp'
+test_project 'testapp-kotlin'
