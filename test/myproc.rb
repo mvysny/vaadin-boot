@@ -12,43 +12,56 @@ end
 require 'timeout'
 
 # Utility class for managing a process.
-class MyProc
-  def initialize(pid)
-    @pid = pid
-  end
-
+class MyProc < Data.define(:pid)
   # Checks if process is running.
   # @return [Boolean] true if running
   def running?
-    Process.kill(0, @pid)
+    Process.kill(0, pid)
     true
-  rescue Errno::ERSCH
+  rescue Errno::ESRCH
     false
   end
 
+  # Expects that the process is shutting down.
   # Awaits for process to terminate cleanly. If it doesn't, the process is killed and an exception is raised.
-  def stop_cleanly(seconds = 5)
+  def await_shutdown(seconds = 5)
     return unless running?
 
-    puts "#{@pid}: trying to kill gracefully"
+    puts "#{pid}: awaiting #{seconds}s for process to shut down"
+    if wait(seconds)
+      puts "#{pid}: exited cleanly"
+    else
+      puts "#{pid}: wait timed out, terminating"
+      kill
+      raise 'Timed out waiting for a clean shutdown'
+    end
+  end
+
+  # Waits for this process to end. Exits immediately if the process is already stopped.
+  # @return [Boolean] true if the process is stopped, false if it's still running.
+  def wait(seconds = 1)
     Timeout.timeout(seconds) do
-      Process.wait(@pid)
-      puts "#{@pid}: exited cleanly"
+      Process.wait(pid, Process::WNOHANG)
     end
-  rescue Timeout::Error => e
-    puts "#{@pid}: timed out, terminating"
-    Process.kill('TERM', @pid)
-    begin
-      Timeout.timeout(1) do
-        Process.wait(@pid)
-      end
-    rescue Timeout::Error => e
-      puts "#{@pid}: timed out, killing"
-      Process.kill('KILL', @pid)
-      Process.wait(@pid)
-      raise e
-    end
-    raise e
+    raise 'unexpected' if running?
+    true
+  rescue Timeout::Error
+    false
+  end
+
+  # Sends TERM signal to the process and waits 1s. If nothing happens, process is killed.
+  def kill
+    return unless running?
+
+    puts "#{pid}: killing via SIGTERM"
+    Process.kill('TERM', pid)
+    return if wait(1)
+
+    puts "#{pid}: waiting for SIGTERM timed out, sending SIGKILL"
+    Process.kill('KILL', pid)
+    return if wait(1)
+
+    puts "#{pid}: still running! Giving up." if running?
   end
 
   # Reads given IO fully and returns {String}. Handles {Errno::EIO} gracefully.
@@ -65,7 +78,8 @@ class MyProc
     output.join
   end
 
+  # Sends CTRL+C (SIGINT) to this process.
   def ctrl_c
-    Process.kill('INT', @pid)
+    Process.kill('INT', pid)
   end
 end

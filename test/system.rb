@@ -60,7 +60,7 @@ def build_and_run(project, &block)
       raise e
     ensure
       writer.close
-      p.stop_cleanly
+      p.kill
     end
   end
 end
@@ -68,7 +68,7 @@ end
 # Tests a project `project` {String} folder name.
 def test_project(project, &block)
   # Happy test path: tests that the app runs and can be stopped via Enter
-  build_and_run(project) do |_reader, writer, _p|
+  build_and_run(project) do |_reader, writer, p|
     puts "#{project}: Checking that Vaadin is up at localhost:8080"
     body = wget('http://localhost:8080')
     raise 'Not a Vaadin index.ts' unless body.include? 'window.Vaadin'
@@ -81,6 +81,7 @@ def test_project(project, &block)
     # All's good. Now test that the app dies when Enter is pressed.
     puts "#{project}: stopping via Enter"
     writer.puts # sends Enter, VaadinBoot should quit gracefully
+    p.await_shutdown
   end
 
   # Test that the app can be stopped via Ctrl+C
@@ -88,6 +89,7 @@ def test_project(project, &block)
     # All's good. Now test that the app dies when CTRL+C is pressed.
     puts "#{project}: Stopping via CTRL+C"
     p.ctrl_c
+    p.await_shutdown
   end
   puts "#{project}: OK!\n\n"
 end
