@@ -47,19 +47,28 @@ def test_project(project, &block)
         # All's good. Now test that the app dies when Enter is pressed.
         puts 'Sending Enter'
         write.puts # sends Enter, VaadinBoot should quit gracefully
-        p.stop_cleanly
       rescue StandardError => e
         puts p.read_fully(reader)
         raise e
       ensure
         write.close
+        p.stop_cleanly
       end
     end
   end
 end
 
 test_project 'testapp'
+test_project 'testapp-tomcat'
 test_project 'testapp-kotlin' do
   rest = wget('http://localhost:8080/rest')
   raise "Got #{rest}" unless rest == 'Hello!'
+
+  puts 'REST ok'
+end
+test_project 'testapp-kotlin-tomcat' do
+  rest = wget('http://localhost:8080/rest')
+  raise "Got #{rest}" unless rest == 'Hello!'
+
+  puts 'REST ok'
 end
