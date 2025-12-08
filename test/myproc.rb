@@ -50,7 +50,7 @@ class MyProc
     @wait_thread.alive?
   end
 
-  # Awaits for process to terminate by itself. Call when the process is already shutting down
+  # Awaits for the process to terminate by itself. Call when the process is already shutting down
   # and you want to wait for that.
   #
   # If the process doesn't terminate by itself, the process is killed and an exception is raised.
