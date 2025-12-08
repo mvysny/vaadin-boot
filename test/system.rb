@@ -23,10 +23,10 @@ require 'io/console'
 require 'fileutils'
 
 FileUtils.cd '..'
-# exec './gradlew clean --no-daemon --info'
-# exec './gradlew testapp:build -Pvaadin.productionMode -x test --no-daemon --info'
+exec './gradlew clean --no-daemon --info'
+exec './gradlew testapp:build -Pvaadin.productionMode -x test --no-daemon --info'
 FileUtils.cd 'testapp/build/distributions' do
-  #  exec 'tar xvf *.tar'
+  exec 'tar xvf *.tar'
   dir = Dir.glob('testapp-*').find { File.directory? it }
   FileUtils.cd "#{dir}/bin" do
     puts './testapp'
