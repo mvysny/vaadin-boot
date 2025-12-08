@@ -12,9 +12,8 @@ import kotlin.test.assertEquals
 import kotlin.test.expect
 
 /**
- * Not sure what this tests exactly - we should test MyJavalinServlet as a part of the Vaadin app...
- * Keeping this test here for now.
- * @deprecated
+ * Vaadin is usually tested via Karibu-Testing and Jetty doesn't need to be running for that.
+ * However, in order to test the REST, we need to start Javalin in Jetty.
  */
 class MyJavalinServletTest {
     private var server: Server? = null
