@@ -59,7 +59,7 @@ public final class Env {
      * Yeah, we should use JSON parsing, but I'm trying to keep the dependency set minimal.
      */
     @NotNull
-    private static final Pattern FLOW_BUILD_INF_JSON_PRODUCTION_MODE_REGEX = Pattern.compile("\"productionMode\":\\s*true");
+    private static final Pattern FLOW_BUILD_INF_JSON_PRODUCTION_MODE_REGEX = Pattern.compile("\"productionMode\"\\s*:\\s*true");
     @VisibleForTesting
     static boolean flowBuildInfoJsonContainsProductionModeTrue(@NotNull String flowBuildInfoJson) {
         return FLOW_BUILD_INF_JSON_PRODUCTION_MODE_REGEX.matcher(flowBuildInfoJson).find();

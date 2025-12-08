@@ -266,6 +266,7 @@ public abstract class VaadinBootBase<THIS extends VaadinBootBase<THIS>> {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> stop("Shutdown hook called, shutting down")));
 
         if (isOpenBrowserInDevMode() && !Env.isVaadinProductionMode) {
+            System.out.println("Vaadin running in dev mode, opening browser to " + getServerURL());
             Open.open(getServerURL());
         }
 
