@@ -88,7 +88,7 @@ def test_project(project, &block)
     puts "#{project}: Stopping via CTRL+C"
     p.ctrl_c
   end
-  puts "#{project}: OK!\n"
+  puts "#{project}: OK!\n\n"
 end
 
 test_project 'testapp'
