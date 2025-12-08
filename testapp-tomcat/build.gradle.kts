@@ -11,6 +11,9 @@ dependencies {
             exclude(module = "vaadin-dev")
         }
     }
+    if (vaadin.effective.productionMode.get()) {
+        implementation(libs.vaadin.bundle.prod)
+    }
 
     testImplementation(libs.kaributesting)
     testImplementation(libs.junit)
