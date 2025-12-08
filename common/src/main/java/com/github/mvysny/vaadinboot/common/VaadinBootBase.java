@@ -264,12 +264,12 @@ public abstract class VaadinBootBase<THIS extends VaadinBootBase<THIS>> {
 
         // this gets called both when CTRL+C is pressed, and when main() terminates.
         Runtime.getRuntime().addShutdownHook(new Thread(() -> stop("Shutdown hook called, shutting down")));
-        System.out.println("Press ENTER or CTRL+C to shutdown");
 
         if (isOpenBrowserInDevMode() && !Env.isVaadinProductionMode) {
             Open.open(getServerURL());
         }
 
+        System.out.println("Press ENTER or CTRL+C to shutdown");
         // Await for Enter.
         if (System.in.read() == -1) {
             // "./gradlew" run offers no stdin and read() will return immediately with -1
