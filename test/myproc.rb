@@ -30,6 +30,7 @@ class MyProc
   def stop_cleanly(seconds = 5)
     return unless running?
 
+    puts "#{@pid}: trying to kill gracefully"
     Timeout.timeout(seconds) do
       Process.wait(@pid)
       puts "#{@pid}: exited cleanly"

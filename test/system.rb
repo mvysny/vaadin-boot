@@ -31,17 +31,20 @@ def test_project(project, &block)
     FileUtils.cd "#{dir}/bin" do
       puts "./#{project}"
       PTY.spawn("./#{project}") do |reader, write, pid|
+        puts 'Started. Waiting 4 seconds to fully boot up'
         p = MyProc.new(pid)
         # Wait for the app to boot up
         sleep 4
         # Test that the app is up
         raise 'Not running!' unless p.running?
 
+        puts 'Checking that Vaadin is up at localhost:8080'
         body = wget('http://localhost:8080')
         raise 'Not a Vaadin index.ts' unless body.include? 'window.Vaadin'
 
         puts 'http://localhost:8080: OK'
 
+        # Any optional additional testing
         block&.call
 
         # All's good. Now test that the app dies when Enter is pressed.
