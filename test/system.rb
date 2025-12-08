@@ -97,11 +97,11 @@ test_project 'testapp-kotlin' do
   rest = wget('http://localhost:8080/rest')
   raise "Got #{rest}" unless rest == 'Hello!'
 
-  puts 'REST ok'
+  puts 'testapp-kotlin: REST ok'
 end
 test_project 'testapp-kotlin-tomcat' do
   rest = wget('http://localhost:8080/rest')
   raise "Got #{rest}" unless rest == 'Hello!'
 
-  puts 'REST ok'
+  puts 'testapp-kotlin-tomcat: REST ok'
 end
