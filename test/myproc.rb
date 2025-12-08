@@ -22,7 +22,6 @@ class MyProc < Data.define(:pid)
     false
   end
 
-  # Expects that the process is shutting down.
   # Awaits for process to terminate cleanly. If it doesn't, the process is killed and an exception is raised.
   def await_shutdown(seconds = 5)
     return unless running?
@@ -40,10 +39,13 @@ class MyProc < Data.define(:pid)
   # Waits for this process to end. Exits immediately if the process is already stopped.
   # @return [Boolean] true if the process is stopped, false if it's still running.
   def wait(seconds = 1)
+    return true unless running?
+
     Timeout.timeout(seconds) do
-      Process.wait(pid, Process::WNOHANG)
+      Process.wait(pid)
     end
     raise 'unexpected' if running?
+
     true
   rescue Timeout::Error
     false
