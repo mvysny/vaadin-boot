@@ -59,4 +59,7 @@ def test_project(project, &block)
 end
 
 test_project 'testapp'
-test_project 'testapp-kotlin'
+test_project 'testapp-kotlin' do
+  rest = wget('http://localhost:8080/rest')
+  raise "Got #{rest}" unless rest == 'Hello!'
+end
