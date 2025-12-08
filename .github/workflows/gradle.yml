@@ -29,3 +29,11 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew clean build '-Pvaadin.productionMode' --stacktrace --info --no-daemon '-Dorg.gradle.jvmargs=-Xmx1024m'
 
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.4'
+        bundler-cache: false
+    - name: System Test
+      run: cd test && ./system.rb
+
