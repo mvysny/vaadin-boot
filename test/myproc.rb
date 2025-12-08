@@ -26,7 +26,7 @@ class MyProc < Data.define(:pid)
   def await_shutdown(seconds = 5)
     return unless running?
 
-    puts "#{pid}: awaiting #{seconds}s for process to shut down"
+    puts "#{pid}: awaiting #{seconds}s for process to shut down by itself"
     if wait(seconds)
       puts "#{pid}: exited cleanly"
     else

@@ -108,3 +108,5 @@ test_project 'testapp-kotlin-tomcat' do
 
   puts 'testapp-kotlin-tomcat: REST ok'
 end
+
+puts "All OK!"
