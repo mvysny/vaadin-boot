@@ -128,7 +128,7 @@ public class TomcatWebServer implements WebServer {
         // Create an empty folder. Tomcat wants to serve static files from a folder,
         // but we need to serve static files from classpath. Pass in an empty folder here -
         // we'll configure the static file serving later on.
-        final String docBase = Files.createTempDirectory("tomcat-" + configuration.getPort()).toFile().getAbsolutePath();
+        final String docBase = Files.createTempDirectory("tomcat-" + configuration.getPort() + "-docbase").toFile().getAbsolutePath();
 
         final Context ctx = server.addWebapp(contextRoot, docBase);
 
