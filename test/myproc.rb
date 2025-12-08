@@ -64,4 +64,8 @@ class MyProc
     end
     output.join
   end
+
+  def ctrl_c
+    Process.kill('INT', @pid)
+  end
 end
