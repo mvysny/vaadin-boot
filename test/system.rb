@@ -15,8 +15,6 @@ def wget(url)
   response.body
 end
 
-require 'pty'
-require 'io/console'
 require 'fileutils'
 
 FileUtils.cd '..'
@@ -44,8 +42,8 @@ end
 def build_and_run(project, &block)
   build_and_unzip(project) do
     puts "#{project}: starting"
-    PTY.spawn("./#{project}") do |reader, writer, pid|
-      p = MyProc.new(pid)
+    p = MyProc.start("./#{project}")
+    begin
       puts "#{project}: Started. Waiting 4 seconds to fully boot up"
       # Wait for the app to boot up
       sleep 4
@@ -54,13 +52,12 @@ def build_and_run(project, &block)
       raise 'Not running!' unless p.running?
 
       puts "#{project}: App is still up"
-      block.call(reader, writer, p)
+      block.call(p)
     rescue StandardError => e
-      puts p.read_fully(reader)
+      puts p.output
       raise e
     ensure
-      writer.close
-      p.kill
+      p.close
     end
   end
 end
@@ -68,7 +65,7 @@ end
 # Tests a project `project` {String} folder name.
 def test_project(project, &block)
   # Happy test path: tests that the app runs and can be stopped via Enter
-  build_and_run(project) do |_reader, writer, p|
+  build_and_run(project) do |p|
     puts "#{project}: Checking that Vaadin is up at localhost:8080"
     body = wget('http://localhost:8080')
     raise 'Not a Vaadin index.ts' unless body.include? 'window.Vaadin'
@@ -80,12 +77,12 @@ def test_project(project, &block)
 
     # All's good. Now test that the app dies when Enter is pressed.
     puts "#{project}: stopping via Enter"
-    writer.puts # sends Enter, VaadinBoot should quit gracefully
+    p.stdin.puts # sends Enter, VaadinBoot should quit gracefully
     p.await_shutdown
   end
 
   # Test that the app can be stopped via Ctrl+C
-  build_and_run(project) do |_reader, _writer, p|
+  build_and_run(project) do |p|
     # All's good. Now test that the app dies when CTRL+C is pressed.
     puts "#{project}: Stopping via CTRL+C"
     p.ctrl_c
