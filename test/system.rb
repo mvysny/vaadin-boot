@@ -52,8 +52,8 @@ require 'pty'
 require 'io/console'
 
 FileUtils.cd '..'
-exec './gradlew clean'
-exec './gradlew testapp:build -Pvaadin.productionMode -x test'
+exec './gradlew clean --no-daemon --info'
+exec './gradlew testapp:build -Pvaadin.productionMode -x test --no-daemon --info'
 FileUtils.cd 'testapp/build/distributions' do
   exec 'tar xvf *.tar'
   dir = Dir.glob('testapp-*').find { File.directory? it }
