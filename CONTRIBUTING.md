@@ -7,6 +7,17 @@ Please feel free to open bug reports to discuss new features; PRs are welcome as
 
 Uses JUnit 5. Simply run `./gradlew test` to run all tests.
 
+There are system tests which run all apps and test that:
+1. The app is up and responds 200 OK on localhost:8080 with Vaadin index page
+2. The REST endpoints work correctly.
+3. The app shuts down cleanly via Enter.
+
+To run the tests:
+
+```bash
+$ cd test && ./system.rb
+```
+
 ### Manual Tests
 
 Make sure to test the Boot with all example apps, especially the Enter/CTRL+C handling:
