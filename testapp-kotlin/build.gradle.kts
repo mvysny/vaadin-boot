@@ -14,6 +14,9 @@ dependencies {
             exclude(module = "vaadin-dev")
         }
     }
+    if (vaadin.effective.productionMode.get()) {
+        implementation(libs.vaadin.bundle.prod)
+    }
 
     implementation(libs.javalin) {
         exclude(group = "org.eclipse.jetty")
