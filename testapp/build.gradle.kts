@@ -12,6 +12,7 @@ dependencies {
     implementation(libs.vaadin.core) {
         if (vaadin.effective.productionMode.get()) {
             exclude(module = "vaadin-dev")
+            runtimeOnly(libs.vaadin.bundle.prod)
         }
     }
 
