@@ -45,10 +45,7 @@ def build_and_run(project, &block)
     p = MyProc.start("./#{project}")
     begin
       puts "#{project}: Started. Waiting 4 seconds to fully boot up"
-      # Wait for the app to boot up
       sleep 4
-      # Test that the app is up
-      puts "#{project}: Checking the app is up"
       raise 'Not running!' unless p.running?
 
       puts "#{project}: App is still up"
