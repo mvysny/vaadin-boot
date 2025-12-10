@@ -33,6 +33,7 @@ Make sure to test the Boot with all example apps, especially the Enter/CTRL+C ha
 
 To release the library to Maven Central:
 
+0. Run system tests: `cd test && ./system.rb`
 1. Edit `build.gradle.kts` and remove `-SNAPSHOT` in the `version=` stanza
 2. Commit with the commit message of simply being the version being released, e.g. "1.2.13"
 3. git tag the commit with the same tag name as the commit message above, e.g. `1.2.13`
