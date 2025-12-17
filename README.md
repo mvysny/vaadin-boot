@@ -24,7 +24,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.mvysny.vaadin-boot:vaadin-boot:13.3")
+    implementation("com.github.mvysny.vaadin-boot:vaadin-boot:13.5")
 }
 ```
 Or Maven:
@@ -34,7 +34,7 @@ Or Maven:
 		<dependency>
 			<groupId>com.github.mvysny.vaadin-boot</groupId>
 			<artifactId>vaadin-boot</artifactId>
-			<version>13.3</version>
+			<version>13.5</version>
 		</dependency>
     </dependencies>
 </project>
