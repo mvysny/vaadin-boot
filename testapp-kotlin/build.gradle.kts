@@ -26,7 +26,7 @@ dependencies {
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    compilerOptions.jvmTarget = JvmTarget.JVM_17
+    compilerOptions.jvmTarget = JvmTarget.JVM_21
 }
 
 application {
