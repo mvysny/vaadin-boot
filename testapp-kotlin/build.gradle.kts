@@ -9,13 +9,9 @@ plugins {
 dependencies {
     implementation(project(":vaadin-boot"))
     implementation(libs.slf4j.simple)
-    implementation(libs.vaadin.core) {
-        if (vaadin.effective.productionMode.get()) {
-            exclude(module = "vaadin-dev")
-        }
-    }
-    if (vaadin.effective.productionMode.get()) {
-        implementation(libs.vaadin.bundle.prod)
+    implementation(libs.vaadin.core)
+    if (!vaadin.effective.productionMode.get()) {
+        implementation(libs.vaadin.dev)
     }
 
     implementation(libs.javalin) {
@@ -30,7 +26,7 @@ dependencies {
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    compilerOptions.jvmTarget = JvmTarget.JVM_17
+    compilerOptions.jvmTarget = JvmTarget.JVM_21
 }
 
 application {
