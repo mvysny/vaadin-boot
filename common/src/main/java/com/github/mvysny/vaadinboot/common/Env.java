@@ -1,7 +1,5 @@
 package com.github.mvysny.vaadinboot.common;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
@@ -40,7 +38,7 @@ public final class Env {
         final URL flowBuildInfoJsonURL = classLoader.getResource("META-INF/VAADIN/config/flow-build-info.json");
         if (flowBuildInfoJsonURL != null) {
             try {
-                final String json = IOUtils.toString(flowBuildInfoJsonURL, StandardCharsets.UTF_8);
+                final String json = Util.toString(flowBuildInfoJsonURL, StandardCharsets.UTF_8);
                 if (flowBuildInfoJsonContainsProductionModeTrue(json)) {
                     log.info("Vaadin production mode is on: " + flowBuildInfoJsonURL + " contains '\"productionMode\": true'");
                     return true;
@@ -191,7 +189,7 @@ public final class Env {
     public static File findResourcesJarOrFolder(@NotNull URL webRoot) throws IOException {
         // we know that the `webapp` folder is somewhere on classpath, and webRoot parameter is pointing to it.
         // we need to figure out where exactly on the filesystem the folder is.
-        final File file = FileUtils.toFile(webRoot);
+        final File file = Util.toFile(webRoot);
         if (file != null) {
             // serving the `webapp` folder from a directory
             final File classDirectory = file.getAbsoluteFile().getParentFile();
@@ -217,7 +215,7 @@ public final class Env {
             throw new IllegalStateException("Invalid state: unexpected path " + path);
         }
         final URL url = URI.create(path.substring(0, path.length() - 8)).toURL();
-        final File jarFile = FileUtils.toFile(url);
+        final File jarFile = Util.toFile(url);
         if (jarFile == null) {
             throw new IllegalStateException("Invalid state: can't convert URL to file: " + url);
         }
@@ -264,7 +262,7 @@ public final class Env {
         if (contextClassLoader instanceof URLClassLoader) {
             final URL[] urls = ((URLClassLoader) contextClassLoader).getURLs();
             final Set<File> foldersOnClasspath = Arrays.stream(urls)
-                    .map(FileUtils::toFile)
+                    .map(Util::toFile)
                     .filter(it -> it != null && it.exists() && it.isDirectory() && it.getAbsolutePath().contains("/classes"))
                     .collect(Collectors.toSet());
             if (!foldersOnClasspath.isEmpty()) {
