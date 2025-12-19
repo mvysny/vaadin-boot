@@ -3,6 +3,12 @@ package com.github.mvysny.vaadinboot.common;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.charset.Charset;
+
 /**
  * Internal utility methods.
  */
@@ -15,10 +21,11 @@ public final class Util {
 
     /**
      * Checks that value isn't null; if it is, throws {@link IllegalStateException}.
-     * @param value the value
+     *
+     * @param value   the value
      * @param message the message for {@link IllegalStateException#getMessage()}
+     * @param <T>     the value type
      * @return the value
-     * @param <T> the value type
      * @throws IllegalStateException if value is null.
      */
     @NotNull
@@ -27,5 +34,21 @@ public final class Util {
             throw new IllegalStateException(message);
         }
         return value;
+    }
+
+    @Nullable
+    public static File toFile(@NotNull final URL url) {
+        if (!"file".equalsIgnoreCase(url.getProtocol())) {
+            return null;
+        }
+        final String fileName = url.getFile().replace('/', File.separatorChar);
+        return new File(fileName);
+    }
+
+    @NotNull
+    public static String toString(@NotNull URL url, @NotNull Charset charset) throws IOException {
+        try (InputStream is = url.openStream()) {
+            return new String(is.readAllBytes(), charset);
+        }
     }
 }
