@@ -1,10 +1,12 @@
 package com.example
 
 import com.github.mvysny.vaadinboot.VaadinBoot
+import com.vaadin.flow.component.dependency.StyleSheet
 import com.vaadin.flow.component.page.AppShellConfigurator
 import com.vaadin.flow.component.page.Push
 import com.vaadin.flow.server.PWA
 import com.vaadin.flow.server.VaadinServlet
+import com.vaadin.flow.theme.lumo.Lumo
 import jakarta.servlet.Servlet
 import jakarta.servlet.ServletContextEvent
 import jakarta.servlet.ServletContextListener
@@ -58,6 +60,7 @@ class Bootstrap : ServletContextListener {
 
 @PWA(name = "Project Base for Vaadin", shortName = "Project Base")
 @Push
+@StyleSheet(Lumo.STYLESHEET)
 class AppShell : AppShellConfigurator
 
 /**
