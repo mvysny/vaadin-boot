@@ -36,6 +36,12 @@ public final class Util {
         return value;
     }
 
+    /**
+     * If given URL is a <code>file://</code> URL, converts it to
+     * {@link File}.
+     * @param url the URL to convert to.
+     * @return {@link File} if the URL is a local URL, null if it's a remote URL.
+     */
     @Nullable
     public static File toFile(@NotNull final URL url) {
         if (!"file".equalsIgnoreCase(url.getProtocol())) {
@@ -45,6 +51,13 @@ public final class Util {
         return new File(fileName);
     }
 
+    /**
+     * Downloads the file from given URL and returns it as a String.
+     * @param url the URL to download from.
+     * @param charset the charset to use.
+     * @return the file contents
+     * @throws IOException
+     */
     @NotNull
     public static String toString(@NotNull URL url, @NotNull Charset charset) throws IOException {
         try (InputStream is = url.openStream()) {
