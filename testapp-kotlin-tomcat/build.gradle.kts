@@ -20,7 +20,7 @@ dependencies {
         exclude(group = "com.fasterxml.jackson.core")
     }
 
-    testImplementation(libs.kaributesting)
+    testImplementation(libs.karibu.testing)
     testImplementation(libs.junit)
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
