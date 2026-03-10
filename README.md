@@ -547,6 +547,19 @@ program parameters. Instead, pass them via the `JAVA_OPTS` env variable (only wo
 
 * Linux: `JAVA_OPTS=-Dserver.port=8082 ./my-app`
 
+#### Vaadin Configuration
+
+The easiest way to pass in [Vaadin Configuration Properties](https://vaadin.com/docs/latest/flow/configuration/properties)
+is to set them as Java system properties from your `main()` function, for example:
+```java
+public static void main(@NotNull String[] args) throws Exception {
+    System.setProperty("vaadin.heartbeatInterval", "10");
+    new VaadinBoot().run();
+}
+```
+Alternatively you can create a Servlet for your app and pass the parameters
+via `@WebInitParam`.
+
 ### Docker
 
 Packaging your apps as docker images is incredibly easy. We use [Docker Multi-stage builds](https://docs.docker.com/build/building/multi-stage/):
