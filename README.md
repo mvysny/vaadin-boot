@@ -560,6 +560,18 @@ public static void main(@NotNull String[] args) throws Exception {
 Alternatively you can create a Servlet for your app and pass the parameters
 via `@WebInitParam`.
 
+#### Session timeout configuration
+
+Call `VaadinSession.getCurrent().getSession().setMaxInactiveInterval(10 * 60)`
+to set the servlet container session timeout to 10 minutes. The best place for this
+is from [Vaadin's session initialization listener](https://mvysny.github.io/vaadin-sessioninitlistener/).
+
+Beware: I've seen Jetty not closing the sessions regardless of the setting.
+Also, if the HTTP session is invalidated and closed,
+the `VaadinSession.addSessionDdestroyListener()` aren't called (this is a known Vaadin limitation).
+You may need to set Vaadin's `closeIdleSessions` to true; see [Vaadin Session Timeout](https://mvysny.github.io/vaadin-session-timeout/)
+for more details.
+
 ### Docker
 
 Packaging your apps as docker images is incredibly easy. We use [Docker Multi-stage builds](https://docs.docker.com/build/building/multi-stage/):
