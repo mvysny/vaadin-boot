@@ -328,7 +328,6 @@ public abstract class VaadinBootBase<THIS extends VaadinBootBase<THIS>> {
 
     /**
      * Invoked when the Web server has been started. By default, does nothing.
-     * You can for example dump Jetty's quickstart configuration here.
      * @param server the web server; obtain the context from the concrete web server object.
      * @throws IOException on i/o exception
      */

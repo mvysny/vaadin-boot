@@ -22,8 +22,9 @@ public class VaadinBoot extends VaadinBootBase<VaadinBoot> {
     /**
      * If true, no classpath scanning is performed - no servlets nor weblisteners are detected.
      * <br/>
-     * This will most probably cause Vaadin to not work and throw NullPointerException at <code>VaadinServlet.serveStaticOrWebJarRequest</code>.
-     * However, it's a good thing to disable this when starting your app with a QuickStart configuration.
+     * With scanning off, Vaadin fails with a NullPointerException at <code>VaadinServlet.serveStaticOrWebJarRequest</code>
+     * unless you register all required servlets and listeners yourself, for example via a hand-written <code>web.xml</code>
+     * or by programmatically configuring the underlying web server.
      */
     private boolean disableClasspathScanning = false;
 
@@ -56,8 +57,9 @@ public class VaadinBoot extends VaadinBootBase<VaadinBoot> {
     /**
      * If true, no classpath scanning is performed - no servlets nor weblisteners are detected.
      * <br/>
-     * This will most probably cause Vaadin to not work and throw NullPointerException at <code>VaadinServlet.serveStaticOrWebJarRequest</code>.
-     * However, it's a good thing to disable this when starting your app with a QuickStart configuration.
+     * With scanning off, Vaadin fails with a NullPointerException at <code>VaadinServlet.serveStaticOrWebJarRequest</code>
+     * unless you register all required servlets and listeners yourself, for example via a hand-written <code>web.xml</code>
+     * or by programmatically configuring the underlying web server.
      * @return this
      */
     @NotNull
@@ -68,8 +70,9 @@ public class VaadinBoot extends VaadinBootBase<VaadinBoot> {
     /**
      * If true, no classpath scanning is performed - no servlets nor weblisteners are detected.
      * <br/>
-     * This will most probably cause Vaadin to not work and throw NullPointerException at <code>VaadinServlet.serveStaticOrWebJarRequest</code>.
-     * However, it's a good thing to disable this when starting your app with a QuickStart configuration.
+     * With scanning off, Vaadin fails with a NullPointerException at <code>VaadinServlet.serveStaticOrWebJarRequest</code>
+     * unless you register all required servlets and listeners yourself, for example via a hand-written <code>web.xml</code>
+     * or by programmatically configuring the underlying web server.
      * @param disableClasspathScanning If true, no classpath scanning is performed. Defaults to false.
      * @return this
      */
@@ -142,8 +145,7 @@ public class VaadinBoot extends VaadinBootBase<VaadinBoot> {
     }
 
     /**
-     * Invoked when the Jetty server has been started. By default, does nothing. You can
-     * for example dump the quickstart configuration here.
+     * Invoked when the Jetty server has been started. By default, does nothing.
      * @param context the web app context.
      * @throws IOException on i/o exception
      */

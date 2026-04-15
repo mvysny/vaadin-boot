@@ -173,7 +173,7 @@ public class JettyWebServer implements WebServer {
             log.warn(resource + " (" + resource.getClass().getName() + ") claims it doesn't exist");
         }
         if (!resource.isDirectory()) {
-            log.warn(resource + " (" + resource.getClass().getName() + ") is not a directory, Jetty QuickStart will most probably fail");
+            log.warn(resource + " (" + resource.getClass().getName() + ") is not a directory, static resource serving will most probably fail");
         }
         return resource;
     }
