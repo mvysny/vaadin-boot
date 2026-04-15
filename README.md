@@ -103,8 +103,9 @@ class MyServlet extends VaadinServlet {}
 #### API differences vs. Jetty
 
 `vaadin-boot-tomcat`'s `VaadinBoot` class only exposes the shared `VaadinBootBase`
-methods (port, host, context root, localhost-only, open-browser-in-dev-mode, `withArgs`,
-`run`). The Jetty-only methods aren't available on Tomcat:
+methods — port, host, context root, `localhostOnly`, `openBrowserInDevMode`, plus the
+`run()` / `start()` / `stop()` lifecycle methods. The Jetty-only methods aren't
+available on Tomcat:
 
 - `disableClasspathScanning()` — Tomcat always scans.
 - `scanTestClasspath()` — not supported.
