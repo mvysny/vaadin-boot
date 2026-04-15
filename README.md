@@ -130,7 +130,7 @@ More advanced examples, demoing both security and SQL access:
 
 ## Preparing environment
 
-Please install Java JDK 11 or higher (JDK 17+ if you're using Vaadin 24+).
+Please install Java JDK 21 or higher (required by Vaadin-Boot 13.6+; earlier lines have lower requirements, see the compatibility chart above).
 
 Vaadin build requires node.js and npm to build the 'frontend bundle'.
 However, that will happen automatically so there's nothing you need to do: Vaadin plugin will automatically download
@@ -200,7 +200,7 @@ The easiest way to obtain and use JBR is:
 
 * Open your Project Settings in IDEA, then locate the SDK "Edit" button and press it
 * Click the upper `+` button, then "Download JDK".
-* Select JDK version 17, then the "JetBrains Runtime". Both the basic version and the JCEF version
+* Select JDK version 21, then the "JetBrains Runtime". Both the basic version and the JCEF version
   work; we recommend the basic version since JCEF version is bigger and therefore takes longer to download, and JCEF is not used by Vaadin apps.
 * When running your app from Intellij, make sure to:
   * Run via Intellij instead of via Gradle, see the "Build and run using" tip above
@@ -884,7 +884,7 @@ Restart=always
 RestartSec=1
 User=myappuser
 ExecStart=/home/myappuser/app/bin/app
-# Environment=JAVA_HOME=/home/myappuser/jdks/temurin-20
+# Environment=JAVA_HOME=/home/myappuser/jdks/temurin-21
 
 [Install]
 WantedBy=multi-user.target
