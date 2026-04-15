@@ -201,6 +201,30 @@ When deploying your app to production: see the "Production" chapter below. In sh
 1. Build your app in production mode, via `./gradlew clean build -Pvaadin.productionMode` or `./mvnw -C clean package -Pproduction`.
 2. The build of your app should produce a zip file; unzip the file and launch the run script.
 
+### Shutting down
+
+`VaadinBoot.run()` blocks until either **Enter** is pressed on stdin or the JVM
+receives a shutdown signal (SIGINT/SIGTERM — Ctrl+C, `docker stop`,
+`systemctl stop`). Both paths converge on `stop()`, which waits for the web
+server to shut down and fires `@WebListener.contextDestroyed` on your context
+listeners.
+
+What actually works depends on how the app was launched:
+
+- **IDE `main()`, `./mvnw exec:java`, unzipped production zip** — both Enter
+  and Ctrl+C work cleanly.
+- **`./gradlew run`** — no stdin, so Enter doesn't work. Ctrl+C exits the
+  process, but Gradle may force-kill before the JVM shutdown hook runs, so
+  `contextDestroyed` isn't guaranteed to fire. For a clean-shutdown check,
+  run the unzipped production zip instead.
+- **Docker / systemd / `nohup` (no TTY)** — no stdin; `run()` blocks on the
+  web server. A clean `docker stop` or `systemctl stop` sends SIGTERM, the
+  shutdown hook runs, and `contextDestroyed` fires normally. `SIGKILL`
+  (`docker kill`, `systemctl kill -s SIGKILL`) bypasses hooks.
+
+If you want to drive the lifecycle yourself (e.g. from a test), use
+`VaadinBoot.start()` / `stop(reason)` directly instead of `run()`.
+
 ## Develop with pleasure
 
 We recommend to develop Vaadin Boot apps using an IDE instead of just a plain text editor.
