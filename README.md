@@ -889,7 +889,7 @@ and example projects on how to add security simply to your Vaadin-Boot-based app
 Simply use a Java ResourceBundle-based localization and the static `tr()` function
 to localize your apps. Please find more at [Vaadin Localization](https://mvysny.github.io/vaadin-localization/).
 
-### Configuration
+### Application Configuration
 
 To configure your app, simply read a config file from the filesystem, e.g. `/etc/your-app/config.toml`.
 We recommend to use [TOML](https://toml.io) file via the [tomlj](https://github.com/tomlj/tomlj) parser,
