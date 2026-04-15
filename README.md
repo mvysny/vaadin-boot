@@ -110,6 +110,13 @@ is to use [Apache commons-cli](https://commons.apache.org/proper/commons-cli/) o
 However, certain settings can be configured via env variables / jvm args, please see
 the *Configuration* section below.
 
+### Scaffolding with AI agents
+
+New Vaadin-Boot apps can be scaffolded quickly by AI agents (such as Claude Code) using
+the `vaadin-boot-app` skill from [mvysny/claude-skills](https://codeberg.org/mvysny/claude-skills).
+Once the skill is installed, ask your agent to create a new Vaadin-Boot app and it will set up the
+Gradle project, `Main` class, `webapp/ROOT` marker and a starter view for you.
+
 ### Example Apps
 
 Very basic example apps using Vaadin Boot:
