@@ -73,16 +73,45 @@ only listen on localhost.
 
 ### Tomcat
 
-To run your ap with Tomcat, make sure to use Vaadin-Boot 13.0 or higher; then
-depend on `vaadin-boot-tomcat` instead on `vaadin-boot`.
+To run your app with Tomcat, make sure to use Vaadin-Boot 13.0 or higher; depend on
+`vaadin-boot-tomcat` instead of `vaadin-boot`:
+
+```groovy
+dependencies {
+    implementation("com.github.mvysny.vaadin-boot:vaadin-boot-tomcat:13.6")
+}
+```
+
+Or Maven:
+```xml
+<dependency>
+    <groupId>com.github.mvysny.vaadin-boot</groupId>
+    <artifactId>vaadin-boot-tomcat</artifactId>
+    <version>13.6</version>
+</dependency>
+```
 
 **Important**: you need to define your own servlet when running Tomcat, otherwise
-you'll get HTTP 404. Simply define this class in your project:
+you'll get HTTP 404 (Tomcat won't auto-register `VaadinServlet` the way Jetty's
+`ServletDeployer` does):
 
 ```java
 @WebServlet(urlPatterns = "/*")
 class MyServlet extends VaadinServlet {}
 ```
+
+#### API differences vs. Jetty
+
+`vaadin-boot-tomcat`'s `VaadinBoot` class only exposes the shared `VaadinBootBase`
+methods (port, host, context root, localhost-only, open-browser-in-dev-mode, `withArgs`,
+`run`). The Jetty-only methods aren't available on Tomcat:
+
+- `disableClasspathScanning()` — Tomcat always scans.
+- `scanTestClasspath()` — not supported.
+- `useVirtualThreadsIfAvailable()` — Tomcat manages its own threads.
+
+Env-variable / system-property configuration and servlet auto-discovery work
+identically on both containers.
 
 ### Jetty vs Tomcat
 
