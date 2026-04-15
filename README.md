@@ -568,7 +568,7 @@ is from [Vaadin's session initialization listener](https://mvysny.github.io/vaad
 
 Beware: I've seen Jetty not closing the sessions regardless of the setting.
 Also, if the HTTP session is invalidated and closed,
-the `VaadinSession.addSessionDdestroyListener()` aren't called (this is a known Vaadin limitation).
+the `VaadinSession.addSessionDestroyListener()` aren't called (this is a known Vaadin limitation).
 You may need to set Vaadin's `closeIdleSessions` to true; see [Vaadin Session Timeout](https://mvysny.github.io/vaadin-session-timeout/)
 for more details.
 
@@ -589,7 +589,7 @@ RUN ./gradlew clean build -Pvaadin.productionMode --no-daemon --info --stacktrac
 WORKDIR /app/build/distributions/
 RUN ls -la
 RUN tar xvf app.tar
-# At this point, we have the app (executable bash scrip plus a bunch of jars) in the
+# At this point, we have the app (executable bash script plus a bunch of jars) in the
 # /app/build/distributions/app/ folder.
 
 # The "Run" stage. Start with a clean image, and copy over just the app itself, omitting gradle, npm and any intermediate build files.
@@ -900,7 +900,7 @@ Done. Run:
 * `sudo systemctl status myapp` to see the app's status and log
 * `sudo systemctl enable myapp` to make the app survive machine restart
 * `sudo journalctl -u myapp` to see the app's log
-* `sudo systemctl stop myapp` to start the app
+* `sudo systemctl stop myapp` to stop the app
 
 ### Jetty QuickStart
 
