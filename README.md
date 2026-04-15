@@ -578,25 +578,43 @@ Make sure to build your app in production mode first, before starting it.
 
 ### Configuration
 
-All configuration options are exposed via a Java API on the `VaadinBoot` class, e.g.
+Configuration is exposed three ways on the `VaadinBoot` class: fluent methods, environment variables, and Java system properties. Precedence at construction time is **system property → environment variable → default**; fluent methods called afterward override whichever was read.
+
 ```java
 new VaadinBoot().localhostOnly().setPort(8081).run();
 ```
 
-On top of that, the following Vaadin Boot properties are configurable via environment variables and also Java system properties:
+#### Common configuration (Jetty and Tomcat)
 
-| Vaadin Boot config property | Env variable                | Java system property        | Example Value |
-|-----------------------------|-----------------------------|-----------------------------|---------------|
-| port                        | SERVER_PORT                 | server.port                 | 18080         |
-| listen interface            | SERVER_ADDRESS              | server.address              | localhost     |
-| context root                | SERVER_SERVLET_CONTEXT_PATH | server.servlet.context-path | /admin        |
+| Setting                  | Fluent method                                                  | Env variable                  | Java system property          | Default        |
+|--------------------------|----------------------------------------------------------------|-------------------------------|-------------------------------|----------------|
+| Port                     | `setPort(int)` / `withPort(int)`                               | `SERVER_PORT`                 | `server.port`                 | `8080`         |
+| Listen interface         | `setListenOn(String)` / `listenOn(String)` / `localhostOnly()` | `SERVER_ADDRESS`              | `server.address`              | all interfaces |
+| Context root             | `setContextRoot(String)` / `withContextRoot(String)`           | `SERVER_SERVLET_CONTEXT_PATH` | `server.servlet.context-path` | `""` (root)    |
+| Open browser in dev mode | `openBrowserInDevMode(boolean)`                                | —                             | —                             | `true`         |
 
 > Note: Vaadin Boot 13.1 and older honored `SERVER_SERVLET_CONTEXT-PATH` instead of `SERVER_SERVLET_CONTEXT_PATH`.
 
-You can not pass the Java system properties to your app run scripts directly, since they will be treated as
-program parameters. Instead, pass them via the `JAVA_OPTS` env variable (only works with script created by Gradle):
+You can not pass Java system properties to your app run scripts directly, since they will be treated as program parameters. Instead, pass them via the `JAVA_OPTS` env variable (only works with scripts created by Gradle):
 
 * Linux: `JAVA_OPTS=-Dserver.port=8082 ./my-app`
+
+#### Jetty-only configuration
+
+These methods live on `vaadin-boot`'s `VaadinBoot` (not on the shared `VaadinBootBase`); `vaadin-boot-tomcat` has no equivalents.
+
+| Setting                        | Fluent method                                                      | Default |
+|--------------------------------|--------------------------------------------------------------------|---------|
+| Disable classpath scanning     | `disableClasspathScanning()` / `disableClasspathScanning(boolean)` | `false` |
+| Also scan test classpath       | `scanTestClasspath()`                                              | `false` |
+| Use virtual threads on JDK 21+ | `useVirtualThreadsIfAvailable(boolean)`                            | `true`  |
+
+#### Lifecycle methods
+
+- `run()` — start and block until Enter or a shutdown signal; see [Shutting down](#shutting-down) above.
+- `start()` — start without blocking (useful for tests).
+- `stop(String reason)` — stop a running server.
+- `getServerURL()` — returns the URL the app is running on, e.g. `http://localhost:8080`.
 
 #### Vaadin Configuration
 
