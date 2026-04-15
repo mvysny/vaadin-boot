@@ -259,14 +259,11 @@ This will suppress cluttering of stdout/logs with verbose messages from Atmosphe
 
 ### REST via Javalin
 
-We recommend using [Javalin](https://javalin.io) for simplicity reasons.
-
-* For Vaadin 24+ and jakarta.servlet: use Javalin 5.x
-* For Vaadin 23- and javax.servlet: use Javalin 4.x
+We recommend using [Javalin](https://javalin.io) for simplicity reasons. Use Javalin 5.x — Javalin 6 doesn't support Jetty 12 (which Vaadin-Boot 13+ uses).
 
 Add Javalin to your build script:
 ```groovy
-    implementation("io.javalin:javalin:4.6.7") { // or 5.4.2 if you're on Vaadin 24
+    implementation("io.javalin:javalin:5.6.5") {
         exclude(group = "org.eclipse.jetty")
         exclude(group = "org.eclipse.jetty.websocket")
         exclude(group = "com.fasterxml.jackson.core")
