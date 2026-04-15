@@ -579,25 +579,27 @@ Packaging your apps as docker images is incredibly easy. We use [Docker Multi-st
 * We initialize the build environment and build the app in one docker image;
 * We copy the result app to a new image and throw away the build environment completely, to not clutter our production image.
 
-Example `Dockerfile` for a Gradle-based app:
+Example `Dockerfile` for a Gradle-based app (requires Docker BuildKit, which is default on modern Docker):
 ```dockerfile
 # The "Build" stage. Copies the entire project into the container, into the /app/ folder, and builds it.
-FROM openjdk:11 AS BUILD
+FROM --platform=$BUILDPLATFORM eclipse-temurin:21 AS builder
 COPY . /app/
 WORKDIR /app/
-RUN ./gradlew clean build -Pvaadin.productionMode --no-daemon --info --stacktrace
+# Cache mounts reuse Gradle and Vaadin (node/npm) caches across builds — major rebuild speedup.
+RUN --mount=type=cache,target=/root/.gradle \
+    --mount=type=cache,target=/root/.vaadin \
+    ./gradlew clean build -Pvaadin.productionMode --no-daemon --info --stacktrace -x test
 WORKDIR /app/build/distributions/
-RUN ls -la
-RUN tar xvf app.tar
-# At this point, we have the app (executable bash script plus a bunch of jars) in the
-# /app/build/distributions/app/ folder.
+RUN tar xvf *.tar
+# At this point the unpacked app (run script + jars) sits in /app/build/distributions/<rootProject-name>-<version>/
 
 # The "Run" stage. Start with a clean image, and copy over just the app itself, omitting gradle, npm and any intermediate build files.
-FROM openjdk:11
-COPY --from=BUILD /app/build/distributions/app /app/
+FROM eclipse-temurin:21
+COPY --from=builder /app/build/distributions/*/ /app/
 WORKDIR /app/bin
 EXPOSE 8080
-ENTRYPOINT ./app
+# Exec form so that SIGTERM from `docker stop` reaches the JVM and graceful shutdown runs.
+ENTRYPOINT ["./app"]
 ```
 
 You then run the following commands from terminal: first one will build the docker image, the second one will run your app in Docker:
