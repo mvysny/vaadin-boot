@@ -299,7 +299,7 @@ class MyJavalinServletTest {
     @BeforeEach
     fun startJetty() {
         val ctx = WebAppContext()
-        ctx.baseResource = EmptyResource.INSTANCE
+        ctx.baseResource = EmptyResource()
         ctx.addServlet(MyJavalinServlet::class.java, "/rest/*")
         server = Server(30123)
         server!!.handler = ctx
@@ -313,38 +313,28 @@ class MyJavalinServletTest {
 
     @Test
     fun testRest() {
-        assertEquals("Hello!", URL("http://localhost:30123/rest").readText())
+        assertEquals("Hello!", URI("http://localhost:30123/rest").toURL().readText())
     }
 }
+
+// Jetty 12 removed EmptyResource.INSTANCE; supply a minimal stand-in so WebAppContext is happy.
+class EmptyResource : Resource() {
+    override fun getPath(): Path? = null
+    override fun isDirectory(): Boolean = true
+    override fun isReadable(): Boolean = true
+    override fun getURI(): URI? = null
+    override fun getName(): String = "EmptyResource"
+    override fun getFileName(): String? = null
+    override fun resolve(subUriPath: String?): Resource? = null
+}
 ```
+
+A working version of this test ships with the repo at [`testapp-kotlin/src/test/kotlin/com/example/MyJavalinServletTest.kt`](testapp-kotlin/src/test/kotlin/com/example/MyJavalinServletTest.kt), including imports.
 
 ### Adding More Servlets
 
 The simplest way is to add the `@WebServlet` annotation to your servlet - it will be auto-discovered
 by Jetty. Please see the Javalin example above for more details.
-
-Another way is to add the servlets manually to the `WebAppContext`. The following example registers the RESTEasy application as a servlet:
-
-```java
-public class Main {
-    public static void main(String[] args) throws Exception {
-        new VaadinBoot() {
-            @Override
-            protected @NotNull WebAppContext createWebAppContext() throws IOException {
-                final WebAppContext context = super.createWebAppContext();
-                ServletHolder holder = new ServletHolder(new HttpServletDispatcher());
-                holder.setInitParameter("javax.ws.rs.Application", AnalyticsRSApplication.class.getName());
-                holder.setInitParameter("resteasy.scan", "true");
-                holder.setInitParameter("resteasy.servlet.mapping.prefix", "/report/download");
-                context.addServlet(holder, "/report/download/*");
-                return context;
-            }
-        }.withArgs(args).run();
-    }
-}
-```
-
-This way is not recommended since any annotations on the servlet will be ignored.
 
 ### Overriding Vaadin Servlet
 
