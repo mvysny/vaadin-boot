@@ -379,7 +379,7 @@ to build your app:
 plugins {
     id 'java'
     id 'application'
-    id 'com.vaadin' version '23.3.6' // or 24.0.0
+    id 'com.vaadin' version '25.1.1' // latest: https://plugins.gradle.org/plugin/com.vaadin
 }
 application {
     mainClassName = "com.yourapp.Main"
