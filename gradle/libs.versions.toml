@@ -13,6 +13,7 @@ slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
 jetbrains-annotations = "org.jetbrains:annotations:26.1.0"
 jetty-webapp = { module = "org.eclipse.jetty.ee10:jetty-ee10-annotations", version.ref = "jetty" }
 jetty-websocket = { module = "org.eclipse.jetty.ee10.websocket:jetty-ee10-websocket-jakarta-server", version.ref = "jetty" }
+jetty-websocket-jetty = { module = "org.eclipse.jetty.ee10.websocket:jetty-ee10-websocket-jetty-server", version.ref = "jetty" }
 # opens url in a browser
 vaadin-open = "com.vaadin:open:8.5.0.5"
 vaadin-core = { module = "com.vaadin:vaadin-core", version.ref = "vaadin" }
@@ -21,8 +22,7 @@ vaadin-bundle-prod = { module = "com.vaadin:vaadin-prod-bundle", version.ref = "
 # https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/
 junit = "org.junit.jupiter:junit-jupiter-engine:6.0.3"
 karibu-testing = "com.github.mvysny.kaributesting:karibu-testing-v24:2.7.0"
-# Javalin 6 doesn't support Jetty 12; upgrade to Javalin 7 once it's out.
-javalin = "io.javalin:javalin:5.6.5"
+javalin = "io.javalin:javalin:7.2.0"
 tomcat-core = { module = "org.apache.tomcat.embed:tomcat-embed-core", version.ref = "tomcat" }
 tomcat-jasper = { module = "org.apache.tomcat.embed:tomcat-embed-jasper", version.ref = "tomcat" }
 tomcat-websocket = { module = "org.apache.tomcat.embed:tomcat-embed-websocket", version.ref = "tomcat" }

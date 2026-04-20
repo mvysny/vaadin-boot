@@ -16,6 +16,8 @@ dependencies {
 
     implementation(libs.javalin) {
         exclude(group = "org.eclipse.jetty")
+        exclude(group = "org.eclipse.jetty.ee10")
+        exclude(group = "org.eclipse.jetty.ee10.websocket")
         exclude(group = "org.eclipse.jetty.websocket")
         exclude(group = "com.fasterxml.jackson.core")
     }
