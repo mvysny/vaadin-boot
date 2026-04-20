@@ -10,7 +10,7 @@
 FROM --platform=$BUILDPLATFORM eclipse-temurin:21 AS builder
 COPY . /app/
 WORKDIR /app/
-RUN --mount=type=cache,target=/root/.gradle --mount=type=cache,target=/root/.vaadin ./gradlew clean testapp:build -Pvaadin.productionMode --no-daemon --info --stacktrace -x test
+RUN --mount=type=cache,target=/root/.gradle,sharing=locked --mount=type=cache,target=/root/.vaadin,sharing=locked ./gradlew clean testapp:build -Pvaadin.productionMode --no-daemon --no-watch-fs -x test
 WORKDIR /app/testapp/build/distributions/
 RUN tar xvf testapp-*.tar && rm -rf testapp-*.tar testapp-*.zip
 

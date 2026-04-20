@@ -27,7 +27,7 @@ jobs:
           ~/.gradle/wrapper
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts', 'gradle/wrapper/gradle-wrapper.properties', 'gradle.properties') }}
     - name: Build with Gradle
-      run: ./gradlew clean build '-Pvaadin.productionMode' --stacktrace --info --no-daemon '-Dorg.gradle.jvmargs=-Xmx1024m'
+      run: ./gradlew clean build '-Pvaadin.productionMode' --no-daemon --no-watch-fs '-Dorg.gradle.jvmargs=-Xmx1024m'
 
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
