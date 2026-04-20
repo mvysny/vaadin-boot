@@ -42,3 +42,4 @@ The `webapp` directory lives at `src/main/resources/webapp` (not `src/main/webap
 - Version is declared in the root `build.gradle.kts` under `allprojects { version = ... }`. `-SNAPSHOT` suffix indicates unreleased.
 - All external library versions are centralized in `gradle/libs.versions.toml` (Gradle version catalog). Jetty, Tomcat, Vaadin, SLF4J, JUnit, Karibu-Testing, Javalin are pinned there — update the catalog, not individual `build.gradle.kts` files.
 - Root `build.gradle.kts` defines a reusable `configureMavenCentral(artifactId)` extension function that every publishable subproject calls to wire up sources/javadoc jars, POM metadata, and GPG signing.
+- After upgrading Tomcat or Jetty, run the full test suite: `./gradlew build` followed by `cd test && ./system.rb`. The system tests are the release gate and must pass before committing a container upgrade.
