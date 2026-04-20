@@ -27,7 +27,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.mvysny.vaadin-boot:vaadin-boot:13.6")
+    implementation("com.github.mvysny.vaadin-boot:vaadin-boot:13.7")
 }
 ```
 Or Maven:
@@ -37,7 +37,7 @@ Or Maven:
 		<dependency>
 			<groupId>com.github.mvysny.vaadin-boot</groupId>
 			<artifactId>vaadin-boot</artifactId>
-			<version>13.6</version>
+			<version>13.7</version>
 		</dependency>
     </dependencies>
 </project>
@@ -78,7 +78,7 @@ To run your app with Tomcat, make sure to use Vaadin-Boot 13.0 or higher; depend
 
 ```groovy
 dependencies {
-    implementation("com.github.mvysny.vaadin-boot:vaadin-boot-tomcat:13.6")
+    implementation("com.github.mvysny.vaadin-boot:vaadin-boot-tomcat:13.7")
 }
 ```
 
@@ -87,7 +87,7 @@ Or Maven:
 <dependency>
     <groupId>com.github.mvysny.vaadin-boot</groupId>
     <artifactId>vaadin-boot-tomcat</artifactId>
-    <version>13.6</version>
+    <version>13.7</version>
 </dependency>
 ```
 
