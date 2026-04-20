@@ -33,13 +33,13 @@ Make sure to test the Boot with all example apps, especially the Enter/CTRL+C ha
 
 To release the library to Maven Central:
 
-0. Run system tests: `cd test && ./system.rb`
-1. Edit `build.gradle.kts` and remove `-SNAPSHOT` in the `version=` stanza
-2. Edit `README.md`: bump the version in the Gradle and Maven install snippets under "Using In Your Apps" to match the release
-3. Commit with the commit message of simply being the version being released, e.g. "1.2.13"
-4. git tag the commit with the same tag name as the commit message above, e.g. `1.2.13`
-5. `git push`, `git push --tags`
-6. Run `./gradlew clean build publish closeAndReleaseStagingRepositories`
-7. (Optional) watch [Maven Central Publishing Deployments](https://central.sonatype.com/publishing/deployments) as the deployment is published.  
-8. Add the `-SNAPSHOT` back to the `version=` while increasing the version to something which will be released in the future,
+1. Run system tests: `cd test && ./system.rb`
+2. Edit `build.gradle.kts` and remove `-SNAPSHOT` in the `version=` stanza, e.g. "1.2.13"
+3. Edit `README.md`: bump the version in the Gradle and Maven install snippets under "Using In Your Apps" to match the release
+4. Run `./gradlew clean build publish closeAndReleaseStagingRepositories`
+5. (Optional) watch [Maven Central Publishing Deployments](https://central.sonatype.com/publishing/deployments) as the deployment is published.
+6. Commit with the commit message of simply being the version being released, e.g. "1.2.13"
+7. git tag the commit with the same tag name as the commit message above, e.g. `1.2.13`
+8. `git push`, `git push --tags`
+9. Add the `-SNAPSHOT` back to the `version=` while increasing the version to something which will be released in the future,
    e.g. 1.2.14-SNAPSHOT, then commit with the commit message "1.2.14-SNAPSHOT" and push.
