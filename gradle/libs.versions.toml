@@ -10,7 +10,7 @@ tomcat = "11.0.14"
 [libraries]
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
-jetbrains-annotations = "org.jetbrains:annotations:24.1.0"
+jetbrains-annotations = "org.jetbrains:annotations:26.1.0"
 jetty-webapp = { module = "org.eclipse.jetty.ee10:jetty-ee10-annotations", version.ref = "jetty" }
 jetty-websocket = { module = "org.eclipse.jetty.ee10.websocket:jetty-ee10-websocket-jakarta-server", version.ref = "jetty" }
 # opens url in a browser
