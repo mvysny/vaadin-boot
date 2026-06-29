@@ -545,7 +545,9 @@ for more details.
 All Vaadin apps follow the following convention when building for production:
 
 * Gradle: build your app with `./gradlew clean build -Pvaadin.productionMode`. Vaadin Gradle Plugin
-  will automatically build your app in production mode and will include `flow-server-production-mode.jar`.
+  will automatically build your app in production mode and package the
+  `META-INF/VAADIN/config/flow-build-info.json` token with `"productionMode":true` (unlike Maven,
+  the Gradle build does not add the `flow-server-production-mode.jar` marker).
 * Maven: build your app with `mvn -C clean package -Pproduction`. You need to add the `production`
    profile which handles everything correctly when activated. Please see example apps for details.
 
@@ -553,8 +555,8 @@ In both cases, the JavaScript bundle is built at build time as opposed at runtim
 You can easily verify that your app has been built in production mode:
 
 * When you run the app, Vaadin will log to stdout that it's running in production mode
-* The `flow-server-production-mode.jar` jar file is packaged in the zip file of your app.
-* The `yourapp.jar/META-INF/VAADIN/config/flow-build.info.json` will say `"productionMode":true`
+* The `yourapp.jar/META-INF/VAADIN/config/flow-build-info.json` will say `"productionMode":true`
+  (with Maven the `flow-server-production-mode.jar` marker jar is packaged into the zip instead)
 * There are JavaScript files in `yourapp.jar/META-INF/VAADIN/webapp/VAADIN/build/` (this applies to Vaadin 23+; for Vaadin 14 the file structure is a bit different)
     * Read more at [Vaadin: The missing guide](https://mvysny.github.io/Vaadin-the-missing-guide/), the "production" mode.
 

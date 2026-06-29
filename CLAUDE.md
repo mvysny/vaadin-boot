@@ -15,7 +15,7 @@ All builds go through the Gradle wrapper. `defaultTasks` is `clean build`, so a 
 - `./gradlew build` — compile + unit tests for every subproject.
 - `./gradlew test` — only JUnit 5 tests.
 - `./gradlew :vaadin-boot:test --tests JettyWebServerTest` — run a single test class (replace module/class).
-- `./gradlew clean build -Pvaadin.productionMode` — production build; the Vaadin Gradle plugin bundles JS in prod mode and includes `flow-server-production-mode.jar`. CI uses this flag.
+- `./gradlew clean build -Pvaadin.productionMode` — production build; the Vaadin Gradle plugin bundles JS in prod mode and packages the `META-INF/VAADIN/config/flow-build-info.json` token with `"productionMode":true` (Gradle does not add the `flow-server-production-mode.jar` marker — that is a Maven-only mechanism). CI uses this flag. Note: `flow-gradle-plugin` 25.2.1 only packages that token into the first-configured Vaadin subproject in this multi-module build, so each testapp re-packages its own cached token — see the `copyProductionToken` task in each testapp's `build.gradle.kts`. This is a workaround for the upstream bug https://github.com/vaadin/flow/issues/24841 and should be removed once that is fixed.
 - `./gradlew :testapp:run` — run a test app locally (port 8080). Works for `testapp`, `testapp-tomcat`, `testapp-kotlin`, `testapp-kotlin-tomcat`.
 - `./test/system.rb` (runnable from any directory) — **system tests**. Builds each testapp in production mode, unzips the distribution, starts it, asserts `http://localhost:8080` returns a Vaadin index, asserts REST endpoints (for the kotlin apps), then verifies the app shuts down cleanly on both Enter and Ctrl+C. Requires Ruby 3.4. This is the release gate.
 

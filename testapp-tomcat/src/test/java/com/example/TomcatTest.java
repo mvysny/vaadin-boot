@@ -1,6 +1,7 @@
 package com.example;
 
 import com.github.mvysny.vaadinboot.VaadinBoot;
+import com.github.mvysny.vaadinboot.common.Env;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,5 +39,17 @@ public class TomcatTest {
     public void testStaticFilesServedFromWebappFolder() throws Exception {
         final String response = TestUtils.wget("http://localhost:44312/ROOT");
         assertEquals("Don't delete this file; see Main.java for details.", response.trim());
+    }
+
+    /**
+     * Regression guard: a <code>-Pvaadin.productionMode</code> build must boot the app in
+     * production mode, and a dev build in dev mode. The expected value is passed in by the
+     * build via the <code>expectedVaadinProductionMode</code> system property.
+     */
+    @Test
+    public void runsInModeSelectedByBuild() {
+        assertEquals(
+                Boolean.parseBoolean(System.getProperty("expectedVaadinProductionMode")),
+                Env.isVaadinProductionMode);
     }
 }

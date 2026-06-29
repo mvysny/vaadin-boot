@@ -1,6 +1,7 @@
 package com.example
 
 import com.github.mvysny.vaadinboot.VaadinBoot
+import com.github.mvysny.vaadinboot.common.Env
 import jakarta.servlet.Servlet
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.AfterEach
@@ -56,5 +57,18 @@ class JettyTest {
     @Test
     fun javalinServletLoadded() {
         assertEquals("Hello!", URI("http://localhost:44312/rest").toURL().readText())
+    }
+
+    /**
+     * Regression guard: a `-Pvaadin.productionMode` build must boot the app in production mode,
+     * and a dev build in dev mode. The expected value is passed in by the build via the
+     * `expectedVaadinProductionMode` system property.
+     */
+    @Test
+    fun runsInModeSelectedByBuild() {
+        assertEquals(
+            System.getProperty("expectedVaadinProductionMode").toBoolean(),
+            Env.isVaadinProductionMode
+        )
     }
 }
