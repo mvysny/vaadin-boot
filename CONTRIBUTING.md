@@ -15,7 +15,7 @@ There are system tests which run all apps and test that:
 To run the tests:
 
 ```bash
-$ cd test && ./system.rb
+$ ./test/system.rb
 ```
 
 ### Manual Tests
@@ -33,7 +33,7 @@ Make sure to test the Boot with all example apps, especially the Enter/CTRL+C ha
 
 To release the library to Maven Central:
 
-1. Run system tests: `cd test && ./system.rb`
+1. Run system tests: `./test/system.rb`
 2. Edit `build.gradle.kts` and remove `-SNAPSHOT` in the `version=` stanza, e.g. "1.2.13"
 3. Edit `README.md`: bump the version in the Gradle and Maven install snippets under "Using In Your Apps" to match the release
 4. Run `./gradlew clean build publish closeAndReleaseStagingRepositories`

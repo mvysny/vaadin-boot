@@ -17,7 +17,9 @@ end
 
 require 'fileutils'
 
-FileUtils.cd '..'
+# Resolve the project root relative to this script's location, not the CWD, so
+# the script can be invoked from anywhere.
+FileUtils.cd File.expand_path('..', __dir__)
 # Clean everything from any previous tests, to start at a known state.
 exec './gradlew clean --no-daemon --info'
 

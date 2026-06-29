@@ -17,7 +17,7 @@ All builds go through the Gradle wrapper. `defaultTasks` is `clean build`, so a 
 - `./gradlew :vaadin-boot:test --tests JettyWebServerTest` — run a single test class (replace module/class).
 - `./gradlew clean build -Pvaadin.productionMode` — production build; the Vaadin Gradle plugin bundles JS in prod mode and includes `flow-server-production-mode.jar`. CI uses this flag.
 - `./gradlew :testapp:run` — run a test app locally (port 8080). Works for `testapp`, `testapp-tomcat`, `testapp-kotlin`, `testapp-kotlin-tomcat`.
-- `cd test && ./system.rb` — **system tests**. Builds each testapp in production mode, unzips the distribution, starts it, asserts `http://localhost:8080` returns a Vaadin index, asserts REST endpoints (for the kotlin apps), then verifies the app shuts down cleanly on both Enter and Ctrl+C. Requires Ruby 3.4. This is the release gate.
+- `./test/system.rb` (runnable from any directory) — **system tests**. Builds each testapp in production mode, unzips the distribution, starts it, asserts `http://localhost:8080` returns a Vaadin index, asserts REST endpoints (for the kotlin apps), then verifies the app shuts down cleanly on both Enter and Ctrl+C. Requires Ruby 3.4. This is the release gate.
 
 Publishing (maintainer only): `./gradlew clean build publish closeAndReleaseStagingRepositories`. Full release flow — version bump, tag, publish — is in `CONTRIBUTING.md`.
 
@@ -42,4 +42,4 @@ The `webapp` directory lives at `src/main/resources/webapp` (not `src/main/webap
 - Version is declared in the root `build.gradle.kts` under `allprojects { version = ... }`. `-SNAPSHOT` suffix indicates unreleased.
 - All external library versions are centralized in `gradle/libs.versions.toml` (Gradle version catalog). Jetty, Tomcat, Vaadin, SLF4J, JUnit, Karibu-Testing, Javalin are pinned there — update the catalog, not individual `build.gradle.kts` files.
 - Root `build.gradle.kts` defines a reusable `configureMavenCentral(artifactId)` extension function that every publishable subproject calls to wire up sources/javadoc jars, POM metadata, and GPG signing.
-- After upgrading Tomcat or Jetty, run the full test suite: `./gradlew build` followed by `cd test && ./system.rb`. The system tests are the release gate and must pass before committing a container upgrade.
+- After upgrading Tomcat or Jetty, run the full test suite: `./gradlew build` followed by `./test/system.rb`. The system tests are the release gate and must pass before committing a container upgrade.
