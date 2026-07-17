@@ -8,6 +8,16 @@ Vaadin Boot is a small library that boots a Vaadin app in an embedded servlet co
 
 Target runtime is Java 21+, Vaadin 24+, `jakarta.servlet`. See the compatibility chart in `README.md` for older lines (v10–v13 on Java 11/17).
 
+## Ideas & their graduation
+
+Loose ideas live one-per-file in `ideas/` (well-named, no index file) and are deleted once implemented or rejected, backporting any lasting nugget first. See the `ideas-folder` skill for the full procedure. This project's durable places for graduated nuggets:
+
+- a contract or gotcha → the relevant **javadoc**.
+- a build/release/architecture note → this **`CLAUDE.md`** (or `CONTRIBUTING.md` for the release flow).
+- a user-facing note → **`README.md`**.
+
+There is no changelog/ADR file; a "why we rejected X" note rides as a regression-guard comment in the relevant javadoc/code, per the *No history* rule.
+
 ## Build & test commands
 
 All builds go through the Gradle wrapper. `defaultTasks` is `clean build`, so a bare `./gradlew` does a full clean build.
