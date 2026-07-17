@@ -142,6 +142,7 @@ public class TomcatWebServer implements WebServer {
         addStaticWebapp(root);
         enableClasspathScanning(root);
         ctx.setResources(root);
+        registerVaadinServletDeployer(ctx);
         return ctx;
     }
 
@@ -161,22 +162,12 @@ public class TomcatWebServer implements WebServer {
     }
 
     /**
-     * To enable classpath scanning, we need to mount all app classes to the <code>WEB-INF/classes</code>
-     * of the virtual WAR being created.
+     * Mounts the app's own classes into the <code>WEB-INF/classes</code> of the virtual WAR, so Tomcat
+     * discovers the app's <code>@WebServlet</code>/<code>@WebListener</code> (e.g. a Javalin servlet).
      * <br/>
-     * Oddly enough, Vaadin's <code>LookupServletContainerInitializer</code> (which is annotated with
-     * <code>@HandlesTypes</code>) <b>is</b> discovered and initialized, even though it's not present in <code>WEB-INF/classes</code>.
-     * Even more odd, it fails to register the standard Vaadin Servlet if the app doesn't offer its own;
-     * this is the reason why the app must define its own servlet at the moment.
-     * <br/>
-     * Alternative way would be to register the servlet manually via
-     * <pre><code>
-     * tomcat.addServlet("", "", VaadinServlet.class.getName());
-     * ctx.addServletMappingDecoded("/*", "");
-     * </code></pre>
-     * But the app would need to add every servlet (e.g. Javalin servlet) and every
-     * <code>@WebListener</code>; this would also break the requirement of {@link WebServer} interface
-     * to have classpath scanning enabled.
+     * This does <b>not</b> cover Vaadin's own <code>@WebListener</code> (which auto-registers the
+     * {@link com.vaadin.flow.server.VaadinServlet}) — that lives in <code>flow-server.jar</code>, which is
+     * never mounted here; see {@link #registerVaadinServletDeployer(Context)}.
      * @param root the virtual WAR
      * @throws IOException on I/O error.
      */
@@ -195,5 +186,31 @@ public class TomcatWebServer implements WebServer {
                 root.addPreResources(new JarResourceSet(root, "/WEB-INF/classes", classesDirOrFolder.getAbsolutePath(), "/"));
             }
         }
+    }
+
+    /**
+     * Name of the Vaadin <code>@WebListener</code> that runs {@code ServletDeployer} (auto-registers
+     * the {@link com.vaadin.flow.server.VaadinServlet} when the app defines none) and the push/websocket
+     * initializer, in that order. Referenced by name to avoid a compile-time dependency on this Flow-internal class.
+     */
+    @NotNull
+    private static final String VAADIN_SERVLET_CONTEXT_LISTENERS = "com.vaadin.flow.server.startup.ServletContextListeners";
+
+    /**
+     * Registers Vaadin's {@code ServletContextListeners} so the {@link com.vaadin.flow.server.VaadinServlet}
+     * is auto-deployed even when the app declares no servlet of its own — matching the Jetty behavior.
+     * <br/>
+     * Why register it by hand instead of letting it be scanned: embedded Tomcat scans the app's own classes
+     * (mounted at <code>WEB-INF/classes</code>, see {@link #enableClasspathScanning(WebResourceRoot)}) but not
+     * <code>flow-server.jar</code>, where this <code>@WebListener</code> lives — so without this, Tomcat serves 404.
+     * <br/>
+     * Why a listener and not a {@code ServletContainerInitializer}: {@code ServletDeployer} needs Vaadin's
+     * {@code Lookup} ready first, and the servlet spec runs every SCI (including Vaadin's
+     * {@code LookupServletContainerInitializer}) before any listener's {@code contextInitialized} — so registering
+     * as a listener gets the ordering for free, whereas a second SCI would race the Lookup one.
+     * @param ctx the Tomcat context to register the listener on.
+     */
+    protected void registerVaadinServletDeployer(@NotNull Context ctx) {
+        ctx.addApplicationListener(VAADIN_SERVLET_CONTEXT_LISTENERS);
     }
 }

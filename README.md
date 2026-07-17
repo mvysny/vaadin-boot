@@ -91,9 +91,9 @@ Or Maven:
 </dependency>
 ```
 
-**Important**: you need to define your own servlet when running Tomcat, otherwise
-you'll get HTTP 404 (Tomcat won't auto-register `VaadinServlet` the way Jetty's
-`ServletDeployer` does):
+Just like with Jetty, `VaadinServlet` is auto-registered for you — no servlet class
+of your own is required. You still define one if you need a custom servlet name or
+init parameters, or additional servlets (e.g. a Javalin REST servlet):
 
 ```java
 @WebServlet(urlPatterns = "/*")
@@ -398,7 +398,7 @@ A working version of this test ships with the repo at [`testapp-kotlin/src/test/
 ### Adding More Servlets
 
 The simplest way is to add the `@WebServlet` annotation to your servlet - it will be auto-discovered
-by Jetty. Please see the Javalin example above for more details.
+by the embedded container (both Jetty and Tomcat). Please see the Javalin example above for more details.
 
 ### Overriding Vaadin Servlet
 
