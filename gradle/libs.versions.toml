@@ -21,7 +21,7 @@ vaadin-dev = { module = "com.vaadin:vaadin-dev", version.ref = "vaadin" }
 vaadin-bundle-prod = { module = "com.vaadin:vaadin-prod-bundle", version.ref = "vaadin" }
 # https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/
 junit = "org.junit.jupiter:junit-jupiter-engine:6.1.2"
-karibu-testing = "com.github.mvysny.kaributesting:karibu-testing-v24:2.7.1"
+karibu-testing = "com.github.mvysny.kaributesting:karibu-testing-v24:2.7.2"
 javalin = "io.javalin:javalin:7.2.2"
 tomcat-core = { module = "org.apache.tomcat.embed:tomcat-embed-core", version.ref = "tomcat" }
 tomcat-jasper = { module = "org.apache.tomcat.embed:tomcat-embed-jasper", version.ref = "tomcat" }
