@@ -43,6 +43,37 @@ Or Maven:
 </project>
 ```
 
+> **Warning:** **Maven + Jetty only** - if your project imports `vaadin-bom` (every Vaadin
+> Maven app does), you must also re-declare the servlet API with an explicit scope:
+> ```xml
+> <dependency>
+>     <groupId>jakarta.servlet</groupId>
+>     <artifactId>jakarta.servlet-api</artifactId>
+>     <scope>compile</scope>
+> </dependency>
+> ```
+> `vaadin-bom` manages `jakarta.servlet-api` to `provided` scope, which is correct for
+> WAR/Spring Boot deployments where the container supplies the servlet API - but Vaadin Boot
+> *is* the container, so nothing supplies it. The managed scope wins over the `compile`
+> scope Jetty declares transitively, and the app dies at startup with
+> `NoClassDefFoundError: jakarta/servlet/ServletContext` - both under `mvn exec:java` and
+> from the packaged zip. `mvn test` still passes, since Karibu-Testing pulls the servlet API
+> in at test scope; a green build is not evidence the app starts. The version above is
+> intentionally omitted - it keeps coming from `vaadin-bom`, only the scope is overridden.
+>
+> Unaffected: **`vaadin-boot-tomcat`**, since `tomcat-embed-core` bundles the `jakarta.servlet`
+> classes inside its own jar rather than depending on `jakarta.servlet-api`, so there is no
+> managed artifact for `vaadin-bom` to re-scope. And **Gradle**, since
+> `platform("com.vaadin:vaadin-bom:x.y.z")` contributes version constraints only and does
+> not propagate Maven scopes.
+>
+> This cannot be fixed on the Vaadin Boot side, and the two candidate fixes were both tried
+> and rejected: declaring `jakarta.servlet-api` as an explicit `compile` dependency of
+> `vaadin-boot` changes nothing, because the consuming project's `dependencyManagement`
+> overrides scopes throughout the whole dependency graph; and shipping a `vaadin-boot-bom`
+> works only when the app imports it *ahead of* `vaadin-bom` (first import wins), which fails
+> silently the moment someone reorders the two - strictly worse than the three lines above.
+
 Compatibility chart:
 
 | Vaadin-Boot version | Min Java | Servlet Spec     | Supported Vaadin | Jetty | Tomcat |
@@ -451,6 +482,12 @@ home page for more details.
 > for more details.
 
 ### Maven
+
+> **Warning:** With `vaadin-boot` (Jetty), make sure you have re-declared
+> `jakarta.servlet:jakarta.servlet-api` with an explicit `compile` scope, as described in
+> [Using In Your Apps](#using-in-your-apps). Otherwise the assembly plugin resolves runtime
+> scope, `jakarta.servlet-api.jar` is missing from `lib/` in the zip (and from any Docker
+> image built on it), and the app fails to start.
 
 We'll use two Maven plugins: the [appassembler-maven-plugin](http://www.mojohaus.org/appassembler/appassembler-maven-plugin/)
 to prepare run scripts and the app; and the assembly plugin to create a zip file out of the app.
