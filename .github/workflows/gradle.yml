@@ -32,3 +32,10 @@ jobs:
     - name: System Test
       run: cd test && ./system.rb
 
+  design-docs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+    - name: Design doc tripwires
+      run: ./design/verify_design_tripwires.sh
+

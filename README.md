@@ -3,7 +3,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.mvysny.vaadin-boot/vaadin-boot?label=vaadin-boot)](https://central.sonatype.com/artifact/com.github.mvysny.vaadin-boot/vaadin-boot)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.mvysny.vaadin-boot/vaadin-boot-tomcat?label=vaadin-boot-tomcat)](https://central.sonatype.com/artifact/com.github.mvysny.vaadin-boot/vaadin-boot-tomcat)
 
-Boots your Vaadin app in embedded Jetty from your `main()` method quickly and easily, **without Spring**.
+Boots your Vaadin app in embedded Jetty or Tomcat from your `main()` method quickly and easily, **without Spring**.
 
 Tired of complexity of running your app as WAR from your IDE? Tired of using Spring Boot just to start your app in a simple way?
 Tired of constant debugging issues? Then this project is for you. From now on, you

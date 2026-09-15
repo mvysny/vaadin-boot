@@ -10,6 +10,16 @@ plugins {
 
 defaultTasks("clean", "build")
 
+// Checks the doc layer described in AGENTS.md, "Design docs" - and nothing about the code.
+// Wired into `check` so that a plain `./gradlew` runs it; needs bash+git, so it is skipped on Windows.
+val verifyDesignTripwires = tasks.register<Exec>("verifyDesignTripwires") {
+    description = "Verifies AGENTS.md and design/ against the design-docs rules."
+    group = "verification"
+    commandLine("./design/verify_design_tripwires.sh")
+    onlyIf { !System.getProperty("os.name").startsWith("Windows") }
+}
+tasks.named("check") { dependsOn(verifyDesignTripwires) }
+
 allprojects {
     group = "com.github.mvysny.vaadin-boot"
     version = "13.8-SNAPSHOT"
