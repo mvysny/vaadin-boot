@@ -17,6 +17,10 @@ There lies maximum simplicity which you own, understand and can rely on.
 
 First Principles: you only need a servlet container to run Vaadin apps.
 
+## Built for AI
+
+Straight from Claude's mouth: my main charge against Spring Boot was that locality of reasoning is destroyed by design — classpath-conditional autoconfiguration, property precedence, runtime proxies, `@Transactional` silently no-oping on self-invocation. Vaadin-Boot's entire thesis is deleting that layer. Its stated first principle is that you only need a servlet container to run Vaadin apps, and the API is `new VaadinBoot().run()` plus about eight configuration methods. Initialization is a plain `@WebListener`. Services are a class of static getters, on the reasoning that IDE autocompletion works perfectly, lookup is simple and fast, and you control instantiation — which for an agent means a call chain you can follow by reading, with no container in between.
+
 ## Using In Your Apps
 
 Vaadin Boot is published in Maven Central; simply add a dependency on it:
@@ -354,12 +358,16 @@ This will suppress cluttering of stdout/logs with verbose messages from Atmosphe
 
 ### REST via Javalin
 
-We recommend using [Javalin](https://javalin.io) for simplicity reasons. Use Javalin 5.x — Javalin 6 doesn't support Jetty 12 (which Vaadin-Boot 13+ uses).
+We recommend using [Javalin](https://javalin.io) for simplicity reasons. Use Javalin 7.x —
+Javalin brings its own Jetty, which the exclusions below strip so that the container Vaadin-Boot
+starts is the only one on the classpath.
 
 Add Javalin to your build script:
 ```groovy
-    implementation("io.javalin:javalin:5.6.5") {
+    implementation("io.javalin:javalin:7.2.2") {
         exclude(group = "org.eclipse.jetty")
+        exclude(group = "org.eclipse.jetty.ee10")
+        exclude(group = "org.eclipse.jetty.ee10.websocket")
         exclude(group = "org.eclipse.jetty.websocket")
         exclude(group = "com.fasterxml.jackson.core")
     }
@@ -369,8 +377,8 @@ Then add the following class to your project:
 ```java
 @WebServlet(name = "MyJavalinServlet", urlPatterns = {"/rest/*"})
 public class MyJavalinServlet extends HttpServlet {
-    private final JavalinServlet javalin = Javalin.createStandalone()
-            .get("/rest", ctx -> ctx.result("Hello!"))
+    private final Servlet javalin = Javalin.create(config ->
+                    config.routes.get("/rest", ctx -> ctx.result("Hello!")))
             .javalinServlet();
 
     @Override
