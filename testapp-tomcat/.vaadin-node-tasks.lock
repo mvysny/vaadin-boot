@@ -1,0 +1,2 @@
+45033
+/home/mavi/.local/share/mise/installs/java/jetbrains-25.0.4.1-b583.48/bin/java -DexpectedVaadinProductionMode=false -Dorg.gradle.internal.worker.tmpdir=/home/mavi/work/my/vaadin-boot/testapp-tomcat/build/tmp/test/work @/home/mavi/.gradle/.tmp/gradle-worker-classpath11456573742939542501txt -Xmx512m -Dfile.encoding=UTF-8 -Duser.country=US -Duser.language=en -Duser.variant -ea worker.org.gradle.process.internal.worker.GradleWorkerMain 'Gradle Test Executor 5'
