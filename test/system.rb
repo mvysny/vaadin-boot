@@ -29,9 +29,9 @@ def build_and_unzip(project, &block)
     exec "./gradlew #{project}:build -Pvaadin.productionMode -x test --no-daemon --info"
   end
   FileUtils.cd "#{project}/build/distributions" do
-    dir = Dir.glob("#{project}-*").find { File.directory? it }
+    dir = Dir.glob("#{project}-*").find { |d| File.directory? d }
     exec 'tar xvf *.tar' if dir.nil?
-    dir = Dir.glob("#{project}-*").find { File.directory? it }
+    dir = Dir.glob("#{project}-*").find { |d| File.directory? d }
     raise "#{FileUtils.pwd}: tar archive didn't contain the app" if dir.nil?
 
     FileUtils.cd "#{dir}/bin" do

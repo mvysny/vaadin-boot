@@ -54,7 +54,7 @@ Every fact lives in exactly one of these; the others link to it.
 - `./gradlew :vaadin-boot:test --tests JettyWebServerTest` — one test class.
 - `./gradlew clean build -Pvaadin.productionMode` — production build; what CI runs on push (`.github/workflows/gradle.yml`).
 - `./gradlew :testapp:run` — run one testapp locally on port 8080.
-- `./test/system.rb` — the system tests; needs Ruby 3.4, runs from any directory. The release gate; CI runs it after the production build.
+- `./test/system.rb` — the system tests; needs Ruby 3.3+, runs from any directory. The release gate; CI runs it after the production build.
 - `./design/verify_design_tripwires.sh` — the doc-layer tripwire; runs as part of `./gradlew check`, and in its own CI job.
 
 ## Skills this project follows
