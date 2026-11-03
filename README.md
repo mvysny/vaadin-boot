@@ -364,7 +364,7 @@ starts is the only one on the classpath.
 
 Add Javalin to your build script:
 ```groovy
-    implementation("io.javalin:javalin:7.2.2") {
+    implementation("io.javalin:javalin:7.2.4") {
         exclude(group = "org.eclipse.jetty")
         exclude(group = "org.eclipse.jetty.ee10")
         exclude(group = "org.eclipse.jetty.ee10.websocket")
