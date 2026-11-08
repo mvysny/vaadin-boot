@@ -61,6 +61,13 @@ def build_and_run(project, &block)
   end
 end
 
+# Raises if the app logged an ERROR: a shutdown that logs one, such as `stop() failed`,
+# is not clean even though the process exits.
+def raise_on_error_log(proc)
+  errors = proc.output.lines.grep(/ ERROR /)
+  raise "The app logged errors:\n#{errors.join}" unless errors.empty?
+end
+
 # Tests a project `project` {String} folder name.
 def test_project(project, &block)
   # Happy test path: tests that the app runs and can be stopped via Enter
@@ -78,6 +85,7 @@ def test_project(project, &block)
     puts "#{project}: stopping via Enter"
     p.stdin.puts # sends Enter, VaadinBoot should quit gracefully
     p.await_shutdown
+    raise_on_error_log(p)
   end
 
   # Test that the app can be stopped via Ctrl+C
@@ -86,6 +94,7 @@ def test_project(project, &block)
     puts "#{project}: Stopping via CTRL+C"
     p.ctrl_c
     p.await_shutdown
+    raise_on_error_log(p)
   end
   puts "#{project}: OK!\n\n"
 end

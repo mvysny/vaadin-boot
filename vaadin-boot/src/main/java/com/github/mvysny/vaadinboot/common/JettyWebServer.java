@@ -73,12 +73,23 @@ public class JettyWebServer implements WebServer {
 
     private volatile WebAppContext context;
 
+    /**
+     * Mounts the webroot; closed by {@link #stop()} once the server has stopped.
+     * <h4>Implementation detail</h4>
+     * Not the context's own {@link WebAppContext#getResourceFactory()}: the context closes that one
+     * mid-stop, then {@code WebInfConfiguration.deconfigure()} re-checks the base resource, and a
+     * {@code jar:} webroot (an app run from its distribution) fails with {@code ClosedFileSystemException}.
+     * See <a href="https://github.com/mvysny/vaadin-boot/issues/41">#41</a>.
+     */
+    private volatile ResourceFactory.Closeable resourceFactory;
+
     @Override
     public void configure(@NotNull VaadinBootBase<?> configuration) throws Exception {
         final VaadinBoot cfg = (VaadinBoot) configuration;
 
         fixClasspath();
 
+        resourceFactory = ResourceFactory.closeable();
         context = createWebAppContext(cfg);
         log.debug("Jetty WebAppContext created");
 
@@ -101,7 +112,11 @@ public class JettyWebServer implements WebServer {
     @Override
     public void stop() throws Exception {
         context = null;
-        server.stop();
+        try {
+            server.stop();
+        } finally {
+            resourceFactory.close();
+        }
     }
 
     @Override
@@ -132,7 +147,7 @@ public class JettyWebServer implements WebServer {
     @NotNull
     protected WebAppContext createWebAppContext(@NotNull VaadinBoot cfg) throws IOException {
         final WebAppContext context = new WebAppContext();
-        final Resource webRoot = findWebRoot(context.getResourceFactory());
+        final Resource webRoot = findWebRoot(resourceFactory);
         context.setBaseResource(webRoot);
         final String contextRoot = cfg.getContextRoot();
         context.setContextPath(contextRoot.isEmpty() ? "/" : contextRoot);

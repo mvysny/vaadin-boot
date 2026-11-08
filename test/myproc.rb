@@ -24,7 +24,7 @@ class MyProc
     @stdin = stdin
     @output = []
     # Reads stdout in the background. Handles {Errno::EIO} gracefully.
-    Thread.new do
+    @reader = Thread.new do
       while line = stdout.gets
         @output << line
       end
@@ -54,12 +54,12 @@ class MyProc
   # and you want to wait for that.
   #
   # If the process doesn't terminate by itself, the process is killed and an exception is raised.
+  # Once it returns, {#output} holds everything the process printed.
   def await_shutdown(seconds = 5)
-    return unless running?
-
     puts "#{pid}: awaiting #{seconds}s for process to shut down by itself"
     if wait(seconds)
-      puts "#{pid}: exited cleanly"
+      @reader.join(5)
+      puts "#{pid}: exited"
     else
       puts "#{pid}: wait timed out, terminating"
       kill
