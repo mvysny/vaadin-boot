@@ -42,7 +42,7 @@ not recompiled (javac compiles only the change-set) — recompile with Maven aft
 - **Maven is hard.** `Reactor`/`EffectiveModel` read `pom.xml`s with the JDK XML parser; the
   classpath comes from `mvnw compile dependency:build-classpath`; outputs are assumed at
   `target/classes`; state lives in `target/devloop/`; install is a Maven goal. No Gradle
-  support upstream, and I found no issue asking for it.
+  support upstream; requested in vaadin/flow#26893 (filed 2026-11-08).
 
 So: **a Maven-built Vaadin Boot app on Vaadin 25.3+ should work as-is** (unverified — see
 `Q_smoke_test`). **A Gradle one — every testapp here, and Gradle is Vaadin Boot's default —
@@ -80,8 +80,7 @@ cannot.**
 - **A. Ask upstream for Gradle.** The daemon's Maven surface is `Reactor`, `EffectiveModel`,
   `Launch`'s classpath resolve and the install goal; a Gradle equivalent needs an init script
   or a tooling-API dump of source sets, output dirs and runtime classpath, plus
-  `vaadin { installDevCli }` in `flow-gradle-plugin`. File an issue on vaadin/flow; Vaadin Boot
-  is a good motivating user, since Gradle is our default.
+  `vaadin { installDevCli }` in `flow-gradle-plugin`. Filed as vaadin/flow#26893.
 - **B. Roll our own loop for Gradle.** Drive the same connector protocol from a Gradle-side
   daemon. Rejected in advance: the protocol and daemon are documented as "internal use only, may
   be renamed or removed", and a loop is a big thing to own — against "you only use what you
@@ -89,8 +88,8 @@ cannot.**
 - **C. Interim: document "want `vaadin-dev`? build with Maven"** in the README, and point to a
   Maven example project (mvysny/vaadin-boot-example-maven).
 
-Lean: C now, A as an upstream issue, never B. `Q_gradle`: does anyone actually need Gradle here
-badly enough to push A?
+Lean: C now, A filed upstream (#26893), never B. Watch #26893; once it lands, the Gradle testapps
+are candidates for the loop.
 
 ## The testing half of the lifecycle
 

@@ -59,7 +59,7 @@ Every fact lives in exactly one of these; the others link to it.
 
 ## Skills this project follows
 
-- **Loose ideas live one-per-file in `ideas/`**, deleted once implemented or rejected, any lasting nugget backported to its home in *Design docs*; the `ideas-folder` skill has the procedure.
+- **Loose ideas live one-per-file in `design/ideas/`**, deleted once implemented or rejected, any lasting nugget backported to its home in *Design docs*; the `ideas-folder` skill has the procedure.
 
 ## Maintenance of this file
 
