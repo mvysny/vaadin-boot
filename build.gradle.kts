@@ -22,7 +22,7 @@ tasks.named("check") { dependsOn(verifyDesignTripwires) }
 
 allprojects {
     group = "com.github.mvysny.vaadin-boot"
-    version = "13.8-SNAPSHOT"
+    version = "13.8"
 
     repositories {
         mavenCentral()
